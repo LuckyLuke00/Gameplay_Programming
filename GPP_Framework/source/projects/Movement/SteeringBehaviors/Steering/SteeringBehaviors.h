@@ -89,4 +89,17 @@ public:
 	SteeringOutput CalculateSteering(float deltaT, SteeringAgent* pAgent) override;
 };
 
+///////////////////////////////////////
+//WANDER
+//****
+class Wander : public ISteeringBehavior
+{
+public:
+	Wander() = default;
+	virtual ~Wander() = default;
+
+	//Seek Behaviour
+	SteeringOutput CalculateSteering(float deltaT, SteeringAgent* pAgent) override;
+};
+
 #endif
