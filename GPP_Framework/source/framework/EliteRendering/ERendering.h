@@ -18,10 +18,10 @@ typedef void* EliteRenderingContext;
 
 /* --- PLATFORM-SPECIFIC DEFINES & INCLUDES --- */
 #if (PLATFORM_ID == PLATFORM_WINDOWS)
-	#include "SDLIntegration/SDLDebugRenderer2D/SDLDebugRenderer2D.h"
-	typedef Elite::SDLDebugRenderer2D EliteDebugRenderer2D;
-	#include "SDLIntegration/SDLFrame/SDLFrame.h"
-	typedef Elite::SDLFrame EliteFrame;
+#include "SDLIntegration/SDLDebugRenderer2D/SDLDebugRenderer2D.h"
+typedef Elite::SDLDebugRenderer2D EliteDebugRenderer2D;
+#include "SDLIntegration/SDLFrame/SDLFrame.h"
+typedef Elite::SDLFrame EliteFrame;
 #elif (PLATFORM_ID == PLATFORM_PS4)
 	//Nothing
 #endif

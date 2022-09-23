@@ -15,8 +15,8 @@ typedef void* EliteRawWindow;
 
 /* --- PLATFORM-SPECIFIC DEFINES & INCLUDES --- */
 #if (PLATFORM_ID == PLATFORM_WINDOWS)
-	#include "SDLWindow/SDLWindow.h"
-	typedef Elite::SDLWindow EliteWindow;
+#include "SDLWindow/SDLWindow.h"
+typedef Elite::SDLWindow EliteWindow;
 #elif (PLATFORM_ID == PLATFORM_PS4)
 //Nothing
 #endif

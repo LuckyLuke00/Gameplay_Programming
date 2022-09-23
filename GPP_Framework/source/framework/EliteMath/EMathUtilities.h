@@ -13,12 +13,12 @@
 
 namespace Elite {
 	/* --- CONSTANTS --- */
-	#define E_PI	3.14159265358979323846
-	#define E_PI_2	1.57079632679489661923
-	#define E_PI_4	0.785398163397448309616
+#define E_PI	3.14159265358979323846
+#define E_PI_2	1.57079632679489661923
+#define E_PI_4	0.785398163397448309616
 
-	/* --- FUNCTIONS --- */
-	/*! Comparing two values (preferably float or doubles) and see if they are equal. You can change the precision (by default: epsilon)*/
+/* --- FUNCTIONS --- */
+/*! Comparing two values (preferably float or doubles) and see if they are equal. You can change the precision (by default: epsilon)*/
 	template<typename T, typename = std::enable_if<std::is_pod<T>::value>>
 	constexpr bool AreEqual(T a, T b, float precision = FLT_EPSILON)
 	{
@@ -39,14 +39,14 @@ namespace Elite {
 		int i = *reinterpret_cast<int*>(&f);
 		i = 0x5f3759df - (i >> 1);
 		f = *reinterpret_cast<float*>(&i);
-		f = f*(1.5f - xHalf*f*f);
+		f = f * (1.5f - xHalf * f * f);
 		return f;
 	}
 	/*! Function to square a number */
 	template<typename T, typename = std::enable_if<std::is_pod<T>::value>>
 	constexpr auto Square(T v)
 	{
-		return v*v;
+		return v * v;
 	}
 	/*! Function to convert degrees to radians */
 	constexpr float ToRadians(const float angle)
@@ -93,11 +93,15 @@ namespace Elite {
 
 	/*! Random Integer */
 	inline int randomInt(int max = 1)
-	{ return rand() % max; }
+	{
+		return rand() % max;
+	}
 
 	/*! Random Float */
 	inline float randomFloat(float max = 1.f)
-	{ return max * (float(rand()) / RAND_MAX); }
+	{
+		return max * (float(rand()) / RAND_MAX);
+	}
 
 	/*! Random Float */
 	inline float randomFloat(float min, float max)
@@ -108,14 +112,18 @@ namespace Elite {
 
 	/*! Random Binomial Float */
 	inline float randomBinomial(float max = 1.f)
-	{ return randomFloat(max) - randomFloat(max); }
+	{
+		return randomFloat(max) - randomFloat(max);
+	}
 
 	/*! Linear Interpolation */
 	/*inline float Lerp(float v0, float v1, float t)
 	{ return (1 - t) * v0 + t * v1;	}*/
 	template<typename T>
 	inline T Lerp(T v0, T v1, float t)
-	{ return (1 - t) * v0 + t * v1;	}
+	{
+		return (1 - t) * v0 + t * v1;
+	}
 
 	/*! Smooth Step */
 	inline float smoothStep(float edge0, float edge1, float x)
@@ -127,7 +135,9 @@ namespace Elite {
 	}
 
 	/*! Sign Function*/
-	template <typename T>  int sign(T val) 
-	{ return (T(0) < val) - (val < T(0)); }
+	template <typename T>  int sign(T val)
+	{
+		return (T(0) < val) - (val < T(0));
+	}
 }
 #endif

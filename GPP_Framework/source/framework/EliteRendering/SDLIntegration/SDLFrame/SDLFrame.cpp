@@ -26,7 +26,9 @@ void SDLFrame::CreateFrame(EliteWindow* pWindow)
 
 	//Enable VSync
 	if (SDL_GL_SetSwapInterval(1) < 0)
-	{ printf("Warning: Unable to set VSync! SDL Error: %s\n", SDL_GetError()); }
+	{
+		printf("Warning: Unable to set VSync! SDL Error: %s\n", SDL_GetError());
+	}
 
 	//Check for errors
 	GLenum errCode = glGetError();

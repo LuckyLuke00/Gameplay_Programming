@@ -24,9 +24,9 @@ struct EPhysicsCircleShape : EPhysicsShape
 {
 	Elite::Vector2 position = Elite::ZeroVector2;
 	float radius = 1.f;
-	
+
 	EPhysicsCircleShape() { type = EPhysicsShapeType::CircleShape; };
-	EPhysicsCircleShape(const Elite::Vector2& _position, float _radius):position(_position),radius(_radius){ type = CircleShape; }
+	EPhysicsCircleShape(const Elite::Vector2& _position, float _radius) :position(_position), radius(_radius) { type = CircleShape; }
 };
 
 struct EPhysicsBoxShape : EPhysicsShape
@@ -51,6 +51,8 @@ struct EPhysicsPolygonShape : EPhysicsShape
 
 	EPhysicsPolygonShape() { type = EPhysicsShapeType::PolygonShape; };
 	EPhysicsPolygonShape(const Elite::Vector2& _center, const std::vector<Elite::Vector2>& _vertices, const std::vector<Elite::Vector2>& _normals)
-		: center(_center), vertices(_vertices), normals(_normals){ type = EPhysicsShapeType::PolygonShape; }
+		: center(_center), vertices(_vertices), normals(_normals) {
+		type = EPhysicsShapeType::PolygonShape;
+	}
 };
 #endif

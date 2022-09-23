@@ -6,11 +6,11 @@
 /*=============================================================================*/
 #ifndef ELITE_PHYSICS_RIGIDBODY_BASE
 #define	ELITE_PHYSICS_RIGIDBODY_BASE
-namespace Elite 
+namespace Elite
 {
 	//--- Includes ---
-	#include "EPhysicsTypes.h"
-	#include "EPhysicsShapes.h"
+#include "EPhysicsTypes.h"
+#include "EPhysicsShapes.h"
 
 	template<typename translationType, typename orientationType>
 	class RigidBodyBase final

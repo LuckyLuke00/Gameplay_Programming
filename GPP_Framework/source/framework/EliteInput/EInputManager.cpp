@@ -8,11 +8,11 @@ MouseData EInputManager::GetMouseData(InputType type, InputMouseButton button)
 {
 	auto result = std::find_if(m_InputContainer.begin(), m_InputContainer.end(),
 		[type, button](const InputAction& ia)
-	{
-		return
-			(ia.InputActionType == type) &&
-			(ia.InputActionData.MouseInputData.Button == button);
-	});
+		{
+			return
+				(ia.InputActionType == type) &&
+				(ia.InputActionData.MouseInputData.Button == button);
+		});
 
 	if (result != m_InputContainer.end())
 		return (*result).InputActionData.MouseInputData;
@@ -25,12 +25,12 @@ bool EInputManager::IsKeyPresent(InputType type, InputState state, InputScancode
 {
 	auto result = std::find_if(m_InputContainer.begin(), m_InputContainer.end(),
 		[type, state, code](const InputAction& ia)
-	{
-		return
-			(ia.InputActionType == type) &&
-			(ia.InputActionState == state) &&
-			(ia.InputActionData.KeyboardInputData.ScanCode == code);
-	});
+		{
+			return
+				(ia.InputActionType == type) &&
+				(ia.InputActionState == state) &&
+				(ia.InputActionData.KeyboardInputData.ScanCode == code);
+		});
 	return (result != m_InputContainer.end());
 }
 
@@ -38,11 +38,11 @@ bool EInputManager::IsMousePresent(InputType type, InputState state, InputMouseB
 {
 	auto result = std::find_if(m_InputContainer.begin(), m_InputContainer.end(),
 		[type, state, button](const InputAction& ia)
-	{
-		return
-			(ia.InputActionType == type) &&
-			(ia.InputActionState == state) &&
-			(ia.InputActionData.MouseInputData.Button == button);
-	});
+		{
+			return
+				(ia.InputActionType == type) &&
+				(ia.InputActionState == state) &&
+				(ia.InputActionData.MouseInputData.Button == button);
+		});
 	return (result != m_InputContainer.end());
 }

@@ -2,7 +2,7 @@
 // Copyright 2021-2022 Elite Engine
 // Authors: Thomas Goussaert, Matthieu Delaere
 /*=============================================================================*/
-// ETimer_SDL.cpp: SDL implementatoin of the ETimer. 
+// ETimer_SDL.cpp: SDL implementatoin of the ETimer.
 // Works on Windows, Mac OS X, Linux, iOS, and Android.
 /*=============================================================================*/
 #include "stdafx.h"

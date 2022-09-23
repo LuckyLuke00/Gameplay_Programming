@@ -35,9 +35,11 @@ namespace Elite
 #endif
 
 		//=== Internal Functions
-		void Flush(){ m_InputContainer.clear();};
-		void AddInputAction(const InputAction& inputAction) 
-		{ m_InputContainer.push_back(inputAction); };
+		void Flush() { m_InputContainer.clear(); };
+		void AddInputAction(const InputAction& inputAction)
+		{
+			m_InputContainer.push_back(inputAction);
+		};
 
 		bool IsKeyPresent(InputType type, InputState state, InputScancode code);
 		bool IsMousePresent(InputType type, InputState state = InputState(0), InputMouseButton button = InputMouseButton(0));

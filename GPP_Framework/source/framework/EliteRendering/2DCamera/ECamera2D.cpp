@@ -3,7 +3,7 @@
 #include "ECamera2D.h"
 
 //=== Constructor & Destructor
-Camera2D::Camera2D(unsigned int width, unsigned int height):
+Camera2D::Camera2D(unsigned int width, unsigned int height) :
 	m_width(width), m_height(height)
 {
 	m_center = Elite::ZeroVector2;
@@ -34,7 +34,7 @@ void Camera2D::Update()
 		auto mouseData = INPUTMANAGER->GetMouseData(Elite::InputType::eMouseWheel);
 		if (mouseData.Y > 0)
 			m_zoom /= 1.1f;
-		else if(mouseData.Y < 0)
+		else if (mouseData.Y < 0)
 			m_zoom *= 1.1f;
 	}
 }

@@ -35,7 +35,9 @@ namespace Elite
 	private:
 		//=== Private Struct ===
 		struct SDL_WindowDeleter //Deleter to be able to use smart pointer
-		{ void operator()(SDL_Window* pWindow) { SDL_DestroyWindow(pWindow); } };
+		{
+			void operator()(SDL_Window* pWindow) { SDL_DestroyWindow(pWindow); }
+		};
 
 		//=== Datamembers ===
 		std::unique_ptr<SDL_Window, SDL_WindowDeleter> m_pWindow = nullptr;

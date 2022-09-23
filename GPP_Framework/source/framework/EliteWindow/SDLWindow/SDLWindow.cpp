@@ -17,7 +17,7 @@ void SDLWindow::CreateEWindow(const WindowParams& params)
 	m_WindowParameters = params;
 
 	//Initialize SDL Video, which also automatically initializes the events subsystem. Returns 0 on success!
-	if(SDL_Init(SDL_INIT_VIDEO) != 0)
+	if (SDL_Init(SDL_INIT_VIDEO) != 0)
 		throw Elite_Exception("SDL_Init failed! Cannot create window!");
 
 	//Set SDL Attributes for our OpenGl Context
@@ -32,7 +32,7 @@ void SDLWindow::CreateEWindow(const WindowParams& params)
 	SDL_GetCurrentDisplayMode(0, &current);
 
 	//Create flags
-	unsigned int flags = SDL_WINDOW_OPENGL; //Default, this is a windows using opengl 
+	unsigned int flags = SDL_WINDOW_OPENGL; //Default, this is a windows using opengl
 	if (params.isResizable)
 		flags |= SDL_WINDOW_RESIZABLE;
 
@@ -40,9 +40,9 @@ void SDLWindow::CreateEWindow(const WindowParams& params)
 	m_pWindow = std::unique_ptr<SDL_Window, SDL_WindowDeleter>(SDL_CreateWindow(
 		params.windowTitle.c_str(),
 		SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-		params.width, params.height,flags));
+		params.width, params.height, flags));
 
-	if(!m_pWindow.get())
+	if (!m_pWindow.get())
 		throw Elite_Exception("SDL_CreateWindow! Could not create window!");
 }
 
@@ -55,84 +55,84 @@ void SDLWindow::ProcedureEWindow()
 		switch (e.type)
 		{
 			//If user closes the window
-			case SDL_QUIT:
-			{
-				//Request shutdown by flagging base ShutdownRequested datamember! This will be used in the main for the game loop!
-				m_ShutdownRequested = true;
-				break;
-			}
-			case SDL_KEYDOWN:
-			{
-				auto data = KeyboardData(
-					static_cast<int>(e.key.timestamp),
-					static_cast<Elite::InputScancode>(e.key.keysym.scancode));
+		case SDL_QUIT:
+		{
+			//Request shutdown by flagging base ShutdownRequested datamember! This will be used in the main for the game loop!
+			m_ShutdownRequested = true;
+			break;
+		}
+		case SDL_KEYDOWN:
+		{
+			auto data = KeyboardData(
+				static_cast<int>(e.key.timestamp),
+				static_cast<Elite::InputScancode>(e.key.keysym.scancode));
 
-				EInputManager::GetInstance()->AddInputAction(InputAction(
-					InputType::eKeyboard, InputState::eDown, InputData(data)));
-				break;
-			}
-			case SDL_KEYUP:
-			{
-				auto data = KeyboardData(
-					static_cast<int>(e.key.timestamp),
-					static_cast<Elite::InputScancode>(e.key.keysym.scancode));
+			EInputManager::GetInstance()->AddInputAction(InputAction(
+				InputType::eKeyboard, InputState::eDown, InputData(data)));
+			break;
+		}
+		case SDL_KEYUP:
+		{
+			auto data = KeyboardData(
+				static_cast<int>(e.key.timestamp),
+				static_cast<Elite::InputScancode>(e.key.keysym.scancode));
 
-				EInputManager::GetInstance()->AddInputAction(InputAction(
-					InputType::eKeyboard, InputState::eReleased, InputData(data)));
-				break;
-			}
-			case SDL_MOUSEBUTTONDOWN:
-			{
-				//SDL_GetMouseState -> Relative to Desktop, not Window
-				int x, y;
-				SDL_GetMouseState(&x, &y);
+			EInputManager::GetInstance()->AddInputAction(InputAction(
+				InputType::eKeyboard, InputState::eReleased, InputData(data)));
+			break;
+		}
+		case SDL_MOUSEBUTTONDOWN:
+		{
+			//SDL_GetMouseState -> Relative to Desktop, not Window
+			int x, y;
+			SDL_GetMouseState(&x, &y);
 
-				auto data = MouseData(
-					static_cast<int>(e.key.timestamp),
-					static_cast<InputMouseButton>(e.button.button),
-					x, y);
+			auto data = MouseData(
+				static_cast<int>(e.key.timestamp),
+				static_cast<InputMouseButton>(e.button.button),
+				x, y);
 
-				EInputManager::GetInstance()->AddInputAction(InputAction(
-					InputType::eMouseButton, InputState::eDown, InputData(data)));
-				break;
-			}
-			case SDL_MOUSEBUTTONUP:
-			{
-				int x, y;
-				SDL_GetMouseState(&x, &y);
+			EInputManager::GetInstance()->AddInputAction(InputAction(
+				InputType::eMouseButton, InputState::eDown, InputData(data)));
+			break;
+		}
+		case SDL_MOUSEBUTTONUP:
+		{
+			int x, y;
+			SDL_GetMouseState(&x, &y);
 
-				auto data = MouseData(
-					static_cast<int>(e.key.timestamp),
-					static_cast<InputMouseButton>(e.button.button),
-					x, y);
+			auto data = MouseData(
+				static_cast<int>(e.key.timestamp),
+				static_cast<InputMouseButton>(e.button.button),
+				x, y);
 
-				EInputManager::GetInstance()->AddInputAction(InputAction(
-					InputType::eMouseButton, InputState::eReleased, InputData(data)));
-				break;
-			}
-			case SDL_MOUSEWHEEL:
-			{
-				auto data = MouseData(
-					static_cast<int>(e.key.timestamp),
-					InputMouseButton(0), e.wheel.x, e.wheel.y, 0, 0);
+			EInputManager::GetInstance()->AddInputAction(InputAction(
+				InputType::eMouseButton, InputState::eReleased, InputData(data)));
+			break;
+		}
+		case SDL_MOUSEWHEEL:
+		{
+			auto data = MouseData(
+				static_cast<int>(e.key.timestamp),
+				InputMouseButton(0), e.wheel.x, e.wheel.y, 0, 0);
 
-				EInputManager::GetInstance()->AddInputAction(InputAction(
-					InputType::eMouseWheel, InputState(0), InputData(data)));
-				break;
-			}
-			case SDL_MOUSEMOTION:
-			{
-				int x, y;
-				SDL_GetMouseState(&x, &y);
+			EInputManager::GetInstance()->AddInputAction(InputAction(
+				InputType::eMouseWheel, InputState(0), InputData(data)));
+			break;
+		}
+		case SDL_MOUSEMOTION:
+		{
+			int x, y;
+			SDL_GetMouseState(&x, &y);
 
-				auto data = MouseData(
-					static_cast<int>(e.key.timestamp),
-					InputMouseButton(0), x, y, e.motion.xrel, e.motion.yrel);
+			auto data = MouseData(
+				static_cast<int>(e.key.timestamp),
+				InputMouseButton(0), x, y, e.motion.xrel, e.motion.yrel);
 
-				EInputManager::GetInstance()->AddInputAction(InputAction(
-					InputType::eMouseMotion, InputState(0), InputData(data)));
-				break;
-			}
+			EInputManager::GetInstance()->AddInputAction(InputAction(
+				InputType::eMouseMotion, InputState(0), InputData(data)));
+			break;
+		}
 		}
 	}
 }

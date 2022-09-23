@@ -7,7 +7,7 @@
 #ifndef ELITE_GEOMETRY_2D_UTILITIES
 #define ELITE_GEOMETRY_2D_UTILITIES
 
-namespace Elite 
+namespace Elite
 {
 	/* --- TYPES --- */
 	enum Winding //OUTER shapes should always be given CCW, INNER shapes as CW
@@ -30,7 +30,7 @@ namespace Elite
 		//	| \		|		 | \	 |			 | \	 |
 		//	|  \	|		 |  \	 |			 |  \	 |
 		//	|	\	|		 |	 \	 |			 |	 \	 |
-		//	|	 \	| 		 |	  \	 | 			 |	  \	 | 
+		//	|	 \	| 		 |	  \	 | 			 |	  \	 |
 		//	|	  \	|		 |	   \ |			 |	   \ |
 		//	2-------1		 1-------2			 3-------2
 		//	   ??				CCW				    CW
@@ -56,7 +56,7 @@ namespace Elite
 		//    /  \
 		//   /    \
 		// prev   next
-		const auto d = (tip.x - prev.x)*(next.y - prev.y) - (tip.y - prev.y)*(next.x - prev.x);
+		const auto d = (tip.x - prev.x) * (next.y - prev.y) - (tip.y - prev.y) * (next.x - prev.x);
 		return d > 0;
 	}
 	/*! Check if a single point is inside the triangle's bounding box. This is a quick overlap test. */
@@ -73,7 +73,7 @@ namespace Elite
 	{
 		//http://totologic.blogspot.be/2014/01/accurate-point-in-triangle-test.html
 		auto p1p2_squareDistance = DistanceSquared(p1, p2);
-		auto dp = ((point.x - p1.x)*(p2.x - p1.x) + (point.y - p1.y)*(p2.y - p1.y)) / p1p2_squareDistance;
+		auto dp = ((point.x - p1.x) * (p2.x - p1.x) + (point.y - p1.y) * (p2.y - p1.y)) / p1p2_squareDistance;
 		if (dp < 0)
 			return DistanceSquared(p1, point);
 		if (dp <= 1)

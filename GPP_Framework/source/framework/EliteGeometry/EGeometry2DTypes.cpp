@@ -26,7 +26,7 @@ Elite::Polygon::Polygon(const std::vector<Vector2>& vertices)
 	m_vPoints.assign(vertices.begin(), vertices.end()); //Copy
 }
 
-Elite::Polygon::Polygon(const std::vector<Vector2>& outerShape, const std::vector<std::vector<Vector2>> &innerShapes)
+Elite::Polygon::Polygon(const std::vector<Vector2>& outerShape, const std::vector<std::vector<Vector2>>& innerShapes)
 {
 	//Store outer shape points into list
 	m_vPoints.assign(outerShape.begin(), outerShape.end()); //Copy
@@ -62,13 +62,15 @@ Elite::Polygon::~Polygon()
 //=== Child functionality ===
 Elite::Polygon* Elite::Polygon::AddChild(std::list<Vector2>& vertices)
 {
-	const Polygon p(vertices); 
-	m_vChildren.push_back(p); 
+	const Polygon p(vertices);
+	m_vChildren.push_back(p);
 	return &m_vChildren[m_vChildren.size() - 1];
 };
 
 void Elite::Polygon::AddChild(const Polygon& p)
-{ m_vChildren.push_back(p); }
+{
+	m_vChildren.push_back(p);
+}
 
 void Elite::Polygon::RemoveChild(const Polygon& p)
 {
@@ -82,31 +84,43 @@ void Elite::Polygon::RemoveChild(const Polygon& p)
 #pragma region GeneralFunctions
 Elite::Vector2 Elite::Polygon::GetCenterPoint() const
 {
-	Vector2 cp; 
-	for (const auto p : m_vPoints) 
-		cp += p; 
+	Vector2 cp;
+	for (const auto p : m_vPoints)
+		cp += p;
 	return cp / static_cast<float>(m_vPoints.size());
 }
 #pragma endregion //GeneralFunctions
 //----------------------------------------------------------
 #pragma region MemberAccess
 bool Elite::Polygon::IsTriangulated() const
-{ return m_isTriangulated; }
+{
+	return m_isTriangulated;
+}
 
 int Elite::Polygon::GetAmountVertices() const
-{ return m_vPoints.size(); }
+{
+	return m_vPoints.size();
+}
 
 const std::list<Elite::Vector2>& Elite::Polygon::GetPoints() const
-{ return m_vPoints; }
+{
+	return m_vPoints;
+}
 
 const std::vector<Elite::Polygon >& Elite::Polygon::GetChildren() const
-{ return m_vChildren; }
+{
+	return m_vChildren;
+}
 
 const std::vector<Elite::Triangle*>& Elite::Polygon::GetTriangles() const
-{ return m_vpTriangles; }
+{
+	return m_vpTriangles;
+}
 
 const std::vector<Elite::Line*>& Elite::Polygon::GetLines() const
-{ return m_vpLines; }
+{
+	return m_vpLines;
+}
 #pragma endregion //MemberAccess
 //----------------------------------------------------------
 #pragma region GettersInformation
@@ -200,7 +214,7 @@ std::vector<Elite::Triangle*> Elite::Polygon::GetAdjacentTrianglesOnLine(const T
 	//Start by getting index of line in matrix
 	auto lRev = Line(l.p2, l.p1);
 	const auto it = std::find_if(m_vpLines.begin(), m_vpLines.end(), [&](const Line* rl)
-	{ return (*rl == l || *rl == lRev); });
+		{ return (*rl == l || *rl == lRev); });
 	if (it == m_vpLines.end())
 	{
 		std::cout << "WARNING: line not found!" << std::endl;
@@ -222,7 +236,6 @@ std::vector<Elite::Triangle*> Elite::Polygon::GetAdjacentTrianglesOnLine(const T
 #endif
 	return adjTriangles;
 }
-
 
 const Elite::Triangle* Elite::Polygon::GetTriangleFromPosition(const Vector2& position, bool onLineAllowed /*= false*/) const
 {
@@ -251,7 +264,6 @@ const std::vector<const Elite::Triangle*> Elite::Polygon::GetTrianglesFromLineIn
 }
 #endif
 
-
 #pragma endregion //GettersInformation
 //----------------------------------------------------------
 #pragma region TriangulationFunctions
@@ -270,11 +282,11 @@ const std::vector<Elite::Triangle*>& Elite::Polygon::Triangulate()
 	//Sort the children. Start by sorting from top to bottom (verices are what matters, not the "center" pos of the polygon!)
 	std::sort(m_vChildren.begin(), m_vChildren.end(),
 		[](const Polygon& p1, const Polygon& p2)
-	{ return p1.GetPosVertMaxYPos() > p2.GetPosVertMaxYPos(); });
+		{ return p1.GetPosVertMaxYPos() > p2.GetPosVertMaxYPos(); });
 
 	//Copy children as backup after sort
 	const auto children = m_vChildren;
-	
+
 	//THEN, we check two elements, if the don't overlap horizontally you don't do anything, else you swap them based on right most object
 	for (auto i = 0; i < static_cast<int>(m_vChildren.size()) - 1; ++i)
 	{
@@ -332,7 +344,7 @@ const std::vector<Elite::Triangle*>& Elite::Polygon::Triangulate()
 	m_vpTriangles.push_back(lastTriangle);
 
 	//Flag as triangulated for later use
-	m_isTriangulated = true; 
+	m_isTriangulated = true;
 
 #ifdef USE_TRIANGLE_METADATA
 	GenerateLineMatrix();
@@ -424,7 +436,7 @@ bool Elite::Polygon::IsEar(const list<Vector2>& l, const list<Vector2>::const_it
 	//Look at the point list of this polygon as it where a circular list (end attach begin)
 	Vector2 current, prev, next;
 	GetTriangle(l, p, current, prev, next);
-	
+
 	//See if there are any vertices (excluding the ones of the triangle) are in the triangle
 	for (auto it = l.begin(); it != l.end(); ++it)
 	{
@@ -566,7 +578,7 @@ void Elite::Polygon::FindMutualVisibleVertices(const Polygon& outer, const Polyg
 
 	//2.3 ELSE I is interior point on edge, select vertex with maximum x value of the hitted edge - Result point P
 	Vector2 P = intersectedLine[(intersectedLine[0].x > intersectedLine[1].x ? 0 : 1)];
-	
+
 	//2.4 Search for reflex vertices (excluding P if it's a reflex)
 	std::list<Vector2> reflexVertices;
 	for (auto it = outer.m_vPoints.begin(); it != outer.m_vPoints.end(); ++it)
@@ -650,7 +662,7 @@ void Elite::Polygon::Split()
 #pragma endregion //Polygon
 
 Elite::Rect::Rect()
-	: Rect({0.f, 0.f}, 0.f, 0.f)
+	: Rect({ 0.f, 0.f }, 0.f, 0.f)
 {
 }
 

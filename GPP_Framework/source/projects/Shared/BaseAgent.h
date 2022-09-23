@@ -19,7 +19,8 @@ public:
 	void SetPosition(const Elite::Vector2& pos) const { m_pRigidBody->SetPosition(pos); }
 
 	float GetRotation() const {
-		return Elite::ClampedAngle(m_pRigidBody->GetRotation().x);}
+		return Elite::ClampedAngle(m_pRigidBody->GetRotation().x);
+	}
 	void SetRotation(float rot) const { m_pRigidBody->SetRotation({ rot - (float)E_PI_2,0.f }); } // hotfix for angular issue with BOX2D setup
 
 	Elite::Vector2 GetLinearVelocity() const { return m_pRigidBody->GetLinearVelocity(); }
@@ -27,7 +28,7 @@ public:
 
 	float GetAngularVelocity() const { return m_pRigidBody->GetAngularVelocity().x; }
 	void SetAngularVelocity(float angVel) const { m_pRigidBody->SetAngularVelocity({ angVel,0.f }); }
-	
+
 	float GetMass() const { return m_pRigidBody->GetMass(); }
 	void SetMass(float mass) const { m_pRigidBody->SetMass(mass); }
 

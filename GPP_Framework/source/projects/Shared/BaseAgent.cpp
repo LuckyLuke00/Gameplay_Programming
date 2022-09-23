@@ -5,7 +5,7 @@ BaseAgent::BaseAgent(float radius) : m_Radius(radius)
 {
 	//Create Rigidbody
 	const Elite::RigidBodyDefine define = Elite::RigidBodyDefine(0.01f, 0.1f, Elite::eDynamic, false);
-	const Transform transform = Transform(Elite::ZeroVector2, {0,90});
+	const Transform transform = Transform(Elite::ZeroVector2, { 0,90 });
 	m_pRigidBody = new RigidBody(define, transform);
 
 	//Add shape
@@ -13,7 +13,6 @@ BaseAgent::BaseAgent(float radius) : m_Radius(radius)
 	shape.radius = m_Radius;
 	m_pRigidBody->AddShape(&shape);
 }
-
 
 BaseAgent::~BaseAgent()
 {

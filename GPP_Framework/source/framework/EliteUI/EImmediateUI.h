@@ -52,11 +52,11 @@ namespace Elite
 	{
 	public:
 		//--- UI Functions ---
-		void Initialize(EliteRawWindow pWindow){};
-		void Render(){};
-		void EventProcessing(){};
-		static void StaticRender(ImDrawData* drawData){};
-		void NewFrame(EliteRawWindow pWindow, float deltaTime){};
+		void Initialize(EliteRawWindow pWindow) {};
+		void Render() {};
+		void EventProcessing() {};
+		static void StaticRender(ImDrawData* drawData) {};
+		void NewFrame(EliteRawWindow pWindow, float deltaTime) {};
 		bool FocussedOnUI() { return false; }
 	};
 #endif

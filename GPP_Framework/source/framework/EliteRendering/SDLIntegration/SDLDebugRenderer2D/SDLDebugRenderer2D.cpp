@@ -25,7 +25,7 @@ void SDLDebugRenderer2D::Initialize(Camera2D* pActiveCamera)
 	m_programID = DEBUGRENDERER2D->LoadShadersToProgramFromEmbeddedSource(DefaultVertexShaderSource, DefaultFragmentShaderSource);
 	/*m_programID = LoadShadersToProgram("../data/shaders/DefaultVertexShader.vertexshader",
 		"../data/shaders/DefaultFragmentShader.fragmentshader");*/
-	//Get uniform shader attributes
+		//Get uniform shader attributes
 	m_projectionUniform = glGetUniformLocation(m_programID, "projectionMatrix");
 
 	//Generate buffers and Link attributes
@@ -94,7 +94,7 @@ void SDLDebugRenderer2D::Render()
 		glDrawArrays(GL_TRIANGLES, 0, size);
 		glDisable(GL_BLEND);
 	}
-	
+
 	//Copy Data and Draw Point
 	size = m_vPoints.size();
 	if (size > 0)
@@ -207,7 +207,7 @@ void SDLDebugRenderer2D::DrawSolidPolygon(Elite::Polygon* polygon, const Color& 
 		triangles = polygon->GetTriangles();
 
 	//Duplicate code because of possible triangulation with children -> cannot call DrawSolidPolygon directly (like Box2D)
-	//Else we would have "double triangulation"!! 
+	//Else we would have "double triangulation"!!
 	for (auto i = 0; i < static_cast<int>(triangles.size()); ++i)
 	{
 		m_vTriangles.push_back(Vertex(triangles[i]->p1, depth, fillColor));
@@ -391,7 +391,7 @@ void SDLDebugRenderer2D::DrawSegment(const Elite::Vector2& p1, const Elite::Vect
 
 void SDLDebugRenderer2D::DrawDirection(const Elite::Vector2& p, const Elite::Vector2& dir, float length, const Color& color, float depth)
 {
-	DrawSegment(p, p + (dir.GetNormalized()*length), color, depth);
+	DrawSegment(p, p + (dir.GetNormalized() * length), color, depth);
 }
 
 void SDLDebugRenderer2D::DrawTransform(const Elite::Vector2& p, const Elite::Vector2& xAxis, const Elite::Vector2& yAxis, float depth)

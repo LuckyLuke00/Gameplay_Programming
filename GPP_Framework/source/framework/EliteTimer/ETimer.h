@@ -22,15 +22,17 @@ namespace Elite
 		void Start();
 		void Update();
 		void Stop();
-		
+
 		unsigned int GetFPS() const { return m_FPS; };
 		float GetElapsed() const { return m_ElapsedTime; };
 		float GetTotal() const { return m_TotalTime; };
 		bool IsRunning() const { return !m_IsStopped; };
-		
+
 		void ForceElapsedUpperbound(bool force, float upperBound = 0.03f)
-		{ m_ForceElapsedUpperBound = force; m_ElapsedUpperBound = upperBound; }
-	
+		{
+			m_ForceElapsedUpperBound = force; m_ElapsedUpperBound = upperBound;
+		}
+
 	private:
 		//=== Datamembers ===
 		float m_TotalTime = 0.0f;
@@ -57,7 +59,7 @@ namespace Elite
 
 /* --- PLATFORM-SPECIFIC DEFINES & INCLUDES --- */
 #if (PLATFORM_ID == PLATFORM_WINDOWS)
-	typedef Elite::ETimer<PLATFORM_ID> EliteTimer;
-	#elif (PLATFORM_ID == PLATFORM_PS4)
+typedef Elite::ETimer<PLATFORM_ID> EliteTimer;
+#elif (PLATFORM_ID == PLATFORM_PS4)
 //Nothing
 #endif

@@ -3,13 +3,15 @@
 
 using namespace Elite;
 
-SandboxAgent::SandboxAgent(): BaseAgent()
+SandboxAgent::SandboxAgent() : BaseAgent()
 {
 	m_Target = GetPosition();
 }
 
 void SandboxAgent::Update(float dt)
 {
+	Seek();
+
 	//Orientation
 	AutoOrient();
 }
@@ -30,4 +32,37 @@ void SandboxAgent::AutoOrient()
 	}
 
 	SetRotation(GetRotation() + E_PI_2);
+}
+
+void SandboxAgent::Seek() const
+{
+	// This function makes the agent seek the target
+	// Goes straight to that target
+
+	// Constants
+	static constexpr float maxSpeed{ 50.f };
+	static constexpr float arrivalRadius{ 1.f };
+	static constexpr float slowRadius{ 15.f };
+
+	const Vector2 toTarget{ m_Target - GetPosition() };
+	const float distance{ toTarget.Magnitude() };
+
+	if (distance < arrivalRadius)
+	{
+		SetLinearVelocity({ 0.f,0.f });
+		return;
+	}
+
+	Vector2 velocity{ toTarget.GetNormalized() };
+
+	if (distance < slowRadius)
+	{
+		velocity *= maxSpeed * (distance / slowRadius);
+	}
+	else
+	{
+		velocity *= maxSpeed;
+	}
+
+	SetLinearVelocity(velocity);
 }

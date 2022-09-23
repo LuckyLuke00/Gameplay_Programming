@@ -1,30 +1,30 @@
 /*
 
-    This file was generated with gl3w_gen.py, part of gl3w
-    (hosted at https://github.com/skaslev/gl3w)
+	This file was generated with gl3w_gen.py, part of gl3w
+	(hosted at https://github.com/skaslev/gl3w)
 
-    This is free and unencumbered software released into the public domain.
+	This is free and unencumbered software released into the public domain.
 
-    Anyone is free to copy, modify, publish, use, compile, sell, or
-    distribute this software, either in source code form or as a compiled
-    binary, for any purpose, commercial or non-commercial, and by any
-    means.
+	Anyone is free to copy, modify, publish, use, compile, sell, or
+	distribute this software, either in source code form or as a compiled
+	binary, for any purpose, commercial or non-commercial, and by any
+	means.
 
-    In jurisdictions that recognize copyright laws, the author or authors
-    of this software dedicate any and all copyright interest in the
-    software to the public domain. We make this dedication for the benefit
-    of the public at large and to the detriment of our heirs and
-    successors. We intend this dedication to be an overt act of
-    relinquishment in perpetuity of all present and future rights to this
-    software under copyright law.
+	In jurisdictions that recognize copyright laws, the author or authors
+	of this software dedicate any and all copyright interest in the
+	software to the public domain. We make this dedication for the benefit
+	of the public at large and to the detriment of our heirs and
+	successors. We intend this dedication to be an overt act of
+	relinquishment in perpetuity of all present and future rights to this
+	software under copyright law.
 
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-    MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-    IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR
-    OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
-    ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-    OTHER DEALINGS IN THE SOFTWARE.
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+	EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+	MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+	IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+	OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+	ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+	OTHER DEALINGS IN THE SOFTWARE.
 
 */
 #include "stdafx.h"
@@ -46,7 +46,7 @@ static void close_libgl(void)
 	FreeLibrary(libgl);
 }
 
-static GL3WglProc get_proc(const char *proc)
+static GL3WglProc get_proc(const char* proc)
 {
 	GL3WglProc res;
 
@@ -77,13 +77,13 @@ static void close_libgl(void)
 	CFRelease(bundleURL);
 }
 
-static GL3WglProc get_proc(const char *proc)
+static GL3WglProc get_proc(const char* proc)
 {
 	GL3WglProc res;
 
 	CFStringRef procname = CFStringCreateWithCString(kCFAllocatorDefault, proc,
 		kCFStringEncodingASCII);
-	*(void **)(&res) = CFBundleGetFunctionPointerForName(bundle, procname);
+	*(void**)(&res) = CFBundleGetFunctionPointerForName(bundle, procname);
 	CFRelease(procname);
 	return res;
 }
@@ -91,13 +91,13 @@ static GL3WglProc get_proc(const char *proc)
 #include <dlfcn.h>
 #include <GL/glx.h>
 
-static void *libgl;
+static void* libgl;
 static PFNGLXGETPROCADDRESSPROC glx_get_proc_address;
 
 static void open_libgl(void)
 {
 	libgl = dlopen("libGL.so.1", RTLD_LAZY | RTLD_GLOBAL);
-	*(void **)(&glx_get_proc_address) = dlsym(libgl, "glXGetProcAddressARB");
+	*(void**)(&glx_get_proc_address) = dlsym(libgl, "glXGetProcAddressARB");
 }
 
 static void close_libgl(void)
@@ -105,13 +105,13 @@ static void close_libgl(void)
 	dlclose(libgl);
 }
 
-static GL3WglProc get_proc(const char *proc)
+static GL3WglProc get_proc(const char* proc)
 {
 	GL3WglProc res;
 
-	res = glx_get_proc_address((const GLubyte *)proc);
+	res = glx_get_proc_address((const GLubyte*)proc);
 	if (!res)
-		*(void **)(&res) = dlsym(libgl, proc);
+		*(void**)(&res) = dlsym(libgl, proc);
 	return res;
 }
 #endif
@@ -152,7 +152,7 @@ int gl3wIsSupported(int major, int minor)
 	return version.major >= major;
 }
 
-GL3WglProc gl3wGetProcAddress(const char *proc)
+GL3WglProc gl3wGetProcAddress(const char* proc)
 {
 	return get_proc(proc);
 }

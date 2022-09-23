@@ -22,7 +22,7 @@ public:
 	void DrawPolygon(const b2Vec2* vertices, int32 vertexCount, const b2Color& color) override
 	{
 		EliteDebugRenderer2D::GetInstance()->DrawPolygon(
-			reinterpret_cast<Elite::Vector2*>(const_cast<b2Vec2*>(vertices)), 
+			reinterpret_cast<Elite::Vector2*>(const_cast<b2Vec2*>(vertices)),
 			vertexCount, Elite::Color(color.r, color.g, color.b, color.a),
 			EliteDebugRenderer2D::GetInstance()->NextDepthSlice());
 	};
@@ -66,8 +66,8 @@ public:
 		auto xAxis = xf.q.GetXAxis(), yAxis = xf.q.GetYAxis();
 
 		EliteDebugRenderer2D::GetInstance()->DrawTransform(
-			reinterpret_cast<Elite::Vector2&>(pos), 
-			reinterpret_cast<Elite::Vector2&>(xAxis),	reinterpret_cast<Elite::Vector2&>(yAxis),
+			reinterpret_cast<Elite::Vector2&>(pos),
+			reinterpret_cast<Elite::Vector2&>(xAxis), reinterpret_cast<Elite::Vector2&>(yAxis),
 			EliteDebugRenderer2D::GetInstance()->NextDepthSlice());
 	}
 

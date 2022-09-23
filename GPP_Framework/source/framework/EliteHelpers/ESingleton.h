@@ -14,15 +14,15 @@ namespace Elite
 	{
 	public:
 		//=== Public Functions ===
-		static T* GetInstance() 
+		static T* GetInstance()
 		{
 			if (!m_pInstance)
 				m_pInstance = new T();
 			return m_pInstance;
 		};
-		static void Destroy() 
-		{ 
-			delete m_pInstance; 
+		static void Destroy()
+		{
+			delete m_pInstance;
 			m_pInstance = nullptr;
 		};
 

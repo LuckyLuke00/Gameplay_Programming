@@ -4,12 +4,11 @@
 #include <iostream>
 #include "EMatrix2x3.h"
 
-
 Matrix2x3::Matrix2x3(Elite::Vector2 dirX, Elite::Vector2 dirY, Elite::Vector2 orig)
 	: dirX{ dirX }, dirY{ dirY }, orig{ orig }
 {}
 
-Matrix2x3::Matrix2x3(float e1X, float e1Y, float e2X, float e2Y, float oX, float oY) 
+Matrix2x3::Matrix2x3(float e1X, float e1Y, float e2X, float e2Y, float oX, float oY)
 	: Matrix2x3{ Elite::Vector2{e1X, e1Y}, Elite::Vector2{e2X, e2Y}, Elite::Vector2{oX, oY} }
 {}
 
@@ -27,9 +26,9 @@ Matrix2x3 Matrix2x3::Inverse() const
 {
 	//Calculate Determinant
 	float det = Determinant();
-	
+
 	//1)calculate matrix of minors
-	//2)Use the alternating law of signs to produce the matrix of cofactors 
+	//2)Use the alternating law of signs to produce the matrix of cofactors
 	//3)Transpose
 	//4)the inverse matrix is 1/Determinant * the resulting matrix
 	return Matrix2x3{
@@ -39,33 +38,33 @@ Matrix2x3 Matrix2x3::Inverse() const
 	};
 }
 
-bool Matrix2x3::Equals(const Matrix2x3& other, float epsilon ) const
+bool Matrix2x3::Equals(const Matrix2x3& other, float epsilon) const
 {
-	return (dirX == other.dirX) && 
-		(dirY == other.dirY) && 
+	return (dirX == other.dirX) &&
+		(dirY == other.dirY) &&
 		(orig == other.orig);
 }
 
 std::string Matrix2x3::ToString() const
 {
-	return std::string( "Matrix2x3( x( ")  + 
-		std::to_string(dirX.x) + ", " + std::to_string( dirX.y ) 
-		+ " ), y( " + std::to_string( dirY.x ) + ", " + std::to_string( dirY.y )
-		+ " ), orig( " + std::to_string( orig.x ) + ", " + std::to_string( orig.y ) +  " )  )";
+	return std::string("Matrix2x3( x( ") +
+		std::to_string(dirX.x) + ", " + std::to_string(dirX.y)
+		+ " ), y( " + std::to_string(dirY.x) + ", " + std::to_string(dirY.y)
+		+ " ), orig( " + std::to_string(orig.x) + ", " + std::to_string(orig.y) + " )  )";
 }
 
 void Matrix2x3::SetAsIdentity()
 {
-	dirX = Elite::Vector2{1, 0};
-	dirY = Elite::Vector2{0, 1};
-	orig = Elite::Vector2{0, 0};
+	dirX = Elite::Vector2{ 1, 0 };
+	dirY = Elite::Vector2{ 0, 1 };
+	orig = Elite::Vector2{ 0, 0 };
 }
 
 void Matrix2x3::SetAsRotate(float degrees)
 {
 	float radians = degrees * 3.1415926535f / 180;
-	dirX = Elite::Vector2{ cos( radians ), sin( radians ) };
-	dirY = Elite::Vector2{ -sin( radians ), cos( radians ) };
+	dirX = Elite::Vector2{ cos(radians), sin(radians) };
+	dirY = Elite::Vector2{ -sin(radians), cos(radians) };
 	orig = Elite::Vector2{ 0, 0 };
 }
 void Matrix2x3::SetAsTranslate(float tx, float ty)
@@ -97,12 +96,12 @@ void Matrix2x3::SetAsScale(float scale)
 Matrix2x3 Matrix2x3::CreateRotationMatrix(float degrees)
 {
 	float radians = degrees * 3.1415926535f / 180;
-	return Matrix2x3( Elite::Vector2{ cos( radians ), sin( radians ) }, Elite::Vector2{ -sin(radians), cos( radians ) }, Elite::Vector2{} );
+	return Matrix2x3(Elite::Vector2{ cos(radians), sin(radians) }, Elite::Vector2{ -sin(radians), cos(radians) }, Elite::Vector2{});
 }
 
 Matrix2x3 Matrix2x3::CreateIdentityMatrix()
 {
-	return Matrix2x3( Elite::Vector2{ 1, 0 }, Elite::Vector2{ 0, 1 }, Elite::Vector2{} );
+	return Matrix2x3(Elite::Vector2{ 1, 0 }, Elite::Vector2{ 0, 1 }, Elite::Vector2{});
 }
 
 Matrix2x3 Matrix2x3::CreateScalingMatrix(float scale)
@@ -117,26 +116,26 @@ Matrix2x3 Matrix2x3::CreateScalingMatrix(Elite::Vector2 scaleVector)
 
 Matrix2x3 Matrix2x3::CreateScalingMatrix(float scaleX, float scaleY)
 {
-	return Matrix2x3( Elite::Vector2{ scaleX, 0 }, Elite::Vector2{ 0, scaleY }, Elite::Vector2{} );
+	return Matrix2x3(Elite::Vector2{ scaleX, 0 }, Elite::Vector2{ 0, scaleY }, Elite::Vector2{});
 }
 
 Matrix2x3 Matrix2x3::CreateTranslationMatrix(Elite::Vector2 origin)
 {
-	return Matrix2x3( Elite::Vector2{ 1, 0 }, Elite::Vector2{ 0, 1 }, origin );
+	return Matrix2x3(Elite::Vector2{ 1, 0 }, Elite::Vector2{ 0, 1 }, origin);
 }
 
 Matrix2x3 Matrix2x3::CreateTranslationMatrix(float tx, float ty)
 {
-	return CreateTranslationMatrix( Elite::Vector2{ tx, ty } );
+	return CreateTranslationMatrix(Elite::Vector2{ tx, ty });
 }
 
 // Operator overloading functionality
-bool operator==(const Matrix2x3& lhs, const Matrix2x3& rhs) 
+bool operator==(const Matrix2x3& lhs, const Matrix2x3& rhs)
 {
 	return lhs.Equals(rhs);
 }
 
-bool operator!=(const Matrix2x3& lhs, const Matrix2x3& rhs) 
+bool operator!=(const Matrix2x3& lhs, const Matrix2x3& rhs)
 {
 	return !(lhs == rhs);
 }
@@ -150,9 +149,8 @@ Matrix2x3 operator*(const Matrix2x3& lhs, const Matrix2x3& rhs)
 	};
 }
 
-std::ostream& operator<<(std::ostream& os, const Matrix2x3& matrix )
+std::ostream& operator<<(std::ostream& os, const Matrix2x3& matrix)
 {
-	os << matrix.ToString( );
+	os << matrix.ToString();
 	return os;
 }
-

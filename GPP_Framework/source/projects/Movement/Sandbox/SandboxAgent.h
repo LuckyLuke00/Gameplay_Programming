@@ -2,7 +2,7 @@
 #define SANDBOX_AGENT_H
 #include "projects/Shared/BaseAgent.h"
 
-class SandboxAgent:public BaseAgent
+class SandboxAgent :public BaseAgent
 {
 public:
 	SandboxAgent();
@@ -18,6 +18,8 @@ private:
 
 	//Functions
 	void AutoOrient();
+
+	void Seek() const;
 
 	//Members
 	Elite::Vector2 m_Target = {};

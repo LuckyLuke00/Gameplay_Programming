@@ -63,7 +63,7 @@ void Elite::EImmediateUI::Initialize(EliteRawWindow pWindow)
 	m_programID = DEBUGRENDERER2D->LoadShadersToProgramFromEmbeddedSource(ImGuiVertexShaderSource, ImGuiFragmentShaderSource);
 	/*m_programID = DEBUGRENDERER2D->LoadShadersToProgram("../data/shaders/ImGUIVertexShader.vertexshader",
 		"../data/shaders/ImGUIFragmentShader.fragmentshader");*/
-	//Create buffers and link uniforms & attributes
+		//Create buffers and link uniforms & attributes
 	m_textureUniform = glGetUniformLocation(m_programID, "_texture");
 	m_projectionUniform = glGetUniformLocation(m_programID, "projectionMatrix");
 	m_positionAttribute = glGetAttribLocation(m_programID, "v_position");
@@ -125,7 +125,7 @@ void Elite::EImmediateUI::Render()
 
 void Elite::EImmediateUI::EventProcessing()
 {
-	//Bypasses the input manager for the Immediate UI - BAD :D 
+	//Bypasses the input manager for the Immediate UI - BAD :D
 	ImGuiIO& io = ImGui::GetIO();
 	SDL_Event e;
 	while (SDL_PollEvent(&e))

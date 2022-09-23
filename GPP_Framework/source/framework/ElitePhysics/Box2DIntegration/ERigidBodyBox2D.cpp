@@ -7,7 +7,7 @@
 
 //=== Constructors & Destructors ===
 template <>
-Elite::RigidBodyBase<Elite::Vector2, Elite::Vector2>::RigidBodyBase(const RigidBodyDefine& define, 
+Elite::RigidBodyBase<Elite::Vector2, Elite::Vector2>::RigidBodyBase(const RigidBodyDefine& define,
 	const internalTransformType& initialTransform, PhysicsFlags userFlags)
 {
 	//Store define information
@@ -19,20 +19,20 @@ Elite::RigidBodyBase<Elite::Vector2, Elite::Vector2>::RigidBodyBase(const RigidB
 	bd.allowSleep = define.allowSleep;
 	bd.linearDamping = define.linearDamping;
 	bd.angularDamping = define.angularDamping;
-	switch(define.type)
+	switch (define.type)
 	{
-		case eStatic:
-			bd.type = b2_staticBody; break;
-		case eKinematic: 
-			bd.type = b2_kinematicBody; break;
-		case eDynamic: 
-			bd.type = b2_dynamicBody; break;
-		default: 
-			bd.type = b2_staticBody; break;
+	case eStatic:
+		bd.type = b2_staticBody; break;
+	case eKinematic:
+		bd.type = b2_kinematicBody; break;
+	case eDynamic:
+		bd.type = b2_dynamicBody; break;
+	default:
+		bd.type = b2_staticBody; break;
 	}
 
 	//Create body
-	if(PHYSICSWORLD != nullptr && PHYSICSWORLD->GetWorld() != nullptr)
+	if (PHYSICSWORLD != nullptr && PHYSICSWORLD->GetWorld() != nullptr)
 		m_pBody = PHYSICSWORLD->GetWorld()->CreateBody(&bd);
 
 	//When body is created, store userdata (flags: see EPhysics.h)
@@ -60,7 +60,7 @@ void Elite::RigidBodyBase<Elite::Vector2, Elite::Vector2>::AddShape(Elite::EPhys
 {
 	auto pBody = static_cast<b2Body*>(m_pBody);
 
-	if(pShape->type == Elite::CircleShape)
+	if (pShape->type == Elite::CircleShape)
 	{
 		auto* pCs = static_cast<Elite::EPhysicsCircleShape*>(pShape);
 		//Create Box2D shape
@@ -80,7 +80,7 @@ void Elite::RigidBodyBase<Elite::Vector2, Elite::Vector2>::AddShape(Elite::EPhys
 		auto* pBs = static_cast<Elite::EPhysicsBoxShape*>(pShape);
 		//Create Box2D shape
 		b2PolygonShape b2Box;
-		b2Box.SetAsBox(pBs->width/2.0f, pBs->height/2.0f, b2Vec2(0.0f, 0.0f), pBs->angle);
+		b2Box.SetAsBox(pBs->width / 2.0f, pBs->height / 2.0f, b2Vec2(0.0f, 0.0f), pBs->angle);
 		//Create fixture
 		b2FixtureDef fd;
 		fd.shape = &b2Box;
@@ -91,7 +91,7 @@ void Elite::RigidBodyBase<Elite::Vector2, Elite::Vector2>::AddShape(Elite::EPhys
 		pFix->SetUserData(this); //Set the this pointer as userdata of this fixture (RigidBody object)
 		m_vFixtures.push_back(pFix); //Store fixture for later retrieval/removal
 	}
-	else if(pShape->type == Elite::PolygonShape)
+	else if (pShape->type == Elite::PolygonShape)
 	{
 		auto* pPs = static_cast<Elite::EPhysicsPolygonShape*>(pShape);
 		//Create Box2D shape
@@ -244,13 +244,13 @@ void Elite::RigidBodyBase<Elite::Vector2, Elite::Vector2>::AddForce(const Vector
 	auto pBody = static_cast<b2Body*>(m_pBody);
 	switch (mode)
 	{
-	case eForce: 
+	case eForce:
 		pBody->ApplyForce(b2Vec2(force.x, force.y), b2Vec2_zero, autoWake);
 		break;
-	case eImpulse: 
+	case eImpulse:
 		pBody->ApplyLinearImpulse(b2Vec2(force.x, force.y), b2Vec2_zero, autoWake);
 		break;
-	default: ;
+	default:;
 	}
 }
 

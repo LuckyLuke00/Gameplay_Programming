@@ -8,17 +8,17 @@
 #define	ELITE_MATH_FMATRIX
 
 #include <random>
-namespace Elite 
+namespace Elite
 {
 	class FMatrix
 	{
 	public:
-		FMatrix(): m_Data(nullptr), m_Rows(0), m_Columns(0), m_Size(0) {}
-		FMatrix(int rows, int columns): 
+		FMatrix() : m_Data(nullptr), m_Rows(0), m_Columns(0), m_Size(0) {}
+		FMatrix(int rows, int columns) :
 			m_Rows(rows),
 			m_Columns(columns),
 			m_Data(new float[rows * columns]),
-			m_Size(rows * columns)
+			m_Size(rows* columns)
 		{}
 
 		virtual ~FMatrix()
@@ -39,11 +39,11 @@ namespace Elite
 		void Set(int row, int column, float value)
 		{
 			int index = RcToIndex(row, column);
-			if (index > -1 && index < m_Size) 
+			if (index > -1 && index < m_Size)
 			{
 				m_Data[index] = value;
 			}
-			else 
+			else
 			{
 				printf("Wrong index! [%d, %d]\n", row, column);
 			}
@@ -55,9 +55,9 @@ namespace Elite
 				m_Data[i] = value;
 			}
 		}
-		void SetRowAll(int row, float value) 
+		void SetRowAll(int row, float value)
 		{
-			for (int c = 0; c < m_Columns; ++c) 
+			for (int c = 0; c < m_Columns; ++c)
 			{
 				Set(row, c, value);
 			}
@@ -94,7 +94,7 @@ namespace Elite
 				}
 			}
 		}
-		
+
 		float Get(int row, int column) const
 		{
 			int index = RcToIndex(row, column);
@@ -133,7 +133,7 @@ namespace Elite
 		}
 		void ScalarMultiply(float scalar)
 		{
-			for (int i = 0; i < m_Size; ++i) 
+			for (int i = 0; i < m_Size; ++i)
 			{
 				m_Data[i] *= scalar;
 			}
@@ -157,9 +157,9 @@ namespace Elite
 			int maxRows = min(GetNrOfRows(), other.GetNrOfRows());
 			int maxColumns = min(GetNrOfColumns(), other.GetNrOfColumns());
 
-			for (int c_row = 0; c_row < maxRows; ++c_row) 
+			for (int c_row = 0; c_row < maxRows; ++c_row)
 			{
-				for (int c_column = 0; c_column < maxColumns; ++c_column) 
+				for (int c_column = 0; c_column < maxColumns; ++c_column)
 				{
 					float oVal = other.Get(c_row, c_column);
 					float thisVal = Get(c_row, c_column);
@@ -209,7 +209,6 @@ namespace Elite
 					if (value > max) {
 						max = value;
 					}
-
 				}
 			}
 			return max;
@@ -225,7 +224,6 @@ namespace Elite
 						r = c_row;
 						c = c_column;
 					}
-
 				}
 			}
 			return max;
@@ -237,7 +235,6 @@ namespace Elite
 				float value = Get(r, c_column);
 				if (value > max) {
 					max = value;
-
 				}
 			}
 			return max;
@@ -253,15 +250,14 @@ namespace Elite
 				printf("\n");
 			}
 		}
-		private:
-			float* m_Data;
-			int m_Rows, m_Columns;
-			int m_Size;
-			int RcToIndex(int r, int c) const
-			{
-				return c * m_Rows + r;
-			}
+	private:
+		float* m_Data;
+		int m_Rows, m_Columns;
+		int m_Size;
+		int RcToIndex(int r, int c) const
+		{
+			return c * m_Rows + r;
+		}
 	};
 }
 #endif
-

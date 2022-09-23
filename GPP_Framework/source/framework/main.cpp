@@ -52,7 +52,7 @@ int main(int argc, char* argv[])
 		ELITE_ASSERT(pCamera, "Camera has not been created.");
 		DEBUGRENDERER2D->Initialize(pCamera);
 
-		//Create Immediate UI 
+		//Create Immediate UI
 		Elite::EImmediateUI* pImmediateUI = new Elite::EImmediateUI();
 		ELITE_ASSERT(pImmediateUI, "ImmediateUI has not been created.");
 		pImmediateUI->Initialize(pWindow->GetRawWindowHandle());

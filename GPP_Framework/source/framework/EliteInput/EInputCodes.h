@@ -33,7 +33,7 @@ namespace Elite
 		eRight = 3,
 	};
 
-	/*! InputScancode: scancode based on SDL 
+	/*! InputScancode: scancode based on SDL
 	(which is based on the USB usage page: http://www.usb.org/developers/hidpage/Hut1_12v2.pdf) */
 	enum InputScancode
 	{
@@ -86,11 +86,11 @@ namespace Elite
 		eScancode_Equals = 46,
 		eScancode_LeftBracket = 47,
 		eScancode_RightBracket = 48,
-		eScancode_Backslash = 49, 
-		eScancode_Nonuslash = 50, 
+		eScancode_Backslash = 49,
+		eScancode_Nonuslash = 50,
 		eScancode_Semicolon = 51,
 		eScancode_Apostrophe = 52,
-		eScancode_Grave = 53, 
+		eScancode_Grave = 53,
 		eScancode_Comma = 54,
 		eScancode_Period = 55,
 		eScancode_Slash = 56,
@@ -113,7 +113,7 @@ namespace Elite
 		eScancode_PrintScreen = 70,
 		eScancode_ScrollLock = 71,
 		eScancode_Pause = 72,
-		eScancode_Insert = 73, 
+		eScancode_Insert = 73,
 		eScancode_Home = 74,
 		eScancode_PageUp = 75,
 		eScancode_Delete = 76,
@@ -157,11 +157,11 @@ namespace Elite
 
 		eScancode_VolumeUp = 128,
 		eScancode_VolumeDown = 129,
-		eScancode_LockingCapsLock = 130,  
-		eScancode_LockingNumLock = 131, 
-		eScancode_LockingScrollLock = 132, 
+		eScancode_LockingCapsLock = 130,
+		eScancode_LockingNumLock = 131,
+		eScancode_LockingScrollLock = 132,
 		eScancode_KP_Comma = 133,
-		eScancode_KP_EqualsSAS400 = 134, 
+		eScancode_KP_EqualsSAS400 = 134,
 
 		eScancode_LCtrl = 224,
 		eScancode_LShift = 225,

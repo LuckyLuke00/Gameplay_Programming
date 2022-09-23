@@ -10,13 +10,12 @@
 #include "EGeometry2DUtilities.h"
 #include <array>
 
-
-namespace Elite 
+namespace Elite
 {
 	//=== Options ===
-	#define USE_TRIANGLE_METADATA
+#define USE_TRIANGLE_METADATA
 
-	//=== Types ===
+//=== Types ===
 #pragma region Line
 	struct Line final
 	{
@@ -31,13 +30,19 @@ namespace Elite
 
 		//=== Relational Operators ===
 		bool operator==(const Line& l) const
-		{ return (l.p1 == p1 && l.p2 == p2); }
+		{
+			return (l.p1 == p1 && l.p2 == p2);
+		}
 		bool operator!=(const Line& l) const
-		{ return !(l == *this);	}
+		{
+			return !(l == *this);
+		}
 
 		//=== Member Access Operators ===
 		Vector2& operator[](int index)
-		{ return (index == 0) ? p1 : p2; }
+		{
+			return (index == 0) ? p1 : p2;
+		}
 	};
 #pragma endregion //Line
 
@@ -60,7 +65,7 @@ namespace Elite
 
 		//=== Constructors ===
 		Triangle() : p1(ZeroVector2), p2(ZeroVector2), p3(ZeroVector2) {}
-		Triangle(const Vector2& _p1, const Vector2& _p2, const Vector2& _p3) : p1(_p1), p2(_p2), p3(_p3){}
+		Triangle(const Vector2& _p1, const Vector2& _p2, const Vector2& _p3) : p1(_p1), p2(_p2), p3(_p3) {}
 
 		//=== Internal Triangle Functions ===
 		Vector2 GetCenter() const
@@ -71,9 +76,13 @@ namespace Elite
 
 		//=== Relational Operators ===
 		bool operator==(const Triangle& t) const
-		{ return (t.p1 == p1 && t.p2 == p2 && t.p3 == p3); }
+		{
+			return (t.p1 == p1 && t.p2 == p2 && t.p3 == p3);
+		}
 		bool operator!=(const Triangle& t) const
-		{ return !(t == *this);	}
+		{
+			return !(t == *this);
+		}
 	};
 #pragma endregion //Triangle
 
@@ -85,7 +94,7 @@ namespace Elite
 		Polygon() = default;
 		explicit Polygon(std::list<Vector2>& vertices);
 		explicit Polygon(const std::vector<Vector2>& vertices);
-		explicit Polygon(const std::vector<Vector2>& outerShape, const std::vector<std::vector<Vector2>> &innerShapes);
+		explicit Polygon(const std::vector<Vector2>& outerShape, const std::vector<std::vector<Vector2>>& innerShapes);
 		explicit Polygon(const Vector2* vertices, int count);
 		~Polygon();
 
@@ -121,8 +130,6 @@ namespace Elite
 		const std::vector<const Triangle*> GetTrianglesFromLineIndex(unsigned int lineIndex) const;
 #endif
 
-
-
 		//Triangulation functions
 		const std::vector<Triangle*>& Triangulate();
 		void OrientateWithChildren(Winding winding);
@@ -130,7 +137,9 @@ namespace Elite
 
 		//=== Operators ===
 		bool operator ==(const Polygon& b) const
-		{ return this->m_vChildren == b.m_vChildren && this->m_vPoints == b.m_vPoints; }
+		{
+			return this->m_vChildren == b.m_vChildren && this->m_vPoints == b.m_vPoints;
+		}
 
 	private:
 		//=== Datamembers ===
@@ -167,7 +176,7 @@ namespace Elite
 	inline bool IsOverlapping(const Rect& a, const Rect& b)
 	{
 		// If one rectangle is on left side of the other
-		if (a.bottomLeft.x + a.width < b.bottomLeft.x|| b.bottomLeft.x + b.width < a.bottomLeft.x)
+		if (a.bottomLeft.x + a.width < b.bottomLeft.x || b.bottomLeft.x + b.width < a.bottomLeft.x)
 		{
 			return false;
 		}
@@ -181,6 +190,5 @@ namespace Elite
 		return true;
 	}
 #pragma endregion //Rect
-
 }
 #endif

@@ -58,7 +58,7 @@ App_SteeringBehaviors::ImGui_Agent App_SteeringBehaviors::AddAgent(BehaviorTypes
 	agent.pAgent->SetAutoOrient(autoOrient);
 	agent.pAgent->SetMaxLinearSpeed(maxSpd);
 	agent.pAgent->SetMass(mass);
-	agent.pAgent->SetPosition({ randomFloat(m_TrimWorldSize) / 2, randomFloat(m_TrimWorldSize) / 2});
+	agent.pAgent->SetPosition({ randomFloat(m_TrimWorldSize) / 2, randomFloat(m_TrimWorldSize) / 2 });
 
 	agent.SelectedBehavior = int(behaviorType);
 	agent.SelectedTarget = targetId;
@@ -83,7 +83,6 @@ void App_SteeringBehaviors::Start()
 	AddAgent(BehaviorTypes::Seek, -1);
 	m_AgentVec[0].pAgent->SetRenderBehavior(true);
 
-
 	std::stringstream ss;
 	m_TargetLabelsVec.push_back("Mouse");
 	for (UINT i = 0; i < m_AgentVec.size(); ++i)
@@ -101,7 +100,7 @@ void App_SteeringBehaviors::Start()
 void App_SteeringBehaviors::Update(float deltaTime)
 {
 	//INPUT
-	if(INPUTMANAGER->IsMouseButtonUp(InputMouseButton::eLeft) && m_VisualizeTarget)
+	if (INPUTMANAGER->IsMouseButtonUp(InputMouseButton::eLeft) && m_VisualizeTarget)
 	{
 		auto const mouseData = INPUTMANAGER->GetMouseData(InputType::eMouseButton, InputMouseButton::eLeft);
 		m_Target.Position = DEBUGRENDERER2D->GetActiveCamera()->ConvertScreenToWorld({ static_cast<float>(mouseData.X), static_cast<float>(mouseData.Y) });
@@ -196,7 +195,6 @@ void App_SteeringBehaviors::Update(float deltaTime)
 						a.pAgent->SetMass(v);
 				}
 
-
 				bool behaviourModified = false;
 
 				ImGui::Spacing();
@@ -222,39 +220,39 @@ void App_SteeringBehaviors::Update(float deltaTime)
 				ImGui::PushItemWidth(100);
 				auto selectedTargetOffset = a.SelectedTarget + 1;
 				if (ImGui::Combo("", &selectedTargetOffset, [](void* vec, int idx, const char** out_text)
-				{
-					std::vector<std::string>* vector = reinterpret_cast<std::vector<std::string>*>(vec);
+					{
+						std::vector<std::string>* vector = reinterpret_cast<std::vector<std::string>*>(vec);
 
-					if (idx < 0 || idx >= (int)vector->size())
-						return false;
+						if (idx < 0 || idx >= (int)vector->size())
+							return false;
 
-					*out_text = vector->at(idx).c_str();
-					return true;
-				}, reinterpret_cast<void*>(&m_TargetLabelsVec), m_TargetLabelsVec.size()))
+						*out_text = vector->at(idx).c_str();
+						return true;
+					}, reinterpret_cast<void*>(&m_TargetLabelsVec), m_TargetLabelsVec.size()))
 				{
 					a.SelectedTarget = selectedTargetOffset - 1;
 					behaviourModified = true;
 				}
-				ImGui::PopItemWidth();
-				ImGui::PopID();
-				ImGui::Spacing();
-				ImGui::Spacing();
+					ImGui::PopItemWidth();
+					ImGui::PopID();
+					ImGui::Spacing();
+					ImGui::Spacing();
 
-				if (behaviourModified)
-					SetAgentBehavior(a);
+					if (behaviourModified)
+						SetAgentBehavior(a);
 
-				if (ImGui::Button("x"))
-				{
-					m_AgentToRemove = i;
-				}
+					if (ImGui::Button("x"))
+					{
+						m_AgentToRemove = i;
+					}
 
-				ImGui::SameLine(0, 20);
+					ImGui::SameLine(0, 20);
 
-				bool isChecked = a.pAgent->CanRenderBehavior();
-				ImGui::Checkbox("Render Debug", &isChecked);
-				a.pAgent->SetRenderBehavior(isChecked);
+					bool isChecked = a.pAgent->CanRenderBehavior();
+					ImGui::Checkbox("Render Debug", &isChecked);
+					a.pAgent->SetRenderBehavior(isChecked);
 
-				ImGui::Unindent();
+					ImGui::Unindent();
 			}
 
 			ImGui::PopID();
@@ -281,7 +279,7 @@ void App_SteeringBehaviors::Update(float deltaTime)
 
 			if (m_TrimWorld)
 				a.pAgent->TrimToWorld(m_TrimWorldSize);
-			
+
 			UpdateTarget(a);
 		}
 	}
@@ -318,17 +316,25 @@ void App_SteeringBehaviors::SetAgentBehavior(ImGui_Agent& a)
 	case BehaviorTypes::Seek:
 		a.pBehavior = new Seek();
 		break;
+	case BehaviorTypes::Flee:
+		a.pBehavior = new Flee();
+		break;
+	case BehaviorTypes::Arrive:
+		a.pBehavior = new Arrive();
+		break;
+	case BehaviorTypes::Face:
+		a.pBehavior = new Face();
+		break;
 	}
 
 	UpdateTarget(a);
-
+	
 	a.pAgent->SetAutoOrient(autoOrient);
 	a.pAgent->SetSteeringBehavior(a.pBehavior);
 }
 
 void App_SteeringBehaviors::UpdateTarget(ImGui_Agent& a)
 {
-
 	bool useMouseAsTarget = a.SelectedTarget < 0;
 	if (useMouseAsTarget)
 		a.pBehavior->SetTarget(m_Target);
