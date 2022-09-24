@@ -34,6 +34,15 @@ public:
 
 protected:
 	TargetData m_Target;
+
+	// Debug colors
+	const Elite::Color m_DebugColor1{ 0.f, 0.941f, 0.f }; // Green
+	const Elite::Color m_DebugColor2{ 0.22f, 1.f, 0.635f }; // Medium Spring Green
+	const Elite::Color m_DebugColor3{ 0.f, 0.682f, 0.937f }; // Cyan Process
+	const Elite::Color m_DebugColor4{ 1.f, 0.949f, 0.22f }; // Lemon Yellow
+	const Elite::Color m_DebugColor5{ 1.f, 0.22f, 1.f }; // Magenta
+	const Elite::Color m_DebugColor6{ 1.f, 0.329f, 0.329f }; // Orange Red Crayola
+	const Elite::Color m_DebugColor7{ 1.f, 1.f, 1.f }; // White
 };
 #pragma endregion
 
@@ -59,7 +68,7 @@ public:
 	Flee() = default;
 	virtual ~Flee() = default;
 
-	//Seek Behaviour
+	//Flee Behaviour
 	SteeringOutput CalculateSteering(float deltaT, SteeringAgent* pAgent) override;
 };
 
@@ -72,7 +81,7 @@ public:
 	Arrive() = default;
 	virtual ~Arrive() = default;
 
-	//Seek Behaviour
+	//Arrive Behaviour
 	SteeringOutput CalculateSteering(float deltaT, SteeringAgent* pAgent) override;
 };
 
@@ -85,21 +94,31 @@ public:
 	Face() = default;
 	virtual ~Face() = default;
 
-	//Seek Behaviour
+	//Face Behaviour
 	SteeringOutput CalculateSteering(float deltaT, SteeringAgent* pAgent) override;
 };
 
 ///////////////////////////////////////
 //WANDER
 //****
-class Wander : public ISteeringBehavior
+class Wander : public Seek
 {
 public:
 	Wander() = default;
 	virtual ~Wander() = default;
 
-	//Seek Behaviour
+	//Wander Behaviour
 	SteeringOutput CalculateSteering(float deltaT, SteeringAgent* pAgent) override;
+
+	void SetWanderOffset(float offset) { m_OffsetDistance = offset; }
+	void SetWanderRadius(float radius) { m_Radius = radius; }
+	void SetMaxAngleChange(float angle) { m_MaxAngleChange = angle; }
+
+protected:
+	float m_MaxAngleChange{ Elite::ToRadians(45.f) }; // Max WanderAngle change per frame
+	float m_OffsetDistance{ 6.f }; // Offset (Agent Direction)
+	float m_Radius{ 4.f }; // WanderRadius
+	float m_WanderAngle{ 0.f }; // Internal
 };
 
 #endif
