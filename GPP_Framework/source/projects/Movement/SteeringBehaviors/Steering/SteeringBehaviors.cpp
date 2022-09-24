@@ -198,3 +198,123 @@ SteeringOutput Wander::CalculateSteering(float deltaT, SteeringAgent* pAgent)
 
 	return steering;
 }
+
+////PURSUIT
+////****
+////Trying to intercept an agent by moving towards where it will be 
+////in the future.
+//SteeringOutput Pursuit::CalculateSteering(float deltaT, SteeringAgent* pAgent)
+//{
+//	SteeringOutput steering = {};
+//
+//	// Predict target position
+//	const Elite::Vector2 predictedPosition{ m_Target.Position + m_Target.GetDirection() + m_Target.LinearVelocity };
+//
+//	// Seek the target
+//	steering.LinearVelocity = predictedPosition - pAgent->GetPosition(); // Desired velocity
+//	steering.LinearVelocity.Normalize(); // Normalize desired velocity
+//	steering.LinearVelocity *= pAgent->GetMaxLinearSpeed(); // Scale desired velocity to max speed
+//
+//	// Debug rendering
+//	if (pAgent->CanRenderBehavior())
+//	{
+//		const Elite::Vector2 currentVelocity{ pAgent->GetLinearVelocity() };
+//		const Elite::Vector2 desiredCurrentVelocity{ steering.LinearVelocity - pAgent->GetLinearVelocity() };
+//		const Elite::Vector2 desiredVelocity{ steering.LinearVelocity };
+//
+//		// Render desired velocity
+//		DEBUGRENDERER2D->DrawDirection(pAgent->GetPosition(), desiredVelocity, desiredVelocity.Magnitude(), m_DebugColor1);
+//
+//		// Render desired velocity - current velocity
+//		DEBUGRENDERER2D->DrawDirection(pAgent->GetPosition(), desiredCurrentVelocity, desiredCurrentVelocity.Magnitude(), m_DebugColor3);
+//
+//		// Render current velocity
+//		DEBUGRENDERER2D->DrawDirection(pAgent->GetPosition(), currentVelocity, currentVelocity.Magnitude(), m_DebugColor5);
+//
+//		// Render target position
+//		DEBUGRENDERER2D->DrawSolidCircle(predictedPosition, 0.2f, {}, m_DebugColor6);
+//	}
+//
+//	return steering;
+//}
+
+//PURSUIT
+//****
+//Trying to intercept an agent by moving towards where it will be 
+//in the future.
+SteeringOutput Pursuit::CalculateSteering(float deltaT, SteeringAgent* pAgent)
+{
+	SteeringOutput steering = {};
+
+	const float distance{ (m_Target.Position - pAgent->GetPosition()).Magnitude() };
+	const float time{ distance / pAgent->GetMaxLinearSpeed() };
+
+	const Elite::Vector2 futurePosition{ m_Target.Position + m_Target.LinearVelocity * time };
+
+	// Seek the future position of the target
+	steering.LinearVelocity = futurePosition - pAgent->GetPosition(); // Desired velocity
+	steering.LinearVelocity.Normalize(); // Normalize desired velocity
+	steering.LinearVelocity *= pAgent->GetMaxLinearSpeed(); // Scale desired velocity to max speed
+
+	// Debug rendering
+	if (pAgent->CanRenderBehavior())
+	{
+		const Elite::Vector2 currentVelocity{ pAgent->GetLinearVelocity() };
+		const Elite::Vector2 desiredCurrentVelocity{ steering.LinearVelocity - pAgent->GetLinearVelocity() };
+		const Elite::Vector2 desiredVelocity{ steering.LinearVelocity };
+
+		// Render desired velocity
+		DEBUGRENDERER2D->DrawDirection(pAgent->GetPosition(), desiredVelocity, desiredVelocity.Magnitude(), m_DebugColor1);
+
+		// Render desired velocity - current velocity
+		DEBUGRENDERER2D->DrawDirection(pAgent->GetPosition(), desiredCurrentVelocity, desiredCurrentVelocity.Magnitude(), m_DebugColor3);
+
+		// Render current velocity
+		DEBUGRENDERER2D->DrawDirection(pAgent->GetPosition(), currentVelocity, currentVelocity.Magnitude(), m_DebugColor5);
+
+		// Render future position
+		DEBUGRENDERER2D->DrawSolidCircle(futurePosition, 0.2f, {}, m_DebugColor6);
+	}
+
+	return steering;
+}
+
+//EVADE
+//****
+//Trying to avoid an agents path
+SteeringOutput Evade::CalculateSteering(float deltaT, SteeringAgent* pAgent)
+{
+	SteeringOutput steering = {};
+
+	const float distance{ (m_Target.Position - pAgent->GetPosition()).Magnitude() };
+	const float time{ distance / pAgent->GetMaxLinearSpeed() };
+
+	const Elite::Vector2 futurePosition{ m_Target.Position + m_Target.LinearVelocity * time };
+
+	// Flee from the future position of the target
+	steering.LinearVelocity = pAgent->GetPosition() - futurePosition; // Desired velocity
+	steering.LinearVelocity.Normalize(); // Normalize desired velocity
+	steering.LinearVelocity *= pAgent->GetMaxLinearSpeed(); // Scale desired velocity to max speed
+
+	// Debug rendering
+	if (pAgent->CanRenderBehavior())
+	{
+		const Elite::Vector2 currentVelocity{ pAgent->GetLinearVelocity() };
+		const Elite::Vector2 desiredCurrentVelocity{ steering.LinearVelocity - pAgent->GetLinearVelocity() };
+		const Elite::Vector2 desiredVelocity{ steering.LinearVelocity };
+
+		// Render desired velocity
+		DEBUGRENDERER2D->DrawDirection(pAgent->GetPosition(), desiredVelocity, desiredVelocity.Magnitude(), m_DebugColor1);
+
+		// Render desired velocity - current velocity
+		DEBUGRENDERER2D->DrawDirection(pAgent->GetPosition(), desiredCurrentVelocity, desiredCurrentVelocity.Magnitude(), m_DebugColor3);
+
+		// Render current velocity
+		DEBUGRENDERER2D->DrawDirection(pAgent->GetPosition(), currentVelocity, currentVelocity.Magnitude(), m_DebugColor5);
+
+		// Render future position
+		DEBUGRENDERER2D->DrawSolidCircle(futurePosition, 0.2f, {}, m_DebugColor6);
+	}
+
+	return steering;
+}

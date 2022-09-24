@@ -121,4 +121,30 @@ protected:
 	float m_WanderAngle{ 0.f }; // Internal
 };
 
+///////////////////////////////////////
+//Pursuit
+//****
+class Pursuit : public ISteeringBehavior
+{
+public:
+	Pursuit() = default;
+	virtual ~Pursuit() = default;
+
+	//Pursuit Behaviour
+	SteeringOutput CalculateSteering(float deltaT, SteeringAgent* pAgent) override;
+};
+
+///////////////////////////////////////
+//Evade
+//****
+class Evade : public ISteeringBehavior
+{
+public:
+	Evade() = default;
+	virtual ~Evade() = default;
+
+	//Evade Behaviour
+	SteeringOutput CalculateSteering(float deltaT, SteeringAgent* pAgent) override;
+};
+
 #endif
