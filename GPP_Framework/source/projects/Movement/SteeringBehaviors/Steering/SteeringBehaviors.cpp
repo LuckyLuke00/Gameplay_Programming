@@ -43,7 +43,17 @@ SteeringOutput Seek::CalculateSteering(float deltaT, SteeringAgent* pAgent)
 //Moving away from a target position or agent
 SteeringOutput Flee::CalculateSteering(float deltaT, SteeringAgent* pAgent)
 {
+	const Elite::Vector2 fromTarget{ pAgent->GetPosition() - m_Target.Position };
+	const float distance{ fromTarget.Magnitude() };
+
 	SteeringOutput steering = {};
+
+	if (distance > m_FleeRadius)
+	{
+		steering.IsValid = false;
+		return steering;
+	}
+
 
 	steering.LinearVelocity = pAgent->GetPosition() - m_Target.Position; // Desired velocity
 	steering.LinearVelocity.Normalize(); // Normalize desired velocity
@@ -154,22 +164,17 @@ SteeringOutput Wander::CalculateSteering(float deltaT, SteeringAgent* pAgent)
 	SteeringOutput steering = {};
 
 	// Calculate circle center
-	const Elite::Vector2 circleCenter{ pAgent->GetPosition() + pAgent->GetLinearVelocity().GetNormalized() * Elite::Vector2{pAgent->GetMaxLinearSpeed(), pAgent->GetMaxLinearSpeed()} };
+	//const Elite::Vector2 circleCenter{ pAgent->GetPosition() + pAgent->GetLinearVelocity().GetNormalized() * Elite::Vector2{pAgent->GetMaxLinearSpeed(), pAgent->GetMaxLinearSpeed()} };
+	const Elite::Vector2 circleCenter{ pAgent->GetPosition() + Elite::Vector2{m_OffsetDistance,m_OffsetDistance } };
 
 	// Calculate target on circle
-	const Elite::Vector2 targetOnCircle{ circleCenter + Elite::Vector2{ cosf(m_WanderAngle), sinf(m_WanderAngle) } *m_Radius };
-
-	// Calculate offset
-	const Elite::Vector2 offset{ targetOnCircle - circleCenter };
+	const Elite::Vector2 targetOnCircle{ circleCenter + Elite::Vector2{ cosf(m_WanderAngle), sinf(m_WanderAngle) } * m_Radius };
 
 	// Calculate new wander angle in radians
 	m_WanderAngle += Elite::randomFloat(-m_MaxAngleChange, m_MaxAngleChange);
 
-	// Calculate target
-	const Elite::Vector2 target{ circleCenter + offset };
-
 	// Seek the target
-	steering.LinearVelocity = target - pAgent->GetPosition(); // Desired velocity
+	steering.LinearVelocity = targetOnCircle - pAgent->GetPosition(); // Desired velocity
 	steering.LinearVelocity.Normalize(); // Normalize desired velocity
 	steering.LinearVelocity *= pAgent->GetMaxLinearSpeed(); // Scale desired velocity to max speed
 
@@ -193,7 +198,7 @@ SteeringOutput Wander::CalculateSteering(float deltaT, SteeringAgent* pAgent)
 		DEBUGRENDERER2D->DrawCircle(circleCenter, m_Radius, m_DebugColor3, 0.f);
 
 		// Render target
-		DEBUGRENDERER2D->DrawSolidCircle(target, 0.2f, {}, m_DebugColor7);
+		DEBUGRENDERER2D->DrawSolidCircle(targetOnCircle, 0.2f, {}, m_DebugColor7);
 	}
 
 	return steering;

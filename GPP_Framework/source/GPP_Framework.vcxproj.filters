@@ -22,6 +22,11 @@
     <ClCompile Include="projects\Movement\SteeringBehaviors\Steering\SteeringBehaviors.cpp" />
     <ClCompile Include="projects\Movement\SteeringBehaviors\Obstacle.cpp" />
     <ClCompile Include="projects\Movement\SteeringBehaviors\SteeringAgent.cpp" />
+    <ClCompile Include="projects\Movement\SteeringBehaviors\Flocking\App_Flocking.cpp" />
+    <ClCompile Include="projects\Movement\SteeringBehaviors\Flocking\Flock.cpp" />
+    <ClCompile Include="projects\Movement\SteeringBehaviors\Flocking\FlockingSteeringBehaviors.cpp" />
+    <ClCompile Include="projects\Movement\SteeringBehaviors\CombinedSteering\App_CombinedSteering.cpp" />
+    <ClCompile Include="projects\Movement\SteeringBehaviors\CombinedSteering\CombinedSteeringBehaviors.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="projects\App_Selector.h" />
@@ -68,7 +73,6 @@
     <ClInclude Include="framework\EliteRendering\Shaders.h" />
     <ClInclude Include="framework\EliteInput\EInputData.h" />
     <ClInclude Include="framework\EliteMath\EMatrix2x3.h" />
-    <ClInclude Include="framework\EliteAI\EliteGraphs\ENavGraph.h" />
     <ClInclude Include="projects\App_MachineLearning\DirectedGraph.h" />
     <ClInclude Include="framework\EliteMath\FMatrix.h" />
     <ClInclude Include="projects\Movement\Sandbox\App_Sandbox.h" />
@@ -78,6 +82,11 @@
     <ClInclude Include="projects\Movement\SteeringBehaviors\Obstacle.h" />
     <ClInclude Include="projects\Movement\SteeringBehaviors\SteeringAgent.h" />
     <ClInclude Include="projects\Movement\SteeringBehaviors\SteeringHelpers.h" />
+    <ClInclude Include="projects\Movement\SteeringBehaviors\Flocking\App_Flocking.h" />
+    <ClInclude Include="projects\Movement\SteeringBehaviors\Flocking\Flock.h" />
+    <ClInclude Include="projects\Movement\SteeringBehaviors\Flocking\FlockingSteeringBehaviors.h" />
+    <ClInclude Include="projects\Movement\SteeringBehaviors\CombinedSteering\App_CombinedSteering.h" />
+    <ClInclude Include="projects\Movement\SteeringBehaviors\CombinedSteering\CombinedSteeringBehaviors.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="imgui.ini" />

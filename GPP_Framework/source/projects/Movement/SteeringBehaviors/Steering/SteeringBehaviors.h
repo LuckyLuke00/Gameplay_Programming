@@ -70,6 +70,10 @@ public:
 
 	//Flee Behaviour
 	SteeringOutput CalculateSteering(float deltaT, SteeringAgent* pAgent) override;
+	void SetFleeRadius(float fleeRadius) { m_FleeRadius = fleeRadius; }
+
+private:
+	float m_FleeRadius{ 10.f };
 };
 
 ///////////////////////////////////////
@@ -115,7 +119,7 @@ public:
 	void SetMaxAngleChange(float angle) { m_MaxAngleChange = angle; }
 
 protected:
-	float m_MaxAngleChange{ Elite::ToRadians(45.f) }; // Max WanderAngle change per frame
+	float m_MaxAngleChange{ Elite::ToRadians(35.f) }; // Max WanderAngle change per frame
 	float m_OffsetDistance{ 6.f }; // Offset (Agent Direction)
 	float m_Radius{ 4.f }; // WanderRadius
 	float m_WanderAngle{ 0.f }; // Internal

@@ -197,6 +197,11 @@
     <ClCompile Include="framework\main.cpp" />
     <ClCompile Include="projects\Movement\Sandbox\App_Sandbox.cpp" />
     <ClCompile Include="projects\Movement\Sandbox\SandboxAgent.cpp" />
+    <ClCompile Include="projects\Movement\SteeringBehaviors\CombinedSteering\App_CombinedSteering.cpp" />
+    <ClCompile Include="projects\Movement\SteeringBehaviors\CombinedSteering\CombinedSteeringBehaviors.cpp" />
+    <ClCompile Include="projects\Movement\SteeringBehaviors\Flocking\App_Flocking.cpp" />
+    <ClCompile Include="projects\Movement\SteeringBehaviors\Flocking\Flock.cpp" />
+    <ClCompile Include="projects\Movement\SteeringBehaviors\Flocking\FlockingSteeringBehaviors.cpp" />
     <ClCompile Include="projects\Movement\SteeringBehaviors\Steering\App_SteeringBehaviors.cpp" />
     <ClCompile Include="projects\Movement\SteeringBehaviors\Obstacle.cpp" />
     <ClCompile Include="projects\Movement\SteeringBehaviors\SteeringAgent.cpp" />
@@ -256,6 +261,11 @@
     <ClInclude Include="projects\Movement\Sandbox\App_Sandbox.h" />
     <ClInclude Include="projects\Movement\Sandbox\SandboxAgent.h" />
     <ClInclude Include="projects\App_Selector.h" />
+    <ClInclude Include="projects\Movement\SteeringBehaviors\CombinedSteering\App_CombinedSteering.h" />
+    <ClInclude Include="projects\Movement\SteeringBehaviors\CombinedSteering\CombinedSteeringBehaviors.h" />
+    <ClInclude Include="projects\Movement\SteeringBehaviors\Flocking\App_Flocking.h" />
+    <ClInclude Include="projects\Movement\SteeringBehaviors\Flocking\Flock.h" />
+    <ClInclude Include="projects\Movement\SteeringBehaviors\Flocking\FlockingSteeringBehaviors.h" />
     <ClInclude Include="projects\Movement\SteeringBehaviors\Steering\App_SteeringBehaviors.h" />
     <ClInclude Include="projects\Movement\SteeringBehaviors\Obstacle.h" />
     <ClInclude Include="projects\Movement\SteeringBehaviors\SteeringAgent.h" />

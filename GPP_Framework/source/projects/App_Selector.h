@@ -3,7 +3,8 @@
 // Create the define here using the "ActiveApp_..." convention and set up the correct include and typedef in the #ifdef below.
 
 //#define ActiveApp_Sandbox
-#define ActiveApp_Steering
+//#define ActiveApp_Steering
+#define ActiveApp_CombinedSteering
 
 //---------- Registered Applications -----------
 #ifdef ActiveApp_Sandbox
@@ -14,6 +15,11 @@ using CurrentApp = App_Sandbox;
 #ifdef ActiveApp_Steering
 #include "projects/Movement/SteeringBehaviors/Steering/App_SteeringBehaviors.h"
 using CurrentApp = App_SteeringBehaviors;
+#endif // ActiveApp_Steering
+
+#ifdef ActiveApp_CombinedSteering
+#include "projects/Movement/SteeringBehaviors/CombinedSteering/App_CombinedSteering.h"
+using CurrentApp = App_CombinedSteering;
 #endif // ActiveApp_Steering
 
 class App_Selector {

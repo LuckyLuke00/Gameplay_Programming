@@ -27,24 +27,16 @@ namespace Elite
 		explicit Vector2(const b2Vec2& v) : x(v.x), y(v.y) {};
 		Vector2& operator=(const b2Vec2& v) { x = v.x; y = v.y; return *this; }
 		operator b2Vec2() const
-		{
-			return { x, y };
-		};
+		{return {x, y};};
 #endif
 
 		//=== Arithmetic Operators ===
 		inline auto operator-(const Vector2& v) const
-		{
-			return Vector2(x - v.x, y - v.y);
-		}
+		{ return Vector2(x - v.x, y - v.y);	}
 		inline auto operator-() const
-		{
-			return Vector2(-x, -y);
-		}
+		{ return Vector2(-x, -y); }
 		inline auto operator*(float scale) const
-		{
-			return Vector2(x * scale, y * scale);
-		}
+		{ return Vector2(x * scale, y * scale);	}
 		inline auto operator/(float scale) const
 		{
 			const auto revScale = 1.0f / scale;
@@ -53,32 +45,24 @@ namespace Elite
 
 		//=== Compound Assignment Operators === //auto& for type deduction
 		inline auto& operator+=(const Vector2& v)
-		{
-			x += v.x; y += v.y; return *this;
-		}
+		{ x += v.x; y += v.y; return *this;	}
 		inline auto& operator-=(const Vector2& v)
-		{
-			x -= v.x; y -= v.y; return *this;
-		}
+		{ x -= v.x; y -= v.y; return *this;	}
 		inline auto& operator*=(float scale)
-		{
-			x *= scale; y *= scale; return *this;
-		}
+		{ x *= scale; y *= scale; return *this;	}
 		inline auto& operator/=(float scale)
 		{
 			const auto revScale = 1.0f / scale;
 			x *= revScale; y *= revScale; return *this;
 		}
 
+
+
 		//=== Relational Operators ===
 		inline auto operator==(const Vector2& v) const /*Check if both components are equal*/
-		{
-			return AreEqual(x, v.x) && AreEqual(y, v.y);
-		}
+		{ return AreEqual(x, v.x) && AreEqual(y, v.y);	}
 		inline auto operator!=(const Vector2& v) const /*Check if one or both components are NOT equal*/
-		{
-			return !(*this == v);
-		}
+		{ return !(*this == v);	}
 
 		//=== Member Access Operators ===
 		inline float operator[](unsigned int i) const
@@ -98,29 +82,19 @@ namespace Elite
 
 		//=== Internal Vector Functions ===
 		inline auto Dot(const Vector2& v) const
-		{
-			return x * v.x + y * v.y;
-		}
+		{ return x * v.x + y * v.y;	}
 
 		inline auto Cross(const Vector2& v) const
-		{
-			return x * v.y - y * v.x;
-		}
+		{ return x * v.y - y * v.x;	}
 
 		inline auto GetAbs() const
-		{
-			return Vector2(abs(x), abs(y));
-		}
+		{ return Vector2(abs(x), abs(y)); }
 
 		inline auto MagnitudeSquared() const
-		{
-			return x * x + y * y;
-		}
+		{ return x*x + y*y;	}
 
 		inline auto Magnitude() const
-		{
-			return sqrtf(MagnitudeSquared());
-		}
+		{ return sqrtf(MagnitudeSquared()); }
 
 		inline float Normalize()
 		{
@@ -146,14 +120,10 @@ namespace Elite
 		}
 
 		inline auto DistanceSquared(const Vector2& v) const
-		{
-			return Square(v.x - x) + Square(v.y - y);
-		}
+		{ return Square(v.x - x) + Square(v.y - y);	}
 
 		inline auto Distance(const Vector2& v) const
-		{
-			return sqrtf(DistanceSquared(v));
-		}
+		{ return sqrtf(DistanceSquared(v)); }
 
 		inline auto Clamp(float max)
 		{
@@ -166,19 +136,13 @@ namespace Elite
 	//=== Global Vector Operators ===
 #pragma region GlobalVectorOperators
 	inline auto operator+(const Vector2& v, const Vector2& v2)
-	{
-		return Vector2(v.x + v2.x, v.y + v2.y);
-	}
+	{ return Vector2(v.x + v2.x, v.y + v2.y); }
 
 	inline auto operator* (float s, const Vector2& v)
-	{
-		return Vector2(s * v.x, s * v.y);
-	}
+	{ return Vector2(s * v.x, s * v.y); }
 
 	inline auto operator*(const Vector2& a, const Vector2& b)
-	{
-		return Vector2(a.x * b.x, a.y * b.y);
-	}
+	{ return Vector2(a.x*b.x, a.y*b.y); }
 
 	inline auto operator/ (float s, const Vector2& v)
 	{
@@ -196,44 +160,28 @@ namespace Elite
 	//=== Global Vector Functions ===
 #pragma region GlobalVectorFunctions
 	inline auto Dot(const Vector2& v1, const Vector2& v2)
-	{
-		return v1.Dot(v2);
-	}
+	{ return v1.Dot(v2); }
 
 	inline auto Cross(const Vector2& v1, const Vector2& v2)
-	{
-		return v1.Cross(v2);
-	}
+	{ return v1.Cross(v2); }
 
 	inline auto GetAbs(const Vector2& v)
-	{
-		return v.GetAbs();
-	}
+	{ return v.GetAbs(); }
 
 	inline void Abs(Vector2& v) /*! Make absolute Vector2 of this Vector2 */
-	{
-		v = v.GetAbs();
-	}
+	{ v = v.GetAbs(); }
 
 	inline void Normalize(Vector2& v)
-	{
-		v.Normalize();
-	}
+	{ v.Normalize(); }
 
 	inline auto GetNormalized(const Vector2& v)
-	{
-		return v.GetNormalized();
-	}
+	{ return v.GetNormalized(); }
 
 	inline auto DistanceSquared(const Vector2& v1, const Vector2& v2)
-	{
-		return v1.DistanceSquared(v2);
-	}
+	{ return v1.DistanceSquared(v2); }
 
 	inline auto Distance(const Vector2& v1, const Vector2& v2)
-	{
-		return v1.Distance(v2);
-	}
+	{ return v1.Distance(v2); }
 
 	inline auto Clamp(const Vector2& v, float max)
 	{
@@ -253,19 +201,28 @@ namespace Elite
 	{
 		return{ randomFloat(min, max),randomFloat(min, max) };
 	}
-	/*! Orientation to a Vector2 */
-	inline Vector2 OrientationToVector(float orientation)
-	{
-		orientation -= static_cast<float>(E_PI_2);
-		return Vector2(cos(orientation), sin(orientation));
-	}
-	/*! Get orientation from an a velocity vector */
+
+	/* Get orientation from an a velocity vector
+	-- [Deprecated] -- Use VectorToAngle instead*/
+	[[deprecated("Use VectorToAngle instead")]]
 	inline float GetOrientationFromVelocity(const Elite::Vector2& velocity)
 	{
 		if (velocity.Magnitude() == 0)
 			return 0.f;
 
 		return atan2f(velocity.x, -velocity.y);
+	}
+
+	/*  Creates a normalized vector from an angle in radians.  */
+	inline Vector2 OrientationToVector(float orientation)
+	{
+		return Vector2(cos(orientation), sin(orientation));
+	}
+
+	/*Calculates the orientation angle from a vector*/
+	inline float VectorToOrientation(const Vector2& vector)
+	{
+		return atan2f(vector.y, vector.x);
 	}
 
 	/*! Get Angle Between 2 vectors*/
