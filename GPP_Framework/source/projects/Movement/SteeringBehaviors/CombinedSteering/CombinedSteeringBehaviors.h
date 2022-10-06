@@ -5,7 +5,7 @@ class Flock;
 
 //****************
 //BLENDED STEERING
-class BlendedSteering final: public ISteeringBehavior
+class BlendedSteering final : public ISteeringBehavior
 {
 public:
 	struct WeightedBehavior
@@ -35,11 +35,11 @@ private:
 
 //*****************
 //PRIORITY STEERING
-class PrioritySteering final: public ISteeringBehavior
+class PrioritySteering final : public ISteeringBehavior
 {
 public:
 	PrioritySteering(std::vector<ISteeringBehavior*> priorityBehaviors)
-		:m_PriorityBehaviors(priorityBehaviors) 
+		:m_PriorityBehaviors(priorityBehaviors)
 	{}
 
 	void AddBehaviour(ISteeringBehavior* pBehavior) { m_PriorityBehaviors.push_back(pBehavior); }

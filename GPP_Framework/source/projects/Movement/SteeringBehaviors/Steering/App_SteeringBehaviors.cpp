@@ -335,7 +335,7 @@ void App_SteeringBehaviors::SetAgentBehavior(ImGui_Agent& a)
 		a.pBehavior = new Evade();
 		break;
 	}
-	
+
 	UpdateTarget(a);
 
 	a.pAgent->SetAutoOrient(autoOrient);

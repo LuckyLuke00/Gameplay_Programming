@@ -19,6 +19,5 @@ private:
 //SEPARATION - FLOCKING
 //*********************
 
-
 //VELOCITY MATCH - FLOCKING
 //************************

@@ -9,17 +9,17 @@ using namespace Elite;
 
 //Constructor & Destructor
 Flock::Flock(
-	int flockSize /*= 50*/, 
-	float worldSize /*= 100.f*/, 
-	SteeringAgent* pAgentToEvade /*= nullptr*/, 
+	int flockSize /*= 50*/,
+	float worldSize /*= 100.f*/,
+	SteeringAgent* pAgentToEvade /*= nullptr*/,
 	bool trimWorld /*= false*/)
 
 	: m_WorldSize{ worldSize }
 	, m_FlockSize{ flockSize }
-	, m_TrimWorld { trimWorld }
-	, m_pAgentToEvade{pAgentToEvade}
+	, m_TrimWorld{ trimWorld }
+	, m_pAgentToEvade{ pAgentToEvade }
 	, m_NeighborhoodRadius{ 15 }
-	, m_NrOfNeighbors{0}
+	, m_NrOfNeighbors{ 0 }
 {
 	m_Agents.resize(m_FlockSize);
 
@@ -33,7 +33,7 @@ Flock::~Flock()
 	SAFE_DELETE(m_pBlendedSteering);
 	SAFE_DELETE(m_pPrioritySteering);
 
-	for(auto pAgent: m_Agents)
+	for (auto pAgent : m_Agents)
 	{
 		SAFE_DELETE(pAgent);
 	}
@@ -97,7 +97,6 @@ void Flock::UpdateAndRenderUI()
 	//End
 	ImGui::PopAllowKeyboardFocus();
 	ImGui::End();
-	
 }
 
 void Flock::RegisterNeighbors(SteeringAgent* pAgent)
@@ -124,8 +123,7 @@ void Flock::SetTarget_Seek(TargetData target)
 	// TODO: Set target for seek behavior
 }
 
-
-float* Flock::GetWeight(ISteeringBehavior* pBehavior) 
+float* Flock::GetWeight(ISteeringBehavior* pBehavior)
 {
 	if (m_pBlendedSteering)
 	{
@@ -138,7 +136,7 @@ float* Flock::GetWeight(ISteeringBehavior* pBehavior)
 			}
 		);
 
-		if(it!= weightedBehaviors.end())
+		if (it != weightedBehaviors.end())
 			return &it->weight;
 	}
 

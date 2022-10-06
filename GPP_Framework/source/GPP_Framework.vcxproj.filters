@@ -27,6 +27,7 @@
     <ClCompile Include="projects\Movement\SteeringBehaviors\Flocking\FlockingSteeringBehaviors.cpp" />
     <ClCompile Include="projects\Movement\SteeringBehaviors\CombinedSteering\App_CombinedSteering.cpp" />
     <ClCompile Include="projects\Movement\SteeringBehaviors\CombinedSteering\CombinedSteeringBehaviors.cpp" />
+    <ClCompile Include="projects\Movement\SteeringBehaviors\SpacePartitioning\SpacePartitioning.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="projects\App_Selector.h" />
@@ -87,6 +88,7 @@
     <ClInclude Include="projects\Movement\SteeringBehaviors\Flocking\FlockingSteeringBehaviors.h" />
     <ClInclude Include="projects\Movement\SteeringBehaviors\CombinedSteering\App_CombinedSteering.h" />
     <ClInclude Include="projects\Movement\SteeringBehaviors\CombinedSteering\CombinedSteeringBehaviors.h" />
+    <ClInclude Include="projects\Movement\SteeringBehaviors\SpacePartitioning\SpacePartitioning.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="imgui.ini" />

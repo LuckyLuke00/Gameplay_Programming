@@ -9,7 +9,7 @@
 
 using namespace Elite;
 App_CombinedSteering::~App_CombinedSteering()
-{	
+{
 	SAFE_DELETE(m_pDrunkAgent);
 	SAFE_DELETE(m_pBlendedSteering);
 	SAFE_DELETE(m_pSeek);
@@ -53,9 +53,8 @@ void App_CombinedSteering::Update(float deltaTime)
 		m_MouseTarget.Position = DEBUGRENDERER2D->GetActiveCamera()->ConvertScreenToWorld({ static_cast<float>(mouseData.X), static_cast<float>(mouseData.Y) });
 	}
 
-
 #ifdef PLATFORM_WINDOWS
-	#pragma region UI
+#pragma region UI
 	//UI
 	{
 		//Setup
@@ -108,7 +107,7 @@ void App_CombinedSteering::Update(float deltaTime)
 
 		ImGui::Text("Behavior Weights");
 		ImGui::Spacing();
-		
+
 		ImGui::SliderFloat("Seek", &m_pBlendedSteering->GetWeightedBehaviorsRef()[0].weight, 0.f, 1.f, "%.2");
 		ImGui::SliderFloat("Wander", &m_pBlendedSteering->GetWeightedBehaviorsRef()[1].weight, 0.f, 1.f, "%.2");
 
@@ -116,7 +115,7 @@ void App_CombinedSteering::Update(float deltaTime)
 		ImGui::PopAllowKeyboardFocus();
 		ImGui::End();
 	}
-	#pragma endregion
+#pragma endregion
 #endif
 
 	m_pSeek->SetTarget(m_MouseTarget);
@@ -149,6 +148,6 @@ void App_CombinedSteering::Render(float deltaTime) const
 	}
 
 	//Render Target
-	if(m_VisualizeMouseTarget)
-		DEBUGRENDERER2D->DrawSolidCircle(m_MouseTarget.Position, 0.3f, { 0.f,0.f }, { 1.f,0.f,0.f },-0.8f);
+	if (m_VisualizeMouseTarget)
+		DEBUGRENDERER2D->DrawSolidCircle(m_MouseTarget.Position, 0.3f, { 0.f,0.f }, { 1.f,0.f,0.f }, -0.8f);
 }

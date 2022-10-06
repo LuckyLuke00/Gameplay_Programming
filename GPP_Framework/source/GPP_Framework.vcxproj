@@ -202,6 +202,7 @@
     <ClCompile Include="projects\Movement\SteeringBehaviors\Flocking\App_Flocking.cpp" />
     <ClCompile Include="projects\Movement\SteeringBehaviors\Flocking\Flock.cpp" />
     <ClCompile Include="projects\Movement\SteeringBehaviors\Flocking\FlockingSteeringBehaviors.cpp" />
+    <ClCompile Include="projects\Movement\SteeringBehaviors\SpacePartitioning\SpacePartitioning.cpp" />
     <ClCompile Include="projects\Movement\SteeringBehaviors\Steering\App_SteeringBehaviors.cpp" />
     <ClCompile Include="projects\Movement\SteeringBehaviors\Obstacle.cpp" />
     <ClCompile Include="projects\Movement\SteeringBehaviors\SteeringAgent.cpp" />
@@ -266,6 +267,7 @@
     <ClInclude Include="projects\Movement\SteeringBehaviors\Flocking\App_Flocking.h" />
     <ClInclude Include="projects\Movement\SteeringBehaviors\Flocking\Flock.h" />
     <ClInclude Include="projects\Movement\SteeringBehaviors\Flocking\FlockingSteeringBehaviors.h" />
+    <ClInclude Include="projects\Movement\SteeringBehaviors\SpacePartitioning\SpacePartitioning.h" />
     <ClInclude Include="projects\Movement\SteeringBehaviors\Steering\App_SteeringBehaviors.h" />
     <ClInclude Include="projects\Movement\SteeringBehaviors\Obstacle.h" />
     <ClInclude Include="projects\Movement\SteeringBehaviors\SteeringAgent.h" />

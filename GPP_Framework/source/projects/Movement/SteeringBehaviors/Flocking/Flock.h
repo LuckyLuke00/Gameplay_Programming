@@ -11,15 +11,15 @@ class Flock final
 {
 public:
 	Flock(
-		int flockSize = 50, 
-		float worldSize = 100.f, 
-		SteeringAgent* pAgentToEvade = nullptr, 
+		int flockSize = 50,
+		float worldSize = 100.f,
+		SteeringAgent* pAgentToEvade = nullptr,
 		bool trimWorld = false);
 
 	~Flock();
 
 	void Update(float deltaT);
-	void UpdateAndRenderUI() ;
+	void UpdateAndRenderUI();
 	void Render(float deltaT);
 
 	void RegisterNeighbors(SteeringAgent* pAgent);
@@ -45,7 +45,7 @@ private:
 	int m_NrOfNeighbors = 0;
 
 	SteeringAgent* m_pAgentToEvade = nullptr;
-	
+
 	//Steering Behaviors
 	//Seek* m_pSeekBehavior = nullptr;
 	//Separation* m_pSeparationBehavior = nullptr;

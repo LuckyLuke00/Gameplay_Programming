@@ -54,7 +54,6 @@ SteeringOutput Flee::CalculateSteering(float deltaT, SteeringAgent* pAgent)
 		return steering;
 	}
 
-
 	steering.LinearVelocity = pAgent->GetPosition() - m_Target.Position; // Desired velocity
 	steering.LinearVelocity.Normalize(); // Normalize desired velocity
 	steering.LinearVelocity *= pAgent->GetMaxLinearSpeed(); // Scale desired velocity to max speed
@@ -168,7 +167,7 @@ SteeringOutput Wander::CalculateSteering(float deltaT, SteeringAgent* pAgent)
 	const Elite::Vector2 circleCenter{ pAgent->GetPosition() + Elite::Vector2{m_OffsetDistance,m_OffsetDistance } };
 
 	// Calculate target on circle
-	const Elite::Vector2 targetOnCircle{ circleCenter + Elite::Vector2{ cosf(m_WanderAngle), sinf(m_WanderAngle) } * m_Radius };
+	const Elite::Vector2 targetOnCircle{ circleCenter + Elite::Vector2{ cosf(m_WanderAngle), sinf(m_WanderAngle) } *m_Radius };
 
 	// Calculate new wander angle in radians
 	m_WanderAngle += Elite::randomFloat(-m_MaxAngleChange, m_MaxAngleChange);
@@ -206,7 +205,7 @@ SteeringOutput Wander::CalculateSteering(float deltaT, SteeringAgent* pAgent)
 
 ////PURSUIT
 ////****
-////Trying to intercept an agent by moving towards where it will be 
+////Trying to intercept an agent by moving towards where it will be
 ////in the future.
 //SteeringOutput Pursuit::CalculateSteering(float deltaT, SteeringAgent* pAgent)
 //{
@@ -245,7 +244,7 @@ SteeringOutput Wander::CalculateSteering(float deltaT, SteeringAgent* pAgent)
 
 //PURSUIT
 //****
-//Trying to intercept an agent by moving towards where it will be 
+//Trying to intercept an agent by moving towards where it will be
 //in the future.
 SteeringOutput Pursuit::CalculateSteering(float deltaT, SteeringAgent* pAgent)
 {

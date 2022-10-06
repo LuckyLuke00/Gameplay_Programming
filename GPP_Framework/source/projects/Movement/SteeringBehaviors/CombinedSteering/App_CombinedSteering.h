@@ -30,7 +30,7 @@ private:
 	TargetData m_MouseTarget = {};
 	bool m_UseMouseTarget = false;
 	bool m_VisualizeMouseTarget = true;
-	
+
 	bool m_CanDebugRender = false;
 	bool m_TrimWorld = true;
 	float m_TrimWorldSize = 25.f;

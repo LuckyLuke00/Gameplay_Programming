@@ -4,7 +4,6 @@
 #include "../SteeringAgent.h"
 #include "../SteeringHelpers.h"
 
-
 //*******************
 //COHESION (FLOCKING)
 SteeringOutput Cohesion::CalculateSteering(float deltaT, SteeringAgent* pAgent)
