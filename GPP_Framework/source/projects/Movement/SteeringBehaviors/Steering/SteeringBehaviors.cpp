@@ -163,14 +163,28 @@ SteeringOutput Wander::CalculateSteering(float deltaT, SteeringAgent* pAgent)
 	SteeringOutput steering = {};
 
 	// Calculate circle center
-	//const Elite::Vector2 circleCenter{ pAgent->GetPosition() + pAgent->GetLinearVelocity().GetNormalized() * Elite::Vector2{pAgent->GetMaxLinearSpeed(), pAgent->GetMaxLinearSpeed()} };
-	const Elite::Vector2 circleCenter{ pAgent->GetPosition() + Elite::Vector2{m_OffsetDistance,m_OffsetDistance } };
+	const Elite::Vector2 circleCenter{ pAgent->GetPosition() + pAgent->GetLinearVelocity().GetNormalized() * m_OffsetDistance };
 
-	// Calculate target on circle
-	const Elite::Vector2 targetOnCircle{ circleCenter + Elite::Vector2{ cosf(m_WanderAngle), sinf(m_WanderAngle) } *m_Radius };
+	Elite::Vector2 displacement{ Elite::Vector2{ 0, -1.f } * m_Radius };
 
-	// Calculate new wander angle in radians
-	m_WanderAngle += Elite::randomFloat(-m_MaxAngleChange, m_MaxAngleChange);
+	const float len{ displacement.Magnitude() / 2 };
+	displacement.x = cosf(m_WanderAngle) * len;
+	displacement.y = sinf(m_WanderAngle) * len;
+
+	m_WanderAngle += Elite::randomFloat(0, 1) * m_MaxAngleChange - m_MaxAngleChange * .5f;
+
+	const Elite::Vector2 targetOnCircle{ circleCenter + displacement };
+	
+	//const auto displacement{ Elite::Vector2{0.f, -1.f} *m_Radius };
+	//const auto wanderForce = circleCenter + displacement;
+
+	//// Calculate new wander angle in radians
+	////m_WanderAngle += Elite::randomFloat(-m_MaxAngleChange, m_MaxAngleChange);
+	//m_WanderAngle += Elite::randomFloat(0, 1) * m_MaxAngleChange - m_MaxAngleChange * 0.5f;
+	//
+	//// Calculate target on circle
+	//const Elite::Vector2 targetOnCircle{ circleCenter + Elite::Vector2{ cosf(m_WanderAngle), sinf(m_WanderAngle) } * displacement.Magnitude( };
+
 
 	// Seek the target
 	steering.LinearVelocity = targetOnCircle - pAgent->GetPosition(); // Desired velocity
@@ -184,14 +198,14 @@ SteeringOutput Wander::CalculateSteering(float deltaT, SteeringAgent* pAgent)
 		const Elite::Vector2 desiredCurrentVelocity{ steering.LinearVelocity - pAgent->GetLinearVelocity() };
 		const Elite::Vector2 desiredVelocity{ steering.LinearVelocity };
 
-		// Render desired velocity
-		DEBUGRENDERER2D->DrawDirection(pAgent->GetPosition(), desiredVelocity, desiredVelocity.Magnitude(), m_DebugColor1);
+		//// Render desired velocity
+		//DEBUGRENDERER2D->DrawDirection(pAgent->GetPosition(), desiredVelocity, desiredVelocity.Magnitude(), m_DebugColor1);
 
-		// Render desired velocity - current velocity
-		DEBUGRENDERER2D->DrawDirection(pAgent->GetPosition(), desiredCurrentVelocity, desiredCurrentVelocity.Magnitude(), m_DebugColor3);
+		//// Render desired velocity - current velocity
+		//DEBUGRENDERER2D->DrawDirection(pAgent->GetPosition(), desiredCurrentVelocity, desiredCurrentVelocity.Magnitude(), m_DebugColor3);
 
-		// Render current velocity
-		DEBUGRENDERER2D->DrawDirection(pAgent->GetPosition(), currentVelocity, currentVelocity.Magnitude(), m_DebugColor5);
+		//// Render current velocity
+		//DEBUGRENDERER2D->DrawDirection(pAgent->GetPosition(), currentVelocity, currentVelocity.Magnitude(), m_DebugColor5);
 
 		// Render circle
 		DEBUGRENDERER2D->DrawCircle(circleCenter, m_Radius, m_DebugColor3, 0.f);

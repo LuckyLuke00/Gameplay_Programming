@@ -119,7 +119,7 @@ public:
 	void SetMaxAngleChange(float angle) { m_MaxAngleChange = angle; }
 
 protected:
-	float m_MaxAngleChange{ Elite::ToRadians(35.f) }; // Max WanderAngle change per frame
+	float m_MaxAngleChange{ Elite::ToRadians(45.f) }; // Max WanderAngle change per frame
 	float m_OffsetDistance{ 6.f }; // Offset (Agent Direction)
 	float m_Radius{ 4.f }; // WanderRadius
 	float m_WanderAngle{ 0.f }; // Internal

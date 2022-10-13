@@ -47,19 +47,18 @@ private:
 	SteeringAgent* m_pAgentToEvade = nullptr;
 
 	//Steering Behaviors
-	//Seek* m_pSeekBehavior = nullptr;
-	//Separation* m_pSeparationBehavior = nullptr;
-	//Cohesion* m_pCohesionBehavior = nullptr;
-	//VelocityMatch* m_pVelMatchBehavior = nullptr;
-	//Wander* m_pWanderBehavior = nullptr;
-	//Evade* m_pEvadeBehavior = nullptr;
+	Seek* m_pSeekBehavior = nullptr;
+	Separation* m_pSeparationBehavior = nullptr;
+	Cohesion* m_pCohesionBehavior = nullptr;
+	VelocityMatch* m_pVelMatchBehavior = nullptr;
+	Wander* m_pWanderBehavior = nullptr;
+	Evade* m_pEvadeBehavior = nullptr;
 
 	BlendedSteering* m_pBlendedSteering = nullptr;
 	PrioritySteering* m_pPrioritySteering = nullptr;
 
 	float* GetWeight(ISteeringBehavior* pBehaviour);
-
-private:
+	
 	Flock(const Flock& other);
 	Flock& operator=(const Flock& other);
 };
