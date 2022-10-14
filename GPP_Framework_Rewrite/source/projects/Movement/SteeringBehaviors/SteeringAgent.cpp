@@ -19,8 +19,8 @@ void SteeringAgent::Update(float dt)
 		if (m_RenderBehavior)
 		{
 			DEBUGRENDERER2D->DrawDirection(GetPosition(), acceleration, acceleration.Magnitude(), { 0, 1, 1, 0.5f }, 0.40f);
-			DEBUGRENDERER2D->DrawDirection(GetPosition(), linVel, linVel.Magnitude(), { 1, 0, 1, 0.5f }, 0.40f);
 			DEBUGRENDERER2D->DrawDirection(GetPosition(), linVel + acceleration, (linVel + acceleration).Magnitude(), { 0, 1, 0, 0.5f }, 0.40f);
+			DEBUGRENDERER2D->DrawDirection(GetPosition(), linVel, linVel.Magnitude(), { 1, 0, 1, 0.5f }, 0.40f);
 		}
 		SetLinearVelocity(linVel + (acceleration * dt));
 

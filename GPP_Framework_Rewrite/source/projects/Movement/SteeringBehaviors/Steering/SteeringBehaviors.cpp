@@ -37,16 +37,13 @@ SteeringOutput Arrive::CalculateSteering(float deltaT, SteeringAgent* pAgent)
 {
 	const float distance{ (m_Target.Position - pAgent->GetPosition()).Magnitude() };
 
-	if (distance > m_OutterRadius)
+	SteeringOutput steering{ Seek::CalculateSteering(deltaT, pAgent) };
+
+	if (distance < m_OutterRadius)
 	{
-		return Seek::CalculateSteering(deltaT, pAgent);
+		steering.LinearVelocity.Normalize();
+		steering.LinearVelocity *= pAgent->GetMaxLinearSpeed() * (distance - m_InnerRadius) / m_OutterRadius;
 	}
-
-	SteeringOutput steering{};
-
-	steering.LinearVelocity = m_Target.Position - pAgent->GetPosition();
-	steering.LinearVelocity.Normalize();
-	steering.LinearVelocity *= pAgent->GetMaxLinearSpeed() * (distance - m_InnerRadius) / m_OutterRadius;
 
 	if (pAgent->CanRenderBehavior())
 	{
@@ -79,16 +76,12 @@ SteeringOutput Face::CalculateSteering(float deltaT, SteeringAgent* pAgent)
 //****
 SteeringOutput Wander::CalculateSteering(float deltaT, SteeringAgent* pAgent)
 {
-	SteeringOutput steering{};
-
 	const Elite::Vector2 circleCenter{ pAgent->GetPosition() + pAgent->GetLinearVelocity().GetNormalized() * m_OffsetDistance };
 
-	m_WanderAngle += Elite::randomFloat(0, 1) * m_MaxAngleChange - m_MaxAngleChange * .5f;
+	m_WanderAngle += (Elite::randomFloat(0, 1) * m_MaxAngleChange - m_MaxAngleChange * .5f);
 	Elite::ClampRef(m_WanderAngle, Elite::ToRadians(-90), Elite::ToRadians(90));
 
-	m_Target.Position = circleCenter + Elite::Vector2{ cosf(m_WanderAngle), sinf(m_WanderAngle) } * m_Radius;
-
-	steering = Seek::CalculateSteering(deltaT, pAgent);
+	m_Target.Position = (circleCenter + Elite::Vector2{ cosf(m_WanderAngle), sinf(m_WanderAngle) } *m_Radius);
 
 	if (pAgent->CanRenderBehavior())
 	{
@@ -105,5 +98,19 @@ SteeringOutput Wander::CalculateSteering(float deltaT, SteeringAgent* pAgent)
 		DEBUGRENDERER2D->DrawDirection(pAgent->GetPosition(), pAgent->GetLinearVelocity(), m_OffsetDistance, {0.f, 0.f, 1.f, 0.5f}, 0.40f);
 	}
 
-	return steering;
+	return Seek::CalculateSteering(deltaT, pAgent);
+}
+
+//PURSUIT
+//****
+SteeringOutput Pursuit::CalculateSteering(float deltaT, SteeringAgent* pAgent)
+{
+	m_Target.Position = m_Target.Position + m_Target.LinearVelocity * (pAgent->GetPosition() - m_Target.Position).Magnitude() / pAgent->GetMaxLinearSpeed();
+
+	if (pAgent->CanRenderBehavior())
+	{
+		DEBUGRENDERER2D->DrawSolidCircle(m_Target.Position, 0.1f, {}, { 1.f, 0.f, 0.f }, 0.40f);
+	}
+
+	return Seek::CalculateSteering(deltaT, pAgent);
 }

@@ -102,7 +102,7 @@ public:
 	Wander() = default;
 	virtual ~Wander() = default;
 
-	//Face Behavior
+	//Wander Behavior
 	SteeringOutput CalculateSteering(float deltaT, SteeringAgent* pAgent) override;
 
 	void SetMaxAngleChange(const float& rad) { m_MaxAngleChange = rad; }
@@ -114,6 +114,19 @@ private:
 	float m_OffsetDistance{ 6.f }; //Offset (Agent Direction)
 	float m_Radius{ 4.f }; //WanderRadius
 	float m_WanderAngle{ 0.f }; //Internal
+};
+
+///////////////////////////////////////
+//PURSUIT
+//****
+class Pursuit : public Seek
+{
+public:
+	Pursuit() = default;
+	virtual ~Pursuit() = default;
+
+	//Pursuit Behavior
+	SteeringOutput CalculateSteering(float deltaT, SteeringAgent* pAgent) override;
 };
 
 #endif
