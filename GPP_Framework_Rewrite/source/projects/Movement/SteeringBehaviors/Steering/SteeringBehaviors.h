@@ -129,4 +129,17 @@ public:
 	SteeringOutput CalculateSteering(float deltaT, SteeringAgent* pAgent) override;
 };
 
+///////////////////////////////////////
+//EVADE
+//****
+class Evade : public Pursuit
+{
+public:
+	Evade() = default;
+	virtual ~Evade() = default;
+
+	//Pursuit Behavior
+	SteeringOutput CalculateSteering(float deltaT, SteeringAgent* pAgent) override;
+};
+
 #endif

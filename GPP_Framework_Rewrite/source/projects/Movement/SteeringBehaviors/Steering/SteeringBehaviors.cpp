@@ -108,7 +108,10 @@ SteeringOutput Pursuit::CalculateSteering(float deltaT, SteeringAgent* pAgent)
 	// The code below works super well! But it's not the same as in the provided solution
 	//m_Target.Position = m_Target.Position + m_Target.LinearVelocity * m_Target.GetDirection() * (pAgent->GetPosition() - m_Target.Position).Magnitude() / pAgent->GetMaxLinearSpeed();
 
-	m_Target.Position += m_Target.GetDirection() * (m_Target.Position - pAgent->GetPosition()).Magnitude() / pAgent->GetMaxLinearSpeed();
+	if (m_Target.LinearVelocity.Magnitude() > 0.f)
+	{
+		m_Target.Position += m_Target.GetDirection() * (m_Target.Position - pAgent->GetPosition()).Magnitude() / pAgent->GetMaxLinearSpeed();
+	}
 
 	if (pAgent->CanRenderBehavior())
 	{
@@ -116,4 +119,15 @@ SteeringOutput Pursuit::CalculateSteering(float deltaT, SteeringAgent* pAgent)
 	}
 
 	return Seek::CalculateSteering(deltaT, pAgent);
+}
+
+//EVADE
+//****
+SteeringOutput Evade::CalculateSteering(float deltaT, SteeringAgent* pAgent)
+{
+	SteeringOutput steering{ Pursuit::CalculateSteering(deltaT, pAgent) };
+
+	steering.LinearVelocity = -steering.LinearVelocity;
+
+	return steering;
 }
