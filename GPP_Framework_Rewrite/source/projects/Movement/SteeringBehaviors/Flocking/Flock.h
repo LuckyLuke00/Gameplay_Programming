@@ -38,13 +38,15 @@ private:
 	int m_FlockSize = 0;
 	std::vector<SteeringAgent*> m_Agents;
 	std::vector<SteeringAgent*> m_Neighbors;
-
+	
 	CellSpace* m_pCellSpace = nullptr;
 	std::vector<Elite::Vector2> m_OldPos;
 
 	bool m_TrimWorld = false;
+	bool m_DebugRenderPartitions = false;
 	bool m_DebugRenderNeighborhood = false;
 	bool m_DebugRenderSteering = false;
+	bool m_SpatialPartitioning = true;
 	float m_WorldSize = 0.f;
 
 	float m_NeighborhoodRadius = 10.f;
@@ -55,6 +57,7 @@ private:
 
 	//Steering Behaviors
 	Seek* m_pSeekBehavior = nullptr;
+	Seek* m_pEvadingAgentSeekBehavior = nullptr;
 	Separation* m_pSeparationBehavior = nullptr;
 	Cohesion* m_pCohesionBehavior = nullptr;
 	VelocityMatch* m_pVelMatchBehavior = nullptr;

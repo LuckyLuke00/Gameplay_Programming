@@ -18,6 +18,7 @@ SteeringOutput Cohesion::CalculateSteering(float deltaT, SteeringAgent* pAgent)
 SteeringOutput Separation::CalculateSteering(float deltaT, SteeringAgent* pAgent)
 {
 	m_Target = m_pFlock->GetAverageNeighborPos();
+
 	return Flee::CalculateSteering(deltaT, pAgent);
 }
 

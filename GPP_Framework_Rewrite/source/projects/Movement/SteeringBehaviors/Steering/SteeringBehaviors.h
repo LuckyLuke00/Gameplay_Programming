@@ -142,7 +142,7 @@ public:
 	SteeringOutput CalculateSteering(float deltaT, SteeringAgent* pAgent) override;
 
 private:
-	const float m_EvadeRadius{ 15.f };
+	const float m_EvadeRadius{ 10.f };
 };
 
 #endif

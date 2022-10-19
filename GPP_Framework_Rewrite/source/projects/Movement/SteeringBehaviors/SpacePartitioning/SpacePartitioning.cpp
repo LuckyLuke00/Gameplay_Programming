@@ -79,6 +79,52 @@ void CellSpace::UpdateAgentCell(SteeringAgent* agent, Elite::Vector2 oldPos)
 
 void CellSpace::RegisterNeighbors(SteeringAgent* agent, float queryRadius)
 {
+	// Find out which Cells are in the agent's neighborhood
+	// Get indeces of the cells that are in the agent's neighborhood
+	auto indices = GetNearbyCells(agent->GetPosition(), queryRadius);
+
+	// Register the agents of the nearby cells
+	m_NrOfNeighbors = 0;
+	for (int idx : indices)
+	{
+		for (SteeringAgent* pAgent : m_Cells[idx].agents)
+		{
+			if (pAgent != agent)
+			{
+				m_Neighbors[m_NrOfNeighbors] = pAgent;
+				++m_NrOfNeighbors;
+			}
+		}
+	}
+}
+
+std::vector<int> CellSpace::GetNearbyCells(const Elite::Vector2 pos, float queryRadius) const
+{
+	// Find out which Cells are in the agent's neighborhood
+	// Get indexes of the cells that are in the agent's neighborhood
+	int left{ static_cast<int>(floor((pos.x - queryRadius) / m_CellWidth)) };
+	int right{ static_cast<int>(ceil((pos.x + queryRadius) / m_CellWidth)) };
+	int top{ static_cast<int>(floor((pos.y - queryRadius) / m_CellHeight)) };
+	int bottom{ static_cast<int>(ceil((pos.y + queryRadius) / m_CellHeight)) };
+
+	// Clamp indexes so they don't go out of bounds
+	left =Elite::Clamp(left, 0, m_NrOfCols - 1);
+	right = Elite::Clamp(right, 0, m_NrOfCols - 1);
+	top = Elite::Clamp(top, 0, m_NrOfRows - 1);
+	bottom = Elite::Clamp(bottom, 0, m_NrOfRows - 1);
+
+	// Get the cell indexes in the neighborhood
+	std::vector<int> cellIndexes;
+	cellIndexes.reserve(m_NrOfRows * m_NrOfCols);
+	for (int row = top; row <= bottom; ++row)
+	{
+		for (int col = left; col <= right; ++col)
+		{
+			cellIndexes.push_back(row * m_NrOfCols + col);
+		}
+	}
+
+	return cellIndexes;
 }
 
 void CellSpace::EmptyCells()
@@ -92,7 +138,7 @@ void CellSpace::RenderCells() const
 	for (const auto& c : m_Cells)
 	{
 		auto rectPoints = c.GetRectPoints();
-		DEBUGRENDERER2D->DrawPolygon(rectPoints.data(), rectPoints.size(), { 1.f, 0.f, 0.f, 0.5f }, 0.f);
+		DEBUGRENDERER2D->DrawPolygon(rectPoints.data(), rectPoints.size(), { .5f, 0.f, 0.f, 0.5f }, 0.f);
 
 		DEBUGRENDERER2D->DrawString(c.GetRectPoints()[1], std::to_string(c.agents.size()).c_str());
 	}

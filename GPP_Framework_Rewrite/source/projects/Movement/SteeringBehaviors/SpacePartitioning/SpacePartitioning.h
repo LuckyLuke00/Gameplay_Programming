@@ -69,4 +69,5 @@ private:
 
 	// Helper functions
 	int PositionToIndex(const Elite::Vector2 pos) const;
+	std::vector<int> GetNearbyCells(const Elite::Vector2 pos, float queryRadius) const;
 };
