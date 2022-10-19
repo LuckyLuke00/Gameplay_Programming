@@ -6,6 +6,7 @@ class ISteeringBehavior;
 class SteeringAgent;
 class BlendedSteering;
 class PrioritySteering;
+class CellSpace;
 
 class Flock final
 {
@@ -38,12 +39,16 @@ private:
 	std::vector<SteeringAgent*> m_Agents;
 	std::vector<SteeringAgent*> m_Neighbors;
 
+	CellSpace* m_pCellSpace = nullptr;
+	std::vector<Elite::Vector2> m_OldPos;
+
 	bool m_TrimWorld = false;
 	bool m_DebugRenderNeighborhood = false;
 	bool m_DebugRenderSteering = false;
 	float m_WorldSize = 0.f;
 
 	float m_NeighborhoodRadius = 10.f;
+	float m_QueryRadius = 10.f;
 	size_t m_NrOfNeighbors = 0;
 
 	SteeringAgent* m_pAgentToEvade = nullptr;

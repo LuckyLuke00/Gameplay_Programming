@@ -4,6 +4,7 @@
 #include "../SteeringAgent.h"
 #include "../Steering/SteeringBehaviors.h"
 #include "../CombinedSteering/CombinedSteeringBehaviors.h"
+#include "../SpacePartitioning/SpacePartitioning.h"
 
 using namespace Elite;
 
@@ -12,10 +13,12 @@ Flock::Flock(
 	int flockSize /*= 50*/,
 	float worldSize /*= 100.f*/,
 	SteeringAgent* pAgentToEvade /*= nullptr*/,
+	
 	bool trimWorld /*= false*/
 )
 
 	: m_FlockSize{ flockSize }
+	, m_pCellSpace{ new CellSpace{worldSize, worldSize, 10, 10, 50 } }
 	, m_TrimWorld{ trimWorld }
 	, m_WorldSize{ worldSize }
 	, m_NeighborhoodRadius{ 15 }
@@ -38,22 +41,28 @@ Flock::Flock(
 	for (int idx{ 0 }; idx < m_FlockSize; ++idx)
 	{
 		m_Agents[idx] = new SteeringAgent();
-		m_Agents[idx]->SetAutoOrient(true);
-		m_Agents[idx]->SetLinearVelocity(randomVector2(m_Agents[idx]->GetMaxLinearSpeed()));
-		m_Agents[idx]->SetMass(0.f);
-		m_Agents[idx]->SetMaxLinearSpeed(50.0f);
-		m_Agents[idx]->SetPosition(randomVector2(m_WorldSize));
-		m_Agents[idx]->SetSteeringBehavior(m_pPrioritySteering);
+        m_Agents[idx]->SetAutoOrient(true);
+        m_Agents[idx]->SetMaxLinearSpeed(20.0f);
+        //m_Agents[idx]->SetLinearVelocity(randomVector2(m_Agents[idx]->GetMaxLinearSpeed()));
+        m_Agents[idx]->SetMass(0.f);
+        m_Agents[idx]->SetPosition({ static_cast<float>(rand() % static_cast<int>(m_WorldSize)), static_cast<float>(rand() % static_cast<int>(m_WorldSize)) });
+        m_Agents[idx]->SetSteeringBehavior(m_pPrioritySteering);
+
+        m_pCellSpace->AddAgent(m_Agents[idx]);
+        m_OldPos.push_back(m_Agents[idx]->GetPosition());
 	}
 
 	m_pAgentToEvade = new SteeringAgent();
 	m_pAgentToEvade->SetAutoOrient(true);
 	m_pAgentToEvade->SetBodyColor({ 1, 0, 0 });
-	m_pAgentToEvade->SetLinearVelocity(randomVector2(m_pAgentToEvade->GetMaxLinearSpeed()));
+	m_pAgentToEvade->SetMaxLinearSpeed(25.0f);
+	//m_pAgentToEvade->SetLinearVelocity(randomVector2(m_pAgentToEvade->GetMaxLinearSpeed()));
 	m_pAgentToEvade->SetMass(0.f);
-	m_pAgentToEvade->SetMaxLinearSpeed(50.0f);
-	m_pAgentToEvade->SetPosition(randomVector2(m_WorldSize));
+	m_pAgentToEvade->SetPosition({ static_cast<float>(rand() % static_cast<int>(m_WorldSize)), static_cast<float>(rand() % static_cast<int>(m_WorldSize)) });
 	m_pAgentToEvade->SetSteeringBehavior(m_pSeekBehavior);
+
+    //m_pCellSpace->AddAgent(m_pAgentToEvade);
+    //m_OldPos.push_back(m_pAgentToEvade->GetPosition());
 }
 
 Flock::~Flock()
@@ -67,6 +76,7 @@ Flock::~Flock()
     SAFE_DELETE(m_pSeparationBehavior)
     SAFE_DELETE(m_pVelMatchBehavior)
     SAFE_DELETE(m_pWanderBehavior)
+    SAFE_DELETE(m_pCellSpace)
 
     for (auto pAgent : m_Agents)
     {
@@ -78,6 +88,8 @@ void Flock::Update(float deltaT)
 {
     m_pEvadeBehavior->SetTarget(m_pAgentToEvade->GetPosition());
 
+    int oldPosIdx{ 0 };
+
     for (SteeringAgent* pAgent : m_Agents)
     {
         if (pAgent == nullptr) continue;
@@ -87,10 +99,16 @@ void Flock::Update(float deltaT)
     		pAgent->TrimToWorld(m_WorldSize);
     	}
 
-    	RegisterNeighbors(pAgent);
     	pAgent->Update(deltaT);
+    	RegisterNeighbors(pAgent);
+        m_pCellSpace->UpdateAgentCell(pAgent, m_OldPos[oldPosIdx]);
+
+        m_OldPos[oldPosIdx++] = pAgent->GetPosition();
+
 
     	pAgent->SetRenderBehavior(m_DebugRenderSteering);
+
+        Elite::Vector2 newPos{ pAgent->GetPosition() };
 
     	if (pAgent != m_Agents.back()) continue;
 
@@ -117,6 +135,8 @@ void Flock::Update(float deltaT)
 }
 void Flock::Render(float deltaT)
 {
+	m_pCellSpace->RenderCells();
+
     for (SteeringAgent* pAgent : m_Agents)
     {
         if (pAgent != nullptr)
