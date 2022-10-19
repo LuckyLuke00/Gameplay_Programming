@@ -39,10 +39,12 @@ private:
 	std::vector<SteeringAgent*> m_Neighbors;
 
 	bool m_TrimWorld = false;
+	bool m_DebugRenderNeighborhood = false;
+	bool m_DebugRenderSteering = false;
 	float m_WorldSize = 0.f;
 
 	float m_NeighborhoodRadius = 10.f;
-	int m_NrOfNeighbors = 0;
+	size_t m_NrOfNeighbors = 0;
 
 	SteeringAgent* m_pAgentToEvade = nullptr;
 
@@ -58,8 +60,7 @@ private:
 	PrioritySteering* m_pPrioritySteering = nullptr;
 
 	float* GetWeight(ISteeringBehavior* pBehaviour);
-
-private:
+	
 	Flock(const Flock& other);
 	Flock& operator=(const Flock& other);
 };

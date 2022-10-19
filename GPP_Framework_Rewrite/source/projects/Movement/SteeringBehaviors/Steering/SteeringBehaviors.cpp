@@ -86,8 +86,8 @@ SteeringOutput Wander::CalculateSteering(float deltaT, SteeringAgent* pAgent)
 	if (pAgent->CanRenderBehavior())
 	{
 		// Draw desired velocity again to display it above the line to circle center
-		DEBUGRENDERER2D->DrawDirection(pAgent->GetPosition(), pAgent->GetLinearVelocity(), pAgent->GetLinearVelocity().Magnitude(), {1.f, 0.f, 1.f, 0.5f}, 0.40f);
-
+		//DEBUGRENDERER2D->DrawDirection(pAgent->GetPosition(), pAgent->GetLinearVelocity(), pAgent->GetLinearVelocity().Magnitude(), {1.f, 0.f, 1.f, 0.5f}, 0.40f);
+		DEBUGRENDERER2D->DrawDirection(pAgent->GetPosition(), pAgent->GetLinearVelocity(), 7, { 1.f, 0.f, 1.f, 0.5f }, 0.40f);
 		// Draw the circle
 		DEBUGRENDERER2D->DrawCircle(circleCenter, m_Radius, { 0.f, 0.f, 1.f, 0.5f }, 0.40f);
 

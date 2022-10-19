@@ -41,7 +41,7 @@ Flock::Flock(
 		m_Agents[idx]->SetAutoOrient(true);
 		m_Agents[idx]->SetLinearVelocity(randomVector2(m_Agents[idx]->GetMaxLinearSpeed()));
 		m_Agents[idx]->SetMass(0.f);
-		m_Agents[idx]->SetMaxLinearSpeed(15.0f);
+		m_Agents[idx]->SetMaxLinearSpeed(50.0f);
 		m_Agents[idx]->SetPosition(randomVector2(m_WorldSize));
 		m_Agents[idx]->SetSteeringBehavior(m_pPrioritySteering);
 	}
@@ -51,7 +51,7 @@ Flock::Flock(
 	m_pAgentToEvade->SetBodyColor({ 1, 0, 0 });
 	m_pAgentToEvade->SetLinearVelocity(randomVector2(m_pAgentToEvade->GetMaxLinearSpeed()));
 	m_pAgentToEvade->SetMass(0.f);
-	m_pAgentToEvade->SetMaxLinearSpeed(15.0f);
+	m_pAgentToEvade->SetMaxLinearSpeed(50.0f);
 	m_pAgentToEvade->SetPosition(randomVector2(m_WorldSize));
 	m_pAgentToEvade->SetSteeringBehavior(m_pSeekBehavior);
 }
@@ -80,26 +80,34 @@ void Flock::Update(float deltaT)
 
     for (SteeringAgent* pAgent : m_Agents)
     {
-        if (pAgent != nullptr)
-        {
-            RegisterNeighbors(pAgent);
-            pAgent->Update(deltaT);
+        if (pAgent == nullptr) continue;
 
-            if (m_TrimWorld)
-            {
-                pAgent->TrimToWorld(m_WorldSize);
-            }
+    	if (m_TrimWorld)
+    	{
+    		pAgent->TrimToWorld(m_WorldSize);
+    	}
 
-            if (pAgent == m_Agents[0] && pAgent->CanRenderBehavior())
-            {
-	            DEBUGRENDERER2D->DrawCircle(pAgent->GetPosition(), m_NeighborhoodRadius, { 1.f, 0.f, 0.f, 0.5f }, -1);
-	            for (int index{}; index < m_NrOfNeighbors; ++index)
-	            {
-		            DEBUGRENDERER2D->DrawSolidCircle(m_Neighbors[index]->GetPosition(), m_Neighbors[index]->GetRadius() * 1.5f, { 0,0 }, { 0.f, 0.f, 0.f, 0.5f }, -1);
-	            }
-            }
-        }
-    }
+    	RegisterNeighbors(pAgent);
+    	pAgent->Update(deltaT);
+
+    	pAgent->SetRenderBehavior(m_DebugRenderSteering);
+
+    	if (pAgent != m_Agents.back()) continue;
+
+        // Only execute the code below if the agent is the last one in the vector
+    	pAgent->SetRenderBehavior(m_DebugRenderNeighborhood);
+
+    	if (!m_DebugRenderNeighborhood) continue;
+
+    	DEBUGRENDERER2D->DrawCircle(pAgent->GetPosition(), m_NeighborhoodRadius, { 1.f, 1.f, 1.f, 0.5f }, 0.f);
+    	DEBUGRENDERER2D->DrawDirection(pAgent->GetPosition(), this->GetAverageNeighborPos(), 7, { 1.f, 0.f, 0.f });
+                
+    	for (const auto& neighbor : m_Neighbors)
+    	{
+    		if (neighbor == nullptr) continue;
+    		neighbor->SetBodyColor({ 0.f, 1.f, 0.f});
+    	}
+	}
 
     if (m_pAgentToEvade)
     {
@@ -117,10 +125,7 @@ void Flock::Render(float deltaT)
         }
     }
 
-    if (m_pAgentToEvade)
-    {
-        m_pAgentToEvade->Render(deltaT);
-    }
+	m_pAgentToEvade->Render(deltaT);
 }
 void Flock::UpdateAndRenderUI()
 {
@@ -160,13 +165,14 @@ void Flock::UpdateAndRenderUI()
     ImGui::Text("Flocking");
     ImGui::Spacing();
 	
-    //ImGui::Checkbox("Debug Rendering", &m_CanDebugRender);
+    ImGui::Checkbox("Debug Render neighborhood", &m_DebugRenderNeighborhood);
+    ImGui::Checkbox("Debug Render steering", &m_DebugRenderSteering);
 
     ImGui::SliderFloat("Cohesion", &m_pBlendedSteering->GetWeightedBehaviorsRef()[0].weight, 0.f, 1.f, "%.2");
-    ImGui::SliderFloat("Separation", &m_pBlendedSteering->GetWeightedBehaviorsRef()[1].weight, 0.f, 1.f, "%.2");
-    ImGui::SliderFloat("VelocityMatch", &m_pBlendedSteering->GetWeightedBehaviorsRef()[2].weight, 0.f, 1.f, "%.2");
-    ImGui::SliderFloat("Wander", &m_pBlendedSteering->GetWeightedBehaviorsRef()[3].weight, 0.f, 1.f, "%.2");
     ImGui::SliderFloat("Seek", &m_pBlendedSteering->GetWeightedBehaviorsRef()[4].weight, 0.f, 1.f, "%.2");
+    ImGui::SliderFloat("Separation", &m_pBlendedSteering->GetWeightedBehaviorsRef()[1].weight, 0.f, 1.f, "%.2");
+    ImGui::SliderFloat("Vel Match", &m_pBlendedSteering->GetWeightedBehaviorsRef()[2].weight, 0.f, 1.f, "%.2");
+    ImGui::SliderFloat("Wander", &m_pBlendedSteering->GetWeightedBehaviorsRef()[3].weight, 0.f, 1.f, "%.2");
 
     //End
     ImGui::PopAllowKeyboardFocus();
@@ -179,15 +185,21 @@ void Flock::RegisterNeighbors(SteeringAgent* pAgent)
 	m_NrOfNeighbors = 0;
 	for (SteeringAgent* pOtherAgent : m_Agents)
 	{
-		if (pAgent != pOtherAgent)
+        pOtherAgent->SetBodyColor({ 1.f,1.f,0.f });
+
+		if (pAgent == pOtherAgent) continue;
+
+		const float distance{ (pOtherAgent->GetPosition() - pAgent->GetPosition()).Magnitude() };
+		if (distance < m_NeighborhoodRadius)
 		{
-			const float distance = (pOtherAgent->GetPosition() - pAgent->GetPosition()).Magnitude();
-			if (distance < m_NeighborhoodRadius)
-			{
-				m_Neighbors[m_NrOfNeighbors] = pOtherAgent;
-				++m_NrOfNeighbors;
-			}
+			m_Neighbors[m_NrOfNeighbors++] = pOtherAgent;
 		}
+	}
+
+    // Overwrite left over agents with nullptr
+	for (size_t i{ m_NrOfNeighbors }; i < m_Agents.size(); ++i)
+	{
+		m_Neighbors[i] = nullptr;
 	}
 }
 

@@ -18,7 +18,7 @@ private:
 
 //SEPARATION - FLOCKING
 //*********************
-class Separation : public Seek
+class Separation : public Flee
 {
 public:
 	Separation(Flock* pFlock) :m_pFlock(pFlock) {}
