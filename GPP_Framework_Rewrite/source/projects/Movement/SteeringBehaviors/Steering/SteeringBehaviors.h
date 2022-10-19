@@ -77,7 +77,7 @@ public:
 	
 private:
 	const float m_InnerRadius{ 3.f };
-	const float m_OutterRadius{ 14.5f };
+	const float m_Outer{ 14.5f };
 };
 
 ///////////////////////////////////////
@@ -140,6 +140,9 @@ public:
 
 	//Pursuit Behavior
 	SteeringOutput CalculateSteering(float deltaT, SteeringAgent* pAgent) override;
+
+private:
+	const float m_EvadeRadius{ 25.f };
 };
 
 #endif
