@@ -95,7 +95,7 @@ SteeringOutput Wander::CalculateSteering(float deltaT, SteeringAgent* pAgent)
 		DEBUGRENDERER2D->DrawSolidCircle(m_Target.Position, 0.1f, {}, { 0.f, 1.f, 0.f }, 0.40f);
 
 		// Draw line to circle center
-		DEBUGRENDERER2D->DrawDirection(pAgent->GetPosition(), pAgent->GetLinearVelocity(), m_OffsetDistance, {0.f, 0.f, 1.f, 0.5f}, 0.40f);
+		DEBUGRENDERER2D->DrawDirection(pAgent->GetPosition(), pAgent->GetLinearVelocity(), m_OffsetDistance, { 0.f, 0.f, 1.f, 0.5f }, 0.40f);
 	}
 
 	return Seek::CalculateSteering(deltaT, pAgent);
@@ -125,7 +125,6 @@ SteeringOutput Pursuit::CalculateSteering(float deltaT, SteeringAgent* pAgent)
 //****
 SteeringOutput Evade::CalculateSteering(float deltaT, SteeringAgent* pAgent)
 {
-	
 	SteeringOutput steering{ Pursuit::CalculateSteering(deltaT, pAgent) };
 	steering.LinearVelocity = -steering.LinearVelocity;
 	steering.IsValid = true;

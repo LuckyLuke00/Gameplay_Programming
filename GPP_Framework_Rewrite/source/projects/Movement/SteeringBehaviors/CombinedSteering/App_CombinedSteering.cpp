@@ -11,13 +11,13 @@ using namespace Elite;
 App_CombinedSteering::~App_CombinedSteering()
 {
 	SAFE_DELETE(m_pBlendedSteering)
-	SAFE_DELETE(m_pDrunkAgent)
-	SAFE_DELETE(m_pDrunkWander)
-	SAFE_DELETE(m_pEvadingAgent)
-	SAFE_DELETE(m_pEvade)
-	SAFE_DELETE(m_pPrioritySteering)
-	SAFE_DELETE(m_pSeek)
-	SAFE_DELETE(m_pWander)
+		SAFE_DELETE(m_pDrunkAgent)
+		SAFE_DELETE(m_pDrunkWander)
+		SAFE_DELETE(m_pEvadingAgent)
+		SAFE_DELETE(m_pEvade)
+		SAFE_DELETE(m_pPrioritySteering)
+		SAFE_DELETE(m_pSeek)
+		SAFE_DELETE(m_pWander)
 }
 
 void App_CombinedSteering::Start()

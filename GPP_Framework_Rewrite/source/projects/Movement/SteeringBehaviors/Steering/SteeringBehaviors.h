@@ -74,7 +74,7 @@ public:
 
 	//Arrive Behavior
 	SteeringOutput CalculateSteering(float deltaT, SteeringAgent* pAgent) override;
-	
+
 private:
 	const float m_InnerRadius{ 3.f };
 	const float m_Outer{ 14.5f };

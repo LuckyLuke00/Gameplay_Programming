@@ -108,7 +108,7 @@ std::vector<int> CellSpace::GetNearbyCells(const Elite::Vector2 pos, float query
 	int bottom{ static_cast<int>(ceil((pos.y + queryRadius) / m_CellHeight)) };
 
 	// Clamp indexes so they don't go out of bounds
-	left =Elite::Clamp(left, 0, m_NrOfCols - 1);
+	left = Elite::Clamp(left, 0, m_NrOfCols - 1);
 	right = Elite::Clamp(right, 0, m_NrOfCols - 1);
 	top = Elite::Clamp(top, 0, m_NrOfRows - 1);
 	bottom = Elite::Clamp(bottom, 0, m_NrOfRows - 1);

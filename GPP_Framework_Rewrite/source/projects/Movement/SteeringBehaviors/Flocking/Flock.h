@@ -38,7 +38,7 @@ private:
 	int m_FlockSize = 0;
 	std::vector<SteeringAgent*> m_Agents;
 	std::vector<SteeringAgent*> m_Neighbors;
-	
+
 	CellSpace* m_pCellSpace = nullptr;
 	std::vector<Elite::Vector2> m_OldPos;
 
@@ -68,7 +68,7 @@ private:
 	PrioritySteering* m_pPrioritySteering = nullptr;
 
 	float* GetWeight(ISteeringBehavior* pBehaviour);
-	
+
 	Flock(const Flock& other);
 	Flock& operator=(const Flock& other);
 };
