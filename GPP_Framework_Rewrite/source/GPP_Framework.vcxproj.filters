@@ -33,6 +33,7 @@
     <ClCompile Include="framework\EliteAI\EliteGraphs\EGraphConnectionTypes.cpp" />
     <ClCompile Include="framework\EliteAI\EliteGraphs\EGraphNodeTypes.cpp" />
     <ClCompile Include="projects\Movement\Pathfinding\GraphTheory\App_GraphTheory.cpp" />
+    <ClCompile Include="projects\Movement\Pathfinding\AStar\App_PathfindingAStar\App_PathfindingAStar.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="projects\App_Selector.h" />
@@ -105,6 +106,11 @@
     <ClInclude Include="framework\EliteAI\EliteGraphs\EGridGraph.h" />
     <ClInclude Include="framework\EliteAI\EliteGraphs\EIGraph.h" />
     <ClInclude Include="projects\Movement\Pathfinding\GraphTheory\App_GraphTheory.h" />
+    <ClInclude Include="projects\Movement\Pathfinding\AStar\App_PathfindingAStar\App_PathfindingAStar.h" />
+    <ClInclude Include="framework\EliteAI\EliteGraphs\EliteGraphAlgorithms\EAStar.h" />
+    <ClInclude Include="framework\EliteAI\EliteGraphs\EliteGraphAlgorithms\EBFS.h" />
+    <ClInclude Include="framework\EliteAI\EliteNavigation\EHeuristicFunctions.h" />
+    <ClInclude Include="framework\EliteAI\EliteNavigation\ENavigation.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="imgui.ini" />
