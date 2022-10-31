@@ -5,8 +5,8 @@ Obstacle::Obstacle(Elite::Vector2 center, float radius)
 	:m_Center(center), m_Radius(radius)
 {
 	//Create Rigidbody
-	const Elite::RigidBodyDefine define = Elite::RigidBodyDefine(0.01f, 0.1f, Elite::eStatic, false);
-	const Transform transform = Transform(center, Elite::ZeroVector2);
+	const auto define = Elite::RigidBodyDefine(0.01f, 0.1f, Elite::eStatic, false);
+	const auto transform = Transform(center, Elite::ZeroVector2);
 	m_pRigidBody = new RigidBody(define, transform);
 
 	//Add shape
@@ -17,5 +17,5 @@ Obstacle::Obstacle(Elite::Vector2 center, float radius)
 
 Obstacle::~Obstacle()
 {
-	SAFE_DELETE(m_pRigidBody);
+	SAFE_DELETE(m_pRigidBody)
 }

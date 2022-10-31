@@ -26,8 +26,8 @@ void SandboxAgent::AutoOrient()
 	if (velocity.Magnitude() > 0)
 	{
 		velocity.Normalize();
-		SetRotation(atan2(velocity.y, velocity.x) + E_PI_2);
+		SetRotation(atan2(velocity.y, velocity.x) + static_cast<float>(E_PI_2));
 	}
 
-	SetRotation(GetRotation() + E_PI_2);
+	SetRotation(GetRotation() + static_cast<float>(E_PI_2));
 }

@@ -3,16 +3,16 @@
 
 //Includes
 #include "App_GraphTheory.h"
-//#include "framework\EliteAI\EliteGraphs\EliteGraphAlgorithms\EAstar.h"
-//#include "framework\EliteAI\EliteGraphs\EliteGraphAlgorithms\EAstar_PGAIBE.h"
-#include "framework\EliteAI\EliteGraphs\EliteGraphAlgorithms\EEularianPath.h"
+//#include "framework/EliteAI/EliteGraphs/EliteGraphAlgorithms/EAstar.h"
+//#include "framework/EliteAI/EliteGraphs/EliteGraphAlgorithms/EAstar_PGAIBE.h"
+#include "framework/EliteAI/EliteGraphs/EliteGraphAlgorithms/EEularianPath.h"
 
 using namespace Elite;
 using namespace std;
 //Destructor
 App_GraphTheory::~App_GraphTheory()
 {
-	SAFE_DELETE(m_pGraph2D);
+	SAFE_DELETE(m_pGraph2D)
 }
 
 //Functions
@@ -64,8 +64,8 @@ void App_GraphTheory::Update(float deltaTime)
 		int const width = DEBUGRENDERER2D->GetActiveCamera()->GetWidth();
 		int const height = DEBUGRENDERER2D->GetActiveCamera()->GetHeight();
 		bool windowActive = true;
-		ImGui::SetNextWindowPos(ImVec2((float)width - menuWidth - 10, 10));
-		ImGui::SetNextWindowSize(ImVec2((float)menuWidth, (float)height - 90));
+		ImGui::SetNextWindowPos(ImVec2(static_cast<float>(width) - static_cast<float>(menuWidth) - 10, 10));
+		ImGui::SetNextWindowSize(ImVec2(static_cast<float>(menuWidth), static_cast<float>(height) - 90));
 		ImGui::Begin("Gameplay Programming", &windowActive, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse);
 		ImGui::PushAllowKeyboardFocus(false);
 		ImGui::SetWindowFocus();

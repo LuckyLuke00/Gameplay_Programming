@@ -1,9 +1,9 @@
 #pragma once
 
-#include "framework\EliteAI\EliteGraphs\EGraphNodeTypes.h"
-#include "framework\EliteAI\EliteGraphs\EGraphConnectionTypes.h"
-#include "framework\EliteAI\EliteGraphs\EGridGraph.h"
-#include "framework\EliteAI\EliteGraphs\EGraph2D.h"
+#include "framework/EliteAI/EliteGraphs/EGraphNodeTypes.h"
+#include "framework/EliteAI/EliteGraphs/EGraphConnectionTypes.h"
+#include "framework/EliteAI/EliteGraphs/EGridGraph.h"
+#include "framework/EliteAI/EliteGraphs/EGraph2D.h"
 #include  <type_traits>
 
 namespace Elite

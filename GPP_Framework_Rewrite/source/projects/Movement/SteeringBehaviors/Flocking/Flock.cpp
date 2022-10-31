@@ -231,7 +231,7 @@ Elite::Vector2 Flock::GetAverageNeighborPos() const
 	Elite::Vector2 avgPos{};
 	if (m_SpatialPartitioning)
 	{
-		for (int idx{ 0 }; idx < m_pCellSpace->GetNeighbors().size(); ++idx)
+		for (size_t idx{ 0 }; idx < m_pCellSpace->GetNeighbors().size(); ++idx)
 		{
 			if (m_pCellSpace->GetNeighbors()[idx] == nullptr) continue;
 
@@ -240,7 +240,7 @@ Elite::Vector2 Flock::GetAverageNeighborPos() const
 		return avgPos / static_cast<float>(m_pCellSpace->GetNeighbors().size());
 	}
 
-	for (int idx{ 0 }; idx < m_NrOfNeighbors; ++idx)
+	for (size_t idx{ 0 }; idx < m_NrOfNeighbors; ++idx)
 	{
 		avgPos += m_Neighbors[idx]->GetPosition();
 	}
@@ -253,7 +253,7 @@ Elite::Vector2 Flock::GetAverageNeighborVelocity() const
 
 	if (m_SpatialPartitioning)
 	{
-		for (int idx{ 0 }; idx < m_pCellSpace->GetNeighbors().size(); ++idx)
+		for (size_t idx{ 0 }; idx < m_pCellSpace->GetNeighbors().size(); ++idx)
 		{
 			if (m_pCellSpace->GetNeighbors()[idx] == nullptr) continue;
 
@@ -262,7 +262,7 @@ Elite::Vector2 Flock::GetAverageNeighborVelocity() const
 		return avgVel / static_cast<float>(m_pCellSpace->GetNeighbors().size());
 	}
 
-	for (int idx{ 0 }; idx < m_NrOfNeighbors; ++idx)
+	for (size_t idx{ 0 }; idx < m_NrOfNeighbors; ++idx)
 	{
 		avgVel += m_Neighbors[idx]->GetLinearVelocity();
 	}

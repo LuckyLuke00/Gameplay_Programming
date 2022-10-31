@@ -5,12 +5,12 @@
 //-----------------------------------------------------------------
 #include "framework/EliteInterfaces/EIApp.h"
 
-#include "framework\EliteAI\EliteGraphs\EGraphNodeTypes.h"
-#include "framework\EliteAI\EliteGraphs\EGraphConnectionTypes.h"
-#include "framework\EliteAI\EliteGraphs\EGridGraph.h"
-#include "framework\EliteAI\EliteGraphs\EGraph2D.h"
-#include "framework\EliteAI\EliteGraphs\EliteGraphUtilities\EGraphRenderer.h"
-#include "framework\EliteAI\EliteGraphs\EliteGraphUtilities\EGraphEditor.h"
+#include "framework/EliteAI/EliteGraphs/EGraphNodeTypes.h"
+#include "framework/EliteAI/EliteGraphs/EGraphConnectionTypes.h"
+#include "framework/EliteAI/EliteGraphs/EGridGraph.h"
+#include "framework/EliteAI/EliteGraphs/EGraph2D.h"
+#include "framework/EliteAI/EliteGraphs/EliteGraphUtilities/EGraphRenderer.h"
+#include "framework/EliteAI/EliteGraphs/EliteGraphUtilities/EGraphEditor.h"
 
 //-----------------------------------------------------------------
 // Application
