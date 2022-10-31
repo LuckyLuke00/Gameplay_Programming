@@ -37,22 +37,50 @@ void App_GraphTheory::Update(float deltaTime)
 	m_pGraph2D->SetConnectionCostsToDistance();
 
 	auto eulerFinder = EulerianPath<GraphNode2D, GraphConnection2D>(m_pGraph2D);
-	Eulerianity isEuler;
-	auto eulerTrail = eulerFinder.FindPath(isEuler);
+	Eulerianity eulerianity = eulerFinder.IsEulerian();
 
-	switch (isEuler)
+	Color color{ 1.f, 1.f, 1.f };
+	int nodeAmount{ 0 };
+
+	// Variables for printing the message once
+	static Eulerianity lastEulerianity{};
+	std::string message{ "Graph is " };
+
+	switch (eulerianity)
 	{
-	case Elite::Eulerianity::eulerian:
-		cout << "eulerian" << endl;
-		break;
 	case Elite::Eulerianity::notEulerian:
-		cout << "not eulerian" << endl;
+		message += "not Eulerian\n";
+		color = { 0.f, 0.f, 1.f };
 		break;
 	case Elite::Eulerianity::semiEulerian:
-		cout << "semi eulerian" << endl;
+		message += "semi-Eulerian\n";
+		nodeAmount = m_pGraph2D->GetAllNodes().size();
+		break;
+	case Elite::Eulerianity::eulerian:
+		message += "Eulerian\n";
 		break;
 	default:
 		break;
+	}
+
+	if (lastEulerianity != eulerianity)
+	{
+		// Print message
+		std::cout << message;
+		lastEulerianity = eulerianity;
+	}
+
+	for (auto& node : m_pGraph2D->GetAllNodes())
+	{
+		// When semi eulerian, every node gets a different color
+		// nodeAmount is only not zero when semiEulerian
+		if (nodeAmount != 0)
+		{
+			float hue{ static_cast<float>(node->GetIndex()) / static_cast<float>(nodeAmount) };
+			color = { hue, 0.f, 1.f - hue };
+		}
+
+		node->SetColor(color);
 	}
 
 	//------- UI --------
