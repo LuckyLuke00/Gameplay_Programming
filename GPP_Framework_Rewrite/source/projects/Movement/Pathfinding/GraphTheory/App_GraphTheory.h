@@ -5,12 +5,12 @@
 //-----------------------------------------------------------------
 #include "framework/EliteInterfaces/EIApp.h"
 
-#include "framework/EliteAI/EliteGraphs/EGraphNodeTypes.h"
-#include "framework/EliteAI/EliteGraphs/EGraphConnectionTypes.h"
-#include "framework/EliteAI/EliteGraphs/EGridGraph.h"
-#include "framework/EliteAI/EliteGraphs/EGraph2D.h"
-#include "framework/EliteAI/EliteGraphs/EliteGraphUtilities/EGraphRenderer.h"
-#include "framework/EliteAI/EliteGraphs/EliteGraphUtilities/EGraphEditor.h"
+#include "framework\EliteAI\EliteGraphs\EGraphNodeTypes.h"
+#include "framework\EliteAI\EliteGraphs\EGraphConnectionTypes.h"
+#include "framework\EliteAI\EliteGraphs\EGridGraph.h"
+#include "framework\EliteAI\EliteGraphs\EGraph2D.h"
+#include "framework\EliteAI\EliteGraphs\EliteGraphUtilities\EGraphRenderer.h"
+#include "framework\EliteAI\EliteGraphs\EliteGraphUtilities\EGraphEditor.h"
 
 //-----------------------------------------------------------------
 // Application
@@ -28,6 +28,10 @@ public:
 	void Render(float deltaTime) const override;
 
 private:
+	Elite::Graph2D<Elite::GraphNode2D, Elite::GraphConnection2D>* m_pGraph2D;
+
+	Elite::GraphRenderer m_GraphRenderer{};
+	Elite::GraphEditor m_GraphEditor{};
 
 	//C++ make the class non-copyable
 	App_GraphTheory(const App_GraphTheory&) = delete;
