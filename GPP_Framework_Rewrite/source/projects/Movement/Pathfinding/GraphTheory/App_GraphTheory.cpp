@@ -3,7 +3,7 @@
 
 //Includes
 #include "App_GraphTheory.h"
-//#include "framework/EliteAI/EliteGraphs/EliteGraphAlgorithms/EAstar.h"
+//#include "framework/EliteAI/EliteGraphs/EliteGraphAlgorithms/EAStar.h"
 //#include "framework/EliteAI/EliteGraphs/EliteGraphAlgorithms/EAstar_PGAIBE.h"
 #include "framework/EliteAI/EliteGraphs/EliteGraphAlgorithms/EEularianPath.h"
 

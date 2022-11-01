@@ -3,8 +3,8 @@
 
 //Includes
 #include "App_PathfindingAStar.h"
-#include "framework\EliteAI\EliteGraphs\EliteGraphAlgorithms\EAstar.h"
-#include "framework\EliteAI\EliteGraphs\EliteGraphAlgorithms\EBFS.h"
+#include "framework/EliteAI/EliteGraphs/EliteGraphAlgorithms/EAstar.h"
+#include "framework/EliteAI/EliteGraphs/EliteGraphAlgorithms/EBFS.h"
 
 using namespace Elite;
 
