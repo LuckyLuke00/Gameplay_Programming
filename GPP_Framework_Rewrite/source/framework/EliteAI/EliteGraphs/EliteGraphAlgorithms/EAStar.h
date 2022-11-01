@@ -56,7 +56,7 @@ namespace Elite
 		std::vector<NodeRecord> closedList{}; // Connections already checked
 		NodeRecord currentRecord{}; // Holds the current to be evaluated connection
 
-		openList.emplace_back(NodeRecord{ pStartNode, nullptr, 0.f, GetHeuristicCost(pStartNode, pGoalNode) }); // Add the start node to the open list
+		openList.emplace_back(pStartNode); // Add the start node to the open list
 
 		while (!openList.empty())
 		{

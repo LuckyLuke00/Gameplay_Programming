@@ -11,9 +11,9 @@ using namespace Elite;
 //Destructor
 App_PathfindingAStar::~App_PathfindingAStar()
 {
-	SAFE_DELETE(m_pGridGraph);
-	SAFE_DELETE(m_pGraphRenderer);
-	SAFE_DELETE(m_pGraphEditor);
+	SAFE_DELETE(m_pGridGraph)
+		SAFE_DELETE(m_pGraphRenderer)
+		SAFE_DELETE(m_pGraphEditor)
 }
 
 //Functions
@@ -204,6 +204,7 @@ void App_PathfindingAStar::CalculatePath()
 	{
 		//BFS Pathfinding
 		auto pathfinder = BFS<GridTerrainNode, GraphConnection>(m_pGridGraph);
+		//auto pathfinder = AStar<GridTerrainNode, GraphConnection>(m_pGridGraph, m_pHeuristicFunction);
 		auto startNode = m_pGridGraph->GetNode(startPathIdx);
 		auto endNode = m_pGridGraph->GetNode(endPathIdx);
 
