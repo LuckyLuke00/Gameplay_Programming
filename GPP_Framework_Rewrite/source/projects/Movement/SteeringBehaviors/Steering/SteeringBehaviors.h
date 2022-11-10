@@ -74,10 +74,12 @@ public:
 
 	//Arrive Behavior
 	SteeringOutput CalculateSteering(float deltaT, SteeringAgent* pAgent) override;
+	void SetSlowRadius(float radius) { m_SlowRadius = radius; }
+	void SetTargetRadius(float radius) { m_TargetRadius = radius; }
 
 private:
-	const float m_InnerRadius{ 3.f };
-	const float m_Outer{ 14.5f };
+	float m_SlowRadius{ 3.f };
+	float m_TargetRadius{ 14.5f };
 };
 
 ///////////////////////////////////////

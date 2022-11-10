@@ -1,5 +1,8 @@
 #pragma once
 
+// QUESTION: Is it normal that I need to include this?
+#include <framework/EliteAI/EliteNavigation/ENavigation.h>
+
 namespace Elite
 {
 	template <class T_NodeType, class T_ConnectionType>
@@ -56,84 +59,86 @@ namespace Elite
 		std::vector<NodeRecord> closedList{}; // Connections already checked
 		NodeRecord currentRecord{}; // Holds the current to be evaluated connection
 
-		openList.emplace_back(pStartNode); // Add the start node to the open list
+		openList.emplace_back(NodeRecord{ pStartNode, nullptr, 0.f, GetHeuristicCost(pStartNode, pGoalNode) }); // Add the start node to the open list
 
 		while (!openList.empty())
 		{
+			// We will continue searching for a connection that leads to the end node
+			// A Get connection with lowest F score
+			// Set the currentRecord to the best record from the openList (the one with the lowest Fcost)
 			currentRecord = *std::min_element(openList.begin(), openList.end());
 			if (currentRecord.pNode == pGoalNode) break;
 
-			// Get all the connections from the connection (from 2. A) and loop over them
+			// Get all the connections from the currentRecord and loop over them
 			for (const auto& connection : m_pGraph->GetNodeConnections(currentRecord.pNode->GetIndex()))
 			{
 				// Calculate the total cost so far (G-cost) (we will need it further on)
 				float totalCostSoFar{ currentRecord.costSoFar + connection->GetCost() };
 
+				// Check if any of those connections lead to a node already on the closed list
 				// Check the closed list (pNode) and if a connection to the connections endNode already exist in the closed list
-				// - Check if the already existing connection is cheaper (tip: use calculated G-Cost) If so, continue to the next connection
 				NodeRecord existingRecord{};
 
 				for (const auto& record : closedList)
 				{
-					if (record.pNode == connection->GetTo())
+					if (record.pNode == m_pGraph->GetNode(connection->GetTo()))
 					{
 						existingRecord = record;
 						break;
 					}
 				}
 
-				if (totalCostSoFar > existingRecord.costSoFar) continue;
+				// Check if the already existing connection is cheaper (tip: use calculated G-Cost)
+				// If so, continue to the next connection
+				if (existingRecord.costSoFar <= totalCostSoFar) continue;
 
-				// Else remove it from the closedList (so it can be replaced)
+				// else, remove it from the closedList (so it can be replaced)
 				closedList.erase(std::remove(closedList.begin(), closedList.end(), existingRecord));
 
-				//  If closedList check failed, check if any of those connections lead to a node already on the open list
-				if (existingRecord == NodeRecord{}) // If the record is empty, it means it was not found in the closed list
+				if (existingRecord == NodeRecord{})
 				{
 					for (const auto& record : openList)
 					{
-						if (record.pNode == connection->GetTo())
+						if (record.pNode == m_pGraph->GetNode(connection->GetTo()))
 						{
 							existingRecord = record;
 							break;
 						}
 					}
-
-					openList.erase(std::remove(openList.begin(), openList.end(), existingRecord));
 				}
-				// At this point any expensive connection should be removed (if it existed). We create a new nodeRecord and add it to the openList
-				openList.emplace_back(NodeRecord{ connection->GetTo(), connection, totalCostSoFar, totalCostSoFar + GetHeuristicCost(connection->GetTo(), pGoalNode) });
+
+				if (existingRecord.costSoFar <= totalCostSoFar) continue;
+				openList.erase(std::remove(openList.begin(), openList.end(), existingRecord));
+
+				// At this point any expensive connection should be removed (if it existed). We create a new nodeRecordand add it to the openList
+				openList.emplace_back(NodeRecord{ m_pGraph->GetNode(connection->GetTo()), connection, totalCostSoFar, totalCostSoFar + GetHeuristicCost(m_pGraph->GetNode(connection->GetTo()), pGoalNode) });
 			}
 			// Remove NodeRecord from the openList and add it to the closedList
 			openList.erase(std::remove(openList.begin(), openList.end(), currentRecord));
 			closedList.emplace_back(currentRecord);
 		}
+
 		// Reconstruct path from last connection to start node
 		// Track back from the currentRecord until the node of the record is the startnode of the overall path
 		while (currentRecord.pNode != pStartNode)
 		{
 			// Add each time the node of the currentRecord to the path
 			path.emplace_back(currentRecord.pNode);
-
-			// Look in the closedList for a record where pNode == the currentRecords' connections' startNode (tip: thefromIndex)
+			// Look in the closedList for a record where pNode == the currentRecords’ connections’ startNode(tip: the fromIndex)
 			for (const auto& record : closedList)
 			{
-				if (record.pNode == currentRecord.pConnection->GetFrom())
+				if (record.pNode == m_pGraph->GetNode(currentRecord.pConnection->GetFrom()))
 				{
 					currentRecord = record;
 					break;
 				}
 			}
 		}
-
 		// Add the startnode’s position to the vPath
 		path.emplace_back(pStartNode);
-
 		// Reverse vPath and return it
 		std::reverse(path.begin(), path.end());
 		return path;
-
-		//return std::vector<T_NodeType*>();
 	}
 
 	template <class T_NodeType, class T_ConnectionType>

@@ -39,18 +39,18 @@ SteeringOutput Arrive::CalculateSteering(float deltaT, SteeringAgent* pAgent)
 
 	SteeringOutput steering{ Seek::CalculateSteering(deltaT, pAgent) };
 
-	if (distance < m_Outer)
+	if (distance < m_TargetRadius)
 	{
 		steering.LinearVelocity.Normalize();
-		steering.LinearVelocity *= pAgent->GetMaxLinearSpeed() * (distance - m_InnerRadius) / m_Outer;
+		steering.LinearVelocity *= pAgent->GetMaxLinearSpeed() * (distance - m_SlowRadius) / m_TargetRadius;
 	}
 
 	if (pAgent->CanRenderBehavior())
 	{
-		DEBUGRENDERER2D->DrawCircle(pAgent->GetPosition(), m_InnerRadius, { 1.f, 0.25f, 0.f, 0.5f }, 0.40f);
+		DEBUGRENDERER2D->DrawCircle(pAgent->GetPosition(), m_SlowRadius, { 1.f, 0.25f, 0.f, 0.5f }, 0.40f);
 
 		// Draw outer circle
-		DEBUGRENDERER2D->DrawCircle(pAgent->GetPosition(), m_Outer, { 0.f, 0.f, 1.f, 0.5f }, 0.40f);
+		DEBUGRENDERER2D->DrawCircle(pAgent->GetPosition(), m_TargetRadius, { 0.f, 0.f, 1.f, 0.5f }, 0.40f);
 	}
 
 	return steering;
