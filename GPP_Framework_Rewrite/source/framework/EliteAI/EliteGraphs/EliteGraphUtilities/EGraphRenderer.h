@@ -31,7 +31,8 @@ namespace Elite
 		void RenderConnection(GraphConnection* con, Elite::Vector2 toPos, Elite::Vector2 fromPos, std::string text, Elite::Color col = DEFAULT_CONNECTION_COLOR, float depth = 0.0f) const;
 
 		// Get correct color/text depending on the pNode/pConnection type
-		template<class T_NodeType, typename = typename enable_if<!is_base_of<GraphNode2D, T_NodeType>::value>::type>
+		// Get correct color/text depending on the pNode/pConnection type
+		template<class T_NodeType, typename = typename std::enable_if<!std::is_base_of<GraphNode2D, T_NodeType>::value>::type>
 		Elite::Color GetNodeColor(T_NodeType* pNode) const;
 		Elite::Color GetNodeColor(GraphNode2D* pNode) const;
 		Elite::Color GetNodeColor(GridTerrainNode* pNode) const;

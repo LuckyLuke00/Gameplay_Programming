@@ -1,7 +1,5 @@
 #pragma once
-
-// QUESTION: Is it normal that I need to include this?
-#include <framework/EliteAI/EliteNavigation/ENavigation.h>
+#include "framework/EliteAI/EliteNavigation/ENavigation.h"
 
 namespace Elite
 {
@@ -52,8 +50,6 @@ namespace Elite
 	template <class T_NodeType, class T_ConnectionType>
 	std::vector<T_NodeType*> AStar<T_NodeType, T_ConnectionType>::FindPath(T_NodeType* pStartNode, T_NodeType* pGoalNode)
 	{
-		//TODO: Test implementation
-
 		std::vector<T_NodeType*> path{}; // Final Path
 		std::vector<NodeRecord> openList{}; // Conncections to be checked
 		std::vector<NodeRecord> closedList{}; // Connections already checked
@@ -90,12 +86,17 @@ namespace Elite
 
 				// Check if the already existing connection is cheaper (tip: use calculated G-Cost)
 				// If so, continue to the next connection
-				if (existingRecord.costSoFar <= totalCostSoFar) continue;
+				// Check if existingrecord is not empty
+				if (existingRecord.pNode != nullptr && existingRecord.costSoFar <= totalCostSoFar)
+				{
+					continue;
+				}
+				else
+				{
+					closedList.erase(std::remove(closedList.begin(), closedList.end(), existingRecord), closedList.end());
+				}
 
-				// else, remove it from the closedList (so it can be replaced)
-				closedList.erase(std::remove(closedList.begin(), closedList.end(), existingRecord));
-
-				if (existingRecord == NodeRecord{})
+				if (existingRecord.pNode == nullptr)
 				{
 					for (const auto& record : openList)
 					{
@@ -107,8 +108,14 @@ namespace Elite
 					}
 				}
 
-				if (existingRecord.costSoFar <= totalCostSoFar) continue;
-				openList.erase(std::remove(openList.begin(), openList.end(), existingRecord));
+				if (existingRecord.pNode != nullptr && existingRecord.costSoFar <= totalCostSoFar)
+				{
+					continue;
+				}
+				else
+				{
+					openList.erase(std::remove(openList.begin(), openList.end(), existingRecord), openList.end());
+				}
 
 				// At this point any expensive connection should be removed (if it existed). We create a new nodeRecordand add it to the openList
 				openList.emplace_back(NodeRecord{ m_pGraph->GetNode(connection->GetTo()), connection, totalCostSoFar, totalCostSoFar + GetHeuristicCost(m_pGraph->GetNode(connection->GetTo()), pGoalNode) });

@@ -7,8 +7,8 @@
 //#define ActiveApp_CombinedSteering
 //#define ActiveApp_Flocking
 //#define ActiveApp_GraphTheory
-//#define ActiveApp_PathfindingAStar
-#define ActiveApp_NavMeshGraph
+#define ActiveApp_PathfindingAStar
+//#define ActiveApp_NavMeshGraph
 
 //---------- Registered Applications -----------
 #ifdef ActiveApp_Sandbox
