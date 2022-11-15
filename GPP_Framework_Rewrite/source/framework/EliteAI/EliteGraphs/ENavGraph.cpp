@@ -56,7 +56,7 @@ Elite::Polygon* Elite::NavGraph::GetNavMeshPolygon() const
 void Elite::NavGraph::CreateNavigationGraph()
 {
 	//1. Go over all the edges of the navigationmesh and create nodes
-	
+
 	// Loop over all the lines (Tip: use GetLines()) of the Polygon
 	// For each line:
 	for (const auto& line : m_pNavMeshPolygon->GetLines())
@@ -77,7 +77,7 @@ void Elite::NavGraph::CreateNavigationGraph()
 		// Variable that stores the valid node indices reserve 3 indices
 		std::vector<int> validNodeIndices;
 		validNodeIndices.reserve(3);
-		
+
 		// Loop over the line indexes (Tip: Look at the metadata property of Triangle)
 		for (const auto& lineIdx : triangle->metaData.IndexLines)
 		{
