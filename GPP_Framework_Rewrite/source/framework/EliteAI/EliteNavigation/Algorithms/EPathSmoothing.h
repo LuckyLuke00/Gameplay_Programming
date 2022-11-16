@@ -9,7 +9,7 @@ namespace Elite
 	//Portal struct (only contains line info atm, you can expand this if needed)
 	struct Portal
 	{
-		Portal() {}
+		Portal() = default;
 		explicit Portal(const Elite::Line& line) :
 			Line(line)
 		{
@@ -26,12 +26,12 @@ namespace Elite
 		//https://gamedev.stackexchange.com/questions/68302/how-does-the-simple-stupid-funnel-algorithm-work
 		static std::vector<Portal> FindPortals(
 			const std::vector<NavGraphNode*>& nodePath,
-			Polygon* navMeshPolygon)
+			Polygon const* navMeshPolygon)
 		{
 			//Container
 			std::vector<Portal> vPortals = {};
 
-			vPortals.push_back(Portal(Line(nodePath[0]->GetPosition(), nodePath[0]->GetPosition())));
+			vPortals.emplace_back(Line(nodePath[0]->GetPosition(), nodePath[0]->GetPosition()));
 
 			std::vector<Line*> lines = navMeshPolygon->GetLines();
 
@@ -39,8 +39,8 @@ namespace Elite
 			for (size_t nodeIdx = 1; nodeIdx < nodePath.size() - 1; ++nodeIdx)
 			{
 				//Local variables
-				NavGraphNode* pNode = nodePath[nodeIdx]; //Store node, except last node, because this is our target node!
-				Line* pLine = lines[pNode->GetLineIndex()];
+				NavGraphNode const* pNode = nodePath[nodeIdx]; //Store node, except last node, because this is our target node!
+				Line const* pLine = lines[pNode->GetLineIndex()];
 
 				//Redetermine it's "orientation" based on the required path (left-right vs right-left) - p1 should be right point
 				Vector2 centerLine = (pLine->p1 + pLine->p2) / 2.0f;
@@ -55,10 +55,10 @@ namespace Elite
 					portalLine = Line(pLine->p1, pLine->p2);
 
 				//Store portal
-				vPortals.push_back(Portal(portalLine));
+				vPortals.emplace_back(portalLine);
 			}
 			//Add degenerate portal to force end evaluation
-			vPortals.push_back(Portal(Line(nodePath[nodePath.size() - 1]->GetPosition(), nodePath[nodePath.size() - 1]->GetPosition())));
+			vPortals.emplace_back(Line(nodePath[nodePath.size() - 1]->GetPosition(), nodePath[nodePath.size() - 1]->GetPosition()));
 
 			return vPortals;
 		}
@@ -66,37 +66,90 @@ namespace Elite
 		static std::vector<Vector2> OptimizePortals(const std::vector<Portal>& portals)
 		{
 			//P1 == right point of portal, P2 == left point of portal
-			std::vector<Vector2> vPath = {};
-			const unsigned int amtPortals{ static_cast<unsigned int>(portals.size()) };
+			std::vector<Vector2> vPath{};
+			const unsigned int amtPortals{ portals.size() };
 
-			int apexIdx{ 0 }, leftLegIdx{ 1 }, rightLegIdx{ 1 };
+			int apexIdx{ 0 };
+			int leftLegIdx{ 1 };
+			int rightLegIdx{ 1 };
 
-			Vector2 apexPos = portals[apexIdx].Line.p1;
-			Vector2 rightLeg = portals[rightLegIdx].Line.p1 - apexPos;
-			Vector2 leftLeg = portals[leftLegIdx].Line.p2 - apexPos;
+			Vector2 apexPos{ portals[apexIdx].Line.p1 };
+			Vector2 rightLeg{ portals[rightLegIdx].Line.p1 - apexPos };
+			Vector2 leftLeg{ portals[leftLegIdx].Line.p2 - apexPos };
 
 			for (unsigned int portalIdx = 1; portalIdx < amtPortals; ++portalIdx)
 			{
 				//Local
-				const auto& portal = portals[portalIdx];
+				const auto& portal{ portals[portalIdx] };
 
-				//--- RIGHT CHECK ---
-				//1. See if moving funnel inwards - RIGHT
+				// Right Check
+				// Create the new right leg = from the apex to the p1 point of the portal
+				Vector2 newRightLeg{ portal.Line.p1 - apexPos };
 
-					//2. See if new line degenerates a line segment - RIGHT
+				// Check if going inwards or not (Tip: Use Cross).
+				// If not going inwards, do nothing and just go to the left check.
+				if (Cross(rightLeg, newRightLeg) >= 0.0f)
+				{
+					if (Cross(newRightLeg, leftLeg) > 0.0f)
+					{
+						rightLeg = newRightLeg;
+						rightLegIdx = portalIdx;
+					}
+					else
+					{
+						apexPos += leftLeg;
+						apexIdx = leftLegIdx;
+						portalIdx = leftLegIdx + 1;
+						leftLegIdx = portalIdx;
+						rightLegIdx = portalIdx;
+						vPath.emplace_back(apexPos);
+
+						if (portalIdx < amtPortals)
+						{
+							// Update the right leg
+							rightLeg = portals[rightLegIdx].Line.p1 - apexPos;
+							leftLeg = portals[leftLegIdx].Line.p2 - apexPos;
+							continue;
+						}
+					}
+				}
 
 				//--- LEFT CHECK ---
+				Vector2 newLeftLeg{ portal.Line.p2 - apexPos };
 				//1. See if moving funnel inwards - LEFT
+				if (Cross(leftLeg, newLeftLeg) <= 0.0f)
+				{
+					if (Cross(newLeftLeg, rightLeg) < 0.0f)
+					{
+						leftLeg = newLeftLeg;
+						leftLegIdx = portalIdx;
+					}
+					else
+					{
+						apexPos += rightLeg;
+						apexIdx = rightLegIdx;
+						portalIdx = rightLegIdx + 1;
+						leftLegIdx = portalIdx;
+						rightLegIdx = portalIdx;
+						vPath.emplace_back(apexPos);
 
-					//2. See if new line degenerates a line segment - LEFT
+						if (portalIdx < amtPortals)
+						{
+							rightLeg = portals[rightLegIdx].Line.p1 - apexPos;
+							leftLeg = portals[leftLegIdx].Line.p2 - apexPos;
+							continue;
+						}
+					}
+				}
 			}
 
 			// Add last path point (You can use the last portal p1 or p2 points as both are equal to the endPoint of the path
+			vPath.push_back(portals[amtPortals - 1].Line.p2);
 
 			return vPath;
 		}
 	private:
-		SSFA() {};
-		~SSFA() {};
+		SSFA() = default;
+		~SSFA() = default;
 	};
 }

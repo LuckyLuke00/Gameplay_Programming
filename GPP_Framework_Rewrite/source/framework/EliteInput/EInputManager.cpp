@@ -10,8 +10,8 @@ MouseData EInputManager::GetMouseData(InputType type, InputMouseButton button)
 		[type, button](const InputAction& ia)
 		{
 			return
-				(ia.InputActionType == type) &&
-				(ia.InputActionData.MouseInputData.Button == button);
+			(ia.InputActionType == type) &&
+		(ia.InputActionData.MouseInputData.Button == button);
 		});
 
 	if (result != m_InputContainer.end())
@@ -27,9 +27,9 @@ bool EInputManager::IsKeyPresent(InputType type, InputState state, InputScancode
 		[type, state, code](const InputAction& ia)
 		{
 			return
-				(ia.InputActionType == type) &&
-				(ia.InputActionState == state) &&
-				(ia.InputActionData.KeyboardInputData.ScanCode == code);
+			(ia.InputActionType == type) &&
+		(ia.InputActionState == state) &&
+		(ia.InputActionData.KeyboardInputData.ScanCode == code);
 		});
 	return (result != m_InputContainer.end());
 }
@@ -40,9 +40,9 @@ bool EInputManager::IsMousePresent(InputType type, InputState state, InputMouseB
 		[type, state, button](const InputAction& ia)
 		{
 			return
-				(ia.InputActionType == type) &&
-				(ia.InputActionState == state) &&
-				(ia.InputActionData.MouseInputData.Button == button);
+			(ia.InputActionType == type) &&
+		(ia.InputActionState == state) &&
+		(ia.InputActionData.MouseInputData.Button == button);
 		});
 	return (result != m_InputContainer.end());
 }

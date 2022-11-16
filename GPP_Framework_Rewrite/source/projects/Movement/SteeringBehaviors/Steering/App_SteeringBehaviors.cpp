@@ -223,11 +223,11 @@ void App_SteeringBehaviors::Update(float deltaTime)
 					{
 						std::vector<std::string>* vector = reinterpret_cast<std::vector<std::string>*>(vec);
 
-						if (idx < 0 || idx >= (int)vector->size())
-							return false;
+				if (idx < 0 || idx >= (int)vector->size())
+					return false;
 
-						*out_text = vector->at(idx).c_str();
-						return true;
+				*out_text = vector->at(idx).c_str();
+				return true;
 					}, reinterpret_cast<void*>(&m_TargetLabelsVec), m_TargetLabelsVec.size()))
 				{
 					a.SelectedTarget = selectedTargetOffset - 1;
