@@ -14,9 +14,34 @@
 //------------
 //---STATES---
 //------------
+namespace FSMStates
+{
+	class WanderState : public Elite::FSMState
+	{
+	public:
+		WanderState() : FSMState() {};
+		virtual void OnEnter(Elite::Blackboard* pBlackboard) override;
+	};
+
+	class SeekFoodState : public Elite::FSMState
+	{
+	public:
+		SeekFoodState() : FSMState() {};
+		virtual void OnEnter(Elite::Blackboard* pBlackboard) override;
+	};
+}
 
 //-----------------
 //---TRANSITIONS---
 //-----------------
+namespace FSMConditions
+{
+	class FoodNearbyCondition : public Elite::FSMCondition
+	{
+	public:
+		FoodNearbyCondition() : FSMCondition() {};
 
+		virtual bool Evaluate(Elite::Blackboard* pBlackboard) const override;
+	};
+}
 #endif

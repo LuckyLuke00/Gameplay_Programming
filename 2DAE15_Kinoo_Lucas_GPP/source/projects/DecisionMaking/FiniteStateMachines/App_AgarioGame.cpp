@@ -8,6 +8,8 @@
 #include "projects/Shared/Agario/AgarioContactListener.h"
 
 using namespace Elite;
+using namespace FSMStates;
+using namespace FSMConditions;
 App_AgarioGame::App_AgarioGame()
 {
 }
@@ -54,10 +56,20 @@ void App_AgarioGame::Start()
 
 	//Create default agents
 	m_pAgentVec.reserve(m_AmountOfAgents);
+
+	FSMStates::WanderState* pWanderState{ new FSMStates::WanderState() };
+	m_pStates.emplace_back(pWanderState);
+
 	for (int i = 0; i < m_AmountOfAgents; i++)
 	{
 		Elite::Vector2 randomPos = randomVector2(0, m_TrimWorldSize * (2.0f / 3));
 		AgarioAgent* newAgent = new AgarioAgent(randomPos);
+
+		Blackboard* pBlackboard{ CreateBlackboard(newAgent) };
+
+		FiniteStateMachine* pStateMachine{ new FiniteStateMachine(pWanderState, pBlackboard) };
+
+		newAgent->SetDecisionMaking(pStateMachine);
 
 		m_pAgentVec.push_back(newAgent);
 	}
@@ -70,20 +82,27 @@ void App_AgarioGame::Start()
 	m_pCustomAgent = new AgarioAgent(randomPos, customColor);
 
 	//1. Create and add the necessary blackboard data
-
+	Blackboard* pBlackboard{ CreateBlackboard(m_pCustomAgent) };
 	//2. Create the different agent states
+	SeekFoodState* pSeekFood{ new SeekFoodState() };
 
 	//3. Create the transitions beetween those states
+	FSMConditions::FoodNearbyCondition* pFoodNearBy{ new FoodNearbyCondition() };
+	m_pConditions.emplace_back(pFoodNearBy);
 
 	//4. Create the finite state machine with a starting state and the blackboard
+	FiniteStateMachine* pStateMachine{ new FiniteStateMachine(pWanderState, pBlackboard) };
 
 	//5. Add the transitions for the states to the state machine
 	// stateMachine->AddTransition(startState, toState, condition)
 	// startState: active state for which the transition will be checked
 	// condition: if the Evaluate function returns true => transition will fire and move to the toState
 	// toState: end state where the agent will move to if the transition fires
+	pStateMachine->AddTransition(pWanderState, pSeekFood, pFoodNearBy);
 
 	//6. Activate the decision making stucture on the custom agent by calling the SetDecisionMaking function
+	m_pCustomAgent->SetDecisionMaking(pStateMachine);
+	m_pCustomAgent->SetRenderBehavior(true);
 }
 
 void App_AgarioGame::Update(float deltaTime)
@@ -138,6 +157,8 @@ Blackboard* App_AgarioGame::CreateBlackboard(AgarioAgent* a)
 {
 	Blackboard* pBlackboard = new Blackboard();
 	pBlackboard->AddData("Agent", a);
+	pBlackboard->AddData("FoodVec", &m_pFoodVec);
+	pBlackboard->AddData("NearestFood", static_cast<AgarioFood*>(nullptr));
 	//...
 
 	return pBlackboard;
