@@ -8,7 +8,8 @@
 //#define ActiveApp_Flocking
 //#define ActiveApp_GraphTheory
 //#define ActiveApp_PathfindingAStar
-#define ActiveApp_NavMeshGraph
+//#define ActiveApp_NavMeshGraph
+#define ActiveApp_AgarioGame
 
 //---------- Registered Applications -----------
 #ifdef ActiveApp_Sandbox
@@ -44,6 +45,11 @@ typedef App_PathfindingAStar CurrentApp;
 #ifdef ActiveApp_NavMeshGraph
 #include "projects/Movement/Pathfinding/NavMeshGraph/App_NavMeshGraph.h"
 typedef App_NavMeshGraph CurrentApp;
+#endif
+
+#ifdef ActiveApp_AgarioGame
+#include "projects/DecisionMaking/FiniteStateMachines/App_AgarioGame.h"
+typedef App_AgarioGame CurrentApp;
 #endif
 
 class App_Selector {
