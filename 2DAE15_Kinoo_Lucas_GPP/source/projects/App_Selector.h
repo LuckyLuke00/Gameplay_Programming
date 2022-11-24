@@ -9,7 +9,8 @@
 //#define ActiveApp_GraphTheory
 //#define ActiveApp_PathfindingAStar
 //#define ActiveApp_NavMeshGraph
-#define ActiveApp_AgarioGame
+//#define ActiveApp_AgarioGame
+#define ActiveApp_AgarioGame_BT
 
 //---------- Registered Applications -----------
 #ifdef ActiveApp_Sandbox
@@ -50,6 +51,11 @@ typedef App_NavMeshGraph CurrentApp;
 #ifdef ActiveApp_AgarioGame
 #include "projects/DecisionMaking/FiniteStateMachines/App_AgarioGame.h"
 typedef App_AgarioGame CurrentApp;
+#endif
+
+#ifdef ActiveApp_AgarioGame_BT
+#include "projects/DecisionMaking/BehaviorTrees/App_AgarioGame_BT.h"
+typedef App_AgarioGame_BT CurrentApp;
 #endif
 
 class App_Selector {

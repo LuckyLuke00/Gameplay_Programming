@@ -80,6 +80,7 @@ Flock::~Flock()
 		{
 			SAFE_DELETE(pAgent)
 		}
+
 	m_Agents.clear();
 }
 void Flock::Update(float deltaT)

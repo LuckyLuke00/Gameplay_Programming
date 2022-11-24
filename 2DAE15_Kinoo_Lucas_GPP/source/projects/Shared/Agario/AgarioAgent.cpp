@@ -17,6 +17,8 @@ AgarioAgent::AgarioAgent(Elite::Vector2 pos, Color color)
 	m_pWander = new Wander();
 	m_pSeek = new Seek();
 	m_pFlee = new Flee();
+
+	this->SetAutoOrient(true);
 }
 
 AgarioAgent::AgarioAgent(Elite::Vector2 pos)

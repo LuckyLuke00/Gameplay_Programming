@@ -29,6 +29,13 @@ namespace FSMStates
 		SeekFoodState() : FSMState() {};
 		virtual void OnEnter(Elite::Blackboard* pBlackboard) override;
 	};
+
+	class EvadeBiggerAgentsState : public Elite::FSMState
+	{
+	public:
+		EvadeBiggerAgentsState() : FSMState() {};
+		virtual void OnEnter(Elite::Blackboard* pBlackboard) override;
+	};
 }
 
 //-----------------
@@ -40,6 +47,14 @@ namespace FSMConditions
 	{
 	public:
 		FoodNearbyCondition() : FSMCondition() {};
+
+		virtual bool Evaluate(Elite::Blackboard* pBlackboard) const override;
+	};
+
+	class NearestBigBoyCondition : public Elite::FSMCondition
+	{
+	public:
+		NearestBigBoyCondition() : FSMCondition() {};
 
 		virtual bool Evaluate(Elite::Blackboard* pBlackboard) const override;
 	};

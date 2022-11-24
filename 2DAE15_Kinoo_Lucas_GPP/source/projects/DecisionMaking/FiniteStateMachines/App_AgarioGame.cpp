@@ -18,13 +18,13 @@ App_AgarioGame::~App_AgarioGame()
 {
 	for (auto& f : m_pFoodVec)
 	{
-		SAFE_DELETE(f);
+		SAFE_DELETE(f)
 	}
 	m_pFoodVec.clear();
 
 	for (auto& a : m_pAgentVec)
 	{
-		SAFE_DELETE(a);
+		SAFE_DELETE(a)
 	}
 	m_pAgentVec.clear();
 
@@ -32,12 +32,12 @@ App_AgarioGame::~App_AgarioGame()
 	SAFE_DELETE(m_pCustomAgent);
 	for (auto& s : m_pStates)
 	{
-		SAFE_DELETE(s);
+		SAFE_DELETE(s)
 	}
 
 	for (auto& t : m_pConditions)
 	{
-		SAFE_DELETE(t);
+		SAFE_DELETE(t)
 	}
 }
 
@@ -90,6 +90,9 @@ void App_AgarioGame::Start()
 	FSMConditions::FoodNearbyCondition* pFoodNearBy{ new FoodNearbyCondition() };
 	m_pConditions.emplace_back(pFoodNearBy);
 
+	FSMConditions::NearestBigBoyCondition* pNearestBigBoy{ new NearestBigBoyCondition() };
+	m_pConditions.emplace_back(pNearestBigBoy);
+
 	//4. Create the finite state machine with a starting state and the blackboard
 	FiniteStateMachine* pStateMachine{ new FiniteStateMachine(pWanderState, pBlackboard) };
 
@@ -119,6 +122,7 @@ void App_AgarioGame::Update(float deltaTime)
 		UpdateAgarioEntities(m_pAgentVec, deltaTime);
 		return;
 	}
+
 	//Update the custom agent
 	m_pCustomAgent->Update(deltaTime);
 	m_pCustomAgent->TrimToWorld(m_TrimWorldSize, false);
@@ -156,9 +160,12 @@ void App_AgarioGame::Render(float deltaTime) const
 Blackboard* App_AgarioGame::CreateBlackboard(AgarioAgent* a)
 {
 	Blackboard* pBlackboard = new Blackboard();
+
 	pBlackboard->AddData("Agent", a);
 	pBlackboard->AddData("FoodVec", &m_pFoodVec);
 	pBlackboard->AddData("NearestFood", static_cast<AgarioFood*>(nullptr));
+	pBlackboard->AddData("AgentVec", &m_pAgentVec);
+	pBlackboard->AddData("NearestBigBoy", static_cast<AgarioAgent*>(nullptr));
 	//...
 
 	return pBlackboard;

@@ -12,12 +12,12 @@ FiniteStateMachine::FiniteStateMachine(FSMState* startState, Blackboard* pBlackb
 
 FiniteStateMachine::~FiniteStateMachine()
 {
-	SAFE_DELETE(m_pBlackboard);
+	SAFE_DELETE(m_pBlackboard)
 }
 
 void FiniteStateMachine::AddTransition(FSMState* startState, FSMState* toState, FSMCondition* condition)
 {
-	auto it = m_Transitions.find(startState);
+	auto it{ m_Transitions.find(startState) };
 	if (it == m_Transitions.end())
 	{
 		m_Transitions[startState] = Transitions();
@@ -35,17 +35,25 @@ void FiniteStateMachine::Update(float deltaTime)
 	//TODO 5: if a TransitionState exists
 	if (currentTransitions != m_Transitions.end())
 	{
+		//TODO 6: Loop over all the TransitionState pairs
 		for (const auto& transition : currentTransitions->second)
 		{
 			FSMCondition* condition{ transition.first };
 			FSMState* nextState{ transition.second };
+
+			//TODO 7: If the Evaluate function of the FSMCondition returns true => transition to the new corresponding state
+			if (condition->Evaluate(m_pBlackboard))
+			{
+				ChangeState(nextState);
+				break;
+			}
 		}
 	}
-
-	//TODO 6: Loop over all the TransitionState pairs
-	//TODO 7: If the Evaluate function of the FSMCondition returns true => transition to the new corresponding state
-
-//TODO 8: Update the current state (if one exists)
+	//TODO 8: Update the current state (if one exists)
+	if (m_pCurrentState)
+	{
+		m_pCurrentState->Update(m_pBlackboard, deltaTime);
+	}
 }
 
 Blackboard* FiniteStateMachine::GetBlackboard() const
