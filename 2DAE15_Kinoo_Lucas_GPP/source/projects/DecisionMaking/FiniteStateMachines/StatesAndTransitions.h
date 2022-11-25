@@ -30,10 +30,24 @@ namespace FSMStates
 		virtual void OnEnter(Elite::Blackboard* pBlackboard) override;
 	};
 
-	class EvadeBiggerAgentsState : public Elite::FSMState
+	class SeekTargetState : public Elite::FSMState
 	{
 	public:
-		EvadeBiggerAgentsState() : FSMState() {};
+		SeekTargetState() : FSMState() {};
+		virtual void OnEnter(Elite::Blackboard* pBlackboard) override;
+	};
+
+	class FleeTargetState : public Elite::FSMState
+	{
+	public:
+		FleeTargetState() : FSMState() {};
+		virtual void OnEnter(Elite::Blackboard* pBlackboard) override;
+	};
+
+	class FleeBorderState : public Elite::FSMState
+	{
+	public:
+		FleeBorderState() : FSMState() {};
 		virtual void OnEnter(Elite::Blackboard* pBlackboard) override;
 	};
 }
@@ -47,15 +61,41 @@ namespace FSMConditions
 	{
 	public:
 		FoodNearbyCondition() : FSMCondition() {};
-
 		virtual bool Evaluate(Elite::Blackboard* pBlackboard) const override;
 	};
 
-	class NearestBigBoyCondition : public Elite::FSMCondition
+	class NoFoodNearbyCondition : public FoodNearbyCondition
 	{
 	public:
-		NearestBigBoyCondition() : FSMCondition() {};
+		NoFoodNearbyCondition() : FoodNearbyCondition() {};
+		virtual bool Evaluate(Elite::Blackboard* pBlackboard) const override;
+	};
 
+	class BiggerAgentNearbyCondition : public Elite::FSMCondition
+	{
+	public:
+		BiggerAgentNearbyCondition() : Elite::FSMCondition{} {};
+		virtual bool Evaluate(Elite::Blackboard* pBlackboard) const override;
+	};
+
+	class NoBiggerAgentNearbyCondition : public BiggerAgentNearbyCondition
+	{
+	public:
+		NoBiggerAgentNearbyCondition() : BiggerAgentNearbyCondition() {};
+		virtual bool Evaluate(Elite::Blackboard* pBlackboard) const override;
+	};
+
+	class BorderNearbyCondition : public Elite::FSMCondition
+	{
+	public:
+		BorderNearbyCondition() : Elite::FSMCondition{} {};
+		virtual bool Evaluate(Elite::Blackboard* pBlackboard) const override;
+	};
+
+	class SmallerAgentNearbyCondition : public Elite::FSMCondition
+	{
+	public:
+		SmallerAgentNearbyCondition() : Elite::FSMCondition{} {};
 		virtual bool Evaluate(Elite::Blackboard* pBlackboard) const override;
 	};
 }

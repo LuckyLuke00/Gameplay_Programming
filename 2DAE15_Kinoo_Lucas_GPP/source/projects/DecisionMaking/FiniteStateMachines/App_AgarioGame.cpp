@@ -85,13 +85,25 @@ void App_AgarioGame::Start()
 	Blackboard* pBlackboard{ CreateBlackboard(m_pCustomAgent) };
 	//2. Create the different agent states
 	SeekFoodState* pSeekFood{ new SeekFoodState() };
+	SeekTargetState* pSeekTarget{ new SeekTargetState() };
+	FleeTargetState* pFleeTarget{ new FleeTargetState() };
+	FleeBorderState* pFleeBorder{ new FleeBorderState() };
+	m_pStates.push_back(pSeekFood);
+	m_pStates.push_back(pSeekTarget);
+	m_pStates.push_back(pFleeTarget);
+	m_pStates.push_back(pFleeBorder);
 
 	//3. Create the transitions beetween those states
 	FSMConditions::FoodNearbyCondition* pFoodNearBy{ new FoodNearbyCondition() };
+	FSMConditions::NoFoodNearbyCondition* pNoFoodNearBy{ new NoFoodNearbyCondition() };
+	FSMConditions::BiggerAgentNearbyCondition* pBiggerAgentNearby{ new BiggerAgentNearbyCondition() };
+	FSMConditions::BorderNearbyCondition* pBorderNearby{ new BorderNearbyCondition() };
+	FSMConditions::SmallerAgentNearbyCondition* pSmallerAgentNearby{ new SmallerAgentNearbyCondition() };
 	m_pConditions.emplace_back(pFoodNearBy);
-
-	FSMConditions::NearestBigBoyCondition* pNearestBigBoy{ new NearestBigBoyCondition() };
-	m_pConditions.emplace_back(pNearestBigBoy);
+	m_pConditions.emplace_back(pNoFoodNearBy);
+	m_pConditions.emplace_back(pBiggerAgentNearby);
+	m_pConditions.emplace_back(pBorderNearby);
+	m_pConditions.emplace_back(pSmallerAgentNearby);
 
 	//4. Create the finite state machine with a starting state and the blackboard
 	FiniteStateMachine* pStateMachine{ new FiniteStateMachine(pWanderState, pBlackboard) };
@@ -101,7 +113,27 @@ void App_AgarioGame::Start()
 	// startState: active state for which the transition will be checked
 	// condition: if the Evaluate function returns true => transition will fire and move to the toState
 	// toState: end state where the agent will move to if the transition fires
+
+	// Condition: BorderNearby
+	pStateMachine->AddTransition(pFleeTarget, pFleeBorder, pBorderNearby);
+
+	// Condition: BiggerAgentNearby
+	pStateMachine->AddTransition(pFleeBorder, pFleeTarget, pBiggerAgentNearby);
+	pStateMachine->AddTransition(pFleeTarget, pFleeTarget, pBiggerAgentNearby);
+	pStateMachine->AddTransition(pSeekFood, pFleeTarget, pBiggerAgentNearby);
+	pStateMachine->AddTransition(pSeekTarget, pFleeTarget, pBiggerAgentNearby);
+	pStateMachine->AddTransition(pWanderState, pFleeTarget, pBiggerAgentNearby);
+
+	// Condition: SmallerAgentNearby
+	pStateMachine->AddTransition(pFleeBorder, pSeekTarget, pSmallerAgentNearby);
+	pStateMachine->AddTransition(pFleeTarget, pSeekTarget, pSmallerAgentNearby);
+	pStateMachine->AddTransition(pSeekTarget, pSeekTarget, pSmallerAgentNearby);
+
+	// Condition: FoodNearby
 	pStateMachine->AddTransition(pWanderState, pSeekFood, pFoodNearBy);
+	pStateMachine->AddTransition(pFleeBorder, pSeekFood, pFoodNearBy);
+	pStateMachine->AddTransition(pSeekFood, pSeekFood, pFoodNearBy);
+	pStateMachine->AddTransition(pSeekTarget, pSeekFood, pFoodNearBy);
 
 	//6. Activate the decision making stucture on the custom agent by calling the SetDecisionMaking function
 	m_pCustomAgent->SetDecisionMaking(pStateMachine);
@@ -162,10 +194,11 @@ Blackboard* App_AgarioGame::CreateBlackboard(AgarioAgent* a)
 	Blackboard* pBlackboard = new Blackboard();
 
 	pBlackboard->AddData("Agent", a);
+	pBlackboard->AddData("AgentVec", &m_pAgentVec);
 	pBlackboard->AddData("FoodVec", &m_pFoodVec);
 	pBlackboard->AddData("NearestFood", static_cast<AgarioFood*>(nullptr));
-	pBlackboard->AddData("AgentVec", &m_pAgentVec);
-	pBlackboard->AddData("NearestBigBoy", static_cast<AgarioAgent*>(nullptr));
+	pBlackboard->AddData("Target", static_cast<AgarioAgent*>(nullptr));
+	pBlackboard->AddData("WorldSize", m_TrimWorldSize);
 	//...
 
 	return pBlackboard;
