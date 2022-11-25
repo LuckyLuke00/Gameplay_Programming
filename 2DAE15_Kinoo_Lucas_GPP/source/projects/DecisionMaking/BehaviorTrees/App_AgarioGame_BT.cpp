@@ -102,7 +102,23 @@ void App_AgarioGame_BT::Start()
 					new BehaviorSequence
 					(
 						{
+							new BehaviorConditional(BT_Conditions::IsBiggerAgentNearby),
+							new BehaviorAction(BT_Actions::ChangeToFleeAgent)
+						}
+					),
+					new BehaviorSequence
+					(
+						{
+							new BehaviorConditional(BT_Conditions::IsSmallerAgentNearby),
+							new BehaviorConditional(BT_Conditions::IsTargetNotNearBiggerAgent),
+							new BehaviorAction(BT_Actions::ChangeToSeekAgent)
+						}
+					),
+					new BehaviorSequence
+					(
+						{
 							new BehaviorConditional(BT_Conditions::IsFoodNearby),
+							new BehaviorConditional(BT_Conditions::IsTargetNotNearBiggerAgent),
 							new BehaviorAction(BT_Actions::ChangeToSeekFood)
 						}
 					),
