@@ -6,11 +6,11 @@
 //#define ActiveApp_Steering
 //#define ActiveApp_CombinedSteering
 //#define ActiveApp_Flocking
-//#define ActiveApp_GraphTheory
+#define ActiveApp_GraphTheory
 //#define ActiveApp_PathfindingAStar
 //#define ActiveApp_NavMeshGraph
 //#define ActiveApp_AgarioGame
-#define ActiveApp_AgarioGame_BT
+//#define ActiveApp_AgarioGame_BT
 
 //---------- Registered Applications -----------
 #ifdef ActiveApp_Sandbox

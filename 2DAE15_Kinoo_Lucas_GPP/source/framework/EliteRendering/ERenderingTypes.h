@@ -21,6 +21,18 @@ namespace Elite
 		{
 			r = _r; g = _g; b = _b; a = _a;
 		}
+
+		// Generate a random color
+		static Color GenerateRandomColor()
+		{
+			return Color{ randomFloat(0.f, 1.f), randomFloat(0.f, 1.f), randomFloat(0.f, 1.f) };
+		}
+
+		// Equals operator
+		bool operator==(const Color& other) const
+		{
+			return (r == other.r && g == other.g && b == other.b && a == other.a);
+		}
 	};
 	//Basic vertex
 	struct Vertex final

@@ -36,11 +36,10 @@ void App_GraphTheory::Update(float deltaTime)
 	m_GraphEditor.UpdateGraph(m_pGraph2D);
 	m_pGraph2D->SetConnectionCostsToDistance();
 
-	auto eulerFinder = EulerianPath<GraphNode2D, GraphConnection2D>(m_pGraph2D);
-	Eulerianity eulerianity = eulerFinder.IsEulerian();
+	const auto eulerFinder{ EulerianPath<GraphNode2D, GraphConnection2D>(m_pGraph2D) };
+	const Eulerianity eulerianity{ eulerFinder.IsEulerian() };
 
-	Color color{ 1.f, 1.f, 1.f };
-	int nodeAmount{ 0 };
+	m_pGraph = eulerFinder.GetGraph();
 
 	// Variables for printing the message once
 	static Eulerianity lastEulerianity{};
@@ -50,11 +49,9 @@ void App_GraphTheory::Update(float deltaTime)
 	{
 	case Elite::Eulerianity::notEulerian:
 		message += "not Eulerian\n";
-		color = { 0.f, 0.f, 1.f };
 		break;
 	case Elite::Eulerianity::semiEulerian:
 		message += "semi-Eulerian\n";
-		nodeAmount = m_pGraph2D->GetAllNodes().size();
 		break;
 	case Elite::Eulerianity::eulerian:
 		message += "Eulerian\n";
@@ -70,18 +67,7 @@ void App_GraphTheory::Update(float deltaTime)
 		lastEulerianity = eulerianity;
 	}
 
-	for (auto& node : m_pGraph2D->GetAllNodes())
-	{
-		// When semi eulerian, every node gets a different color
-		// nodeAmount is only not zero when semiEulerian
-		if (nodeAmount != 0)
-		{
-			float hue{ static_cast<float>(node->GetIndex()) / static_cast<float>(nodeAmount) };
-			color = { hue, 0.f, 1.f - hue };
-		}
-
-		node->SetColor(color);
-	}
+	UpdateNodeColors();
 
 	//------- UI --------
 #ifdef PLATFORM_WINDOWS
@@ -134,4 +120,50 @@ void App_GraphTheory::Update(float deltaTime)
 void App_GraphTheory::Render(float deltaTime) const
 {
 	m_GraphRenderer.RenderGraph(m_pGraph2D, true, true);
+}
+
+void App_GraphTheory::UpdateNodeColors()
+{
+	// For every node
+	for (auto& node : m_pGraph2D->GetAllNodes())
+	{
+		// Rest the color to default so we can use the same color for multiple nodes
+		node->SetColor(m_MinColors.front());
+
+		for (const auto& color : m_MinColors)
+		{
+			if (!HasNeighborSameColor(node)) break;
+
+			node->SetColor(color);
+		}
+
+		while (HasNeighborSameColor(node))
+		{
+			node->SetColor(Color::GenerateRandomColor());
+		}
+
+		// Check if the color is already in the vector
+		if (std::find(m_MinColors.begin(), m_MinColors.end(), node->GetColor()) == m_MinColors.end())
+		{
+			m_MinColors.push_back(node->GetColor());
+		}
+	}
+}
+
+bool App_GraphTheory::HasNeighborSameColor(const Elite::GraphNode2D* pNode) const
+{
+	// Get the connections to the current node on the m_pGraph
+	const auto& connections{ m_pGraph->GetNodeConnections(pNode->GetIndex()) };
+
+	// For every connection
+	for (const auto& connection : connections)
+	{
+		// Get the node on the other side of the connection
+		const auto& node{ m_pGraph->GetNode(connection->GetTo()) };
+
+		if (node->GetColor() == pNode->GetColor())
+			return true;
+	}
+
+	return false;
 }

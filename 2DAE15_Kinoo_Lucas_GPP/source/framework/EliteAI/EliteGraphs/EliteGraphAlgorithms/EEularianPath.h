@@ -20,6 +20,8 @@ namespace Elite
 		Eulerianity IsEulerian() const;
 		std::vector<T_NodeType*> FindPath(Eulerianity& eulerianity) const;
 
+		IGraph<T_NodeType, T_ConnectionType>* GetGraph() const { return m_pGraph; }
+
 	private:
 		void VisitAllNodesDFS(int startIdx, std::vector<bool>& visited) const;
 		bool IsConnected() const;

@@ -16,7 +16,7 @@ App_AgarioGame_BT::~App_AgarioGame_BT()
 {
 	for (auto& f : m_pFoodVec)
 	{
-		SAFE_DELETE(f);
+		SAFE_DELETE(f)
 	}
 	m_pFoodVec.clear();
 

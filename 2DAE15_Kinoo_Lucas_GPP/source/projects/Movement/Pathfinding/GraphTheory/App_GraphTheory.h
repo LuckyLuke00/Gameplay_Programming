@@ -30,11 +30,18 @@ public:
 private:
 	Elite::Graph2D<Elite::GraphNode2D, Elite::GraphConnection2D>* m_pGraph2D;
 
-	Elite::GraphRenderer m_GraphRenderer{};
 	Elite::GraphEditor m_GraphEditor{};
+	Elite::GraphRenderer m_GraphRenderer{};
+
+	Elite::IGraph<Elite::GraphNode2D, Elite::GraphConnection2D>* m_pGraph;
+
+	std::vector<Elite::Color> m_MinColors{ DEFAULT_NODE_COLOR };
 
 	//C++ make the class non-copyable
 	App_GraphTheory(const App_GraphTheory&) = delete;
 	App_GraphTheory& operator=(const App_GraphTheory&) = delete;
+
+	void UpdateNodeColors();
+	bool HasNeighborSameColor(const Elite::GraphNode2D* pNode) const;
 };
 #endif
