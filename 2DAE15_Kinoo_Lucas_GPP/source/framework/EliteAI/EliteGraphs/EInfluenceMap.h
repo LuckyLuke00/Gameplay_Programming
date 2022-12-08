@@ -49,7 +49,36 @@ namespace Elite
 	template <class T_GraphType>
 	void InfluenceMap<T_GraphType>::PropagateInfluence(float deltaTime)
 	{
-		// TODO: implement
+		m_TimeSinceLastPropagation += deltaTime;
+		if (m_TimeSinceLastPropagation < m_PropagationInterval)
+			return;
+
+		m_TimeSinceLastPropagation = .0f;
+
+		// Go over all the nodes
+		for (const auto& node : m_Nodes)
+		{
+			//Check the influence of each neighboring node, taking into account the decay over distance(use the
+			//connection cost instead of actual distance) and remember the highest influence of all neighbors.
+			float highestInfluence{ .0f };
+
+			for (const auto& connection : GetNodeConnections(node))
+			{
+				const auto newInfluence{ m_Nodes[connection->GetTo()]->GetInfluence() * expf(-connection->GetCost() * m_Decay) };
+
+				if (abs(highestInfluence) < abs(newInfluence))
+				{
+					highestInfluence = newInfluence;
+				}
+			}
+			m_InfluenceDoubleBuffer[node->GetIndex()] = Lerp(highestInfluence, node->GetInfluence(), m_Momentum);
+		}
+
+		// Once we calculated all the new influences, copy them over from the buffer to the nodes of our Influence Map.
+		for (const auto& node : m_Nodes)
+		{
+			node->SetInfluence(m_InfluenceDoubleBuffer[node->GetIndex()]);
+		}
 	}
 
 	template <class T_GraphType>
