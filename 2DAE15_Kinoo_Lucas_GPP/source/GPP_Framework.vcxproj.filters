@@ -45,6 +45,7 @@
     <ClCompile Include="projects\Shared\Agario\AgarioFood.cpp" />
     <ClCompile Include="projects\DecisionMaking\BehaviorTrees\App_AgarioGame_BT.cpp" />
     <ClCompile Include="framework\EliteAI\EliteDecisionMaking\EliteBehaviorTree\EBehaviorTree.cpp" />
+    <ClCompile Include="projects\DecisionMaking\InfluenceMaps\App_InfluenceMap.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="projects\App_Selector.h" />
@@ -139,6 +140,8 @@
     <ClInclude Include="projects\DecisionMaking\BehaviorTrees\App_AgarioGame_BT.h" />
     <ClInclude Include="projects\DecisionMaking\BehaviorTrees\Behaviors.h" />
     <ClInclude Include="framework\EliteAI\EliteDecisionMaking\EliteBehaviorTree\EBehaviorTree.h" />
+    <ClInclude Include="framework\EliteAI\EliteGraphs\EInfluenceMap.h" />
+    <ClInclude Include="projects\DecisionMaking\InfluenceMaps\App_InfluenceMap.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="imgui.ini" />
