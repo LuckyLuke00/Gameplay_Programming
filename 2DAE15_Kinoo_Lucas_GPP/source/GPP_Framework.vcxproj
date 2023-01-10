@@ -110,7 +110,10 @@
       <AdditionalOptions>/ignore:4099 %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "$(SolutionDir)..\lib\SDL2.dll" "$(OutDir)" /y /D</Command>
+      <Command>xcopy "$(SolutionDir)..\lib\SDL2.dll" "$(OutDir)" /y /D
+xcopy "$(SolutionDir)..\lib\VLD\Win32\vld_x86.dll" "$(OutDir)" /y /D
+xcopy "$(SolutionDir)..\lib\VLD\Win32\dbghelp.dll" "$(OutDir)" /y /D
+xcopy "$(SolutionDir)..\lib\VLD\Win32\Microsoft.DTfW.DHL.manifest" "$(OutDir)" /y /D</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_Exam|Win32'">
@@ -130,7 +133,10 @@
       <AdditionalOptions>/ignore:4099 %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "$(SolutionDir)..\lib\SDL2.dll" "$(OutDir)" /y /D</Command>
+      <Command>xcopy "$(SolutionDir)..\lib\SDL2.dll" "$(OutDir)" /y /D
+xcopy "$(SolutionDir)..\lib\VLD\Win32\vld_x86.dll" "$(OutDir)" /y /D
+xcopy "$(SolutionDir)..\lib\VLD\Win32\dbghelp.dll" "$(OutDir)" /y /D
+xcopy "$(SolutionDir)..\lib\VLD\Win32\Microsoft.DTfW.DHL.manifest" "$(OutDir)" /y /D</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -154,7 +160,10 @@
       <AdditionalOptions>/ignore:4099 %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "$(SolutionDir)..\lib\SDL2.dll" "$(OutDir)" /y /D</Command>
+      <Command>xcopy "$(SolutionDir)..\lib\SDL2.dll" "$(OutDir)" /y /D
+xcopy "$(SolutionDir)..\lib\VLD\Win32\vld_x86.dll" "$(OutDir)" /y /D
+xcopy "$(SolutionDir)..\lib\VLD\Win32\dbghelp.dll" "$(OutDir)" /y /D
+xcopy "$(SolutionDir)..\lib\VLD\Win32\Microsoft.DTfW.DHL.manifest" "$(OutDir)" /y /D</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_Exam|Win32'">
@@ -178,7 +187,10 @@
       <AdditionalOptions>/ignore:4099 %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "$(SolutionDir)..\lib\SDL2.dll" "$(OutDir)" /y /D</Command>
+      <Command>xcopy "$(SolutionDir)..\lib\SDL2.dll" "$(OutDir)" /y /D
+xcopy "$(SolutionDir)..\lib\VLD\Win32\vld_x86.dll" "$(OutDir)" /y /D
+xcopy "$(SolutionDir)..\lib\VLD\Win32\dbghelp.dll" "$(OutDir)" /y /D
+xcopy "$(SolutionDir)..\lib\VLD\Win32\Microsoft.DTfW.DHL.manifest" "$(OutDir)" /y /D</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
