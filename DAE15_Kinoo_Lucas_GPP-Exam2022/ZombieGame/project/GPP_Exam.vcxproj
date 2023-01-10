@@ -116,8 +116,9 @@
       <OutputFile>$(IntDir)$(TargetName).bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command>xcopy "$(SolutionDir)..\lib\VLD\Win32\vld_x86.dll" "$(OutDir)" /y /D
+xcopy "$(SolutionDir)..\lib\VLD\Win32\dbghelp.dll" "$(OutDir)" /y /D
+xcopy "$(SolutionDir)..\lib\VLD\Win32\Microsoft.DTfW.DHL.manifest" "$(OutDir)" /y /D</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -162,6 +163,11 @@
     <Bscmake>
       <OutputFile>$(IntDir)$(TargetName).bsc</OutputFile>
     </Bscmake>
+    <PostBuildEvent>
+      <Command>xcopy "$(SolutionDir)..\lib\VLD\Win32\vld_x86.dll" "$(OutDir)" /y /D
+xcopy "$(SolutionDir)..\lib\VLD\Win32\dbghelp.dll" "$(OutDir)" /y /D
+xcopy "$(SolutionDir)..\lib\VLD\Win32\Microsoft.DTfW.DHL.manifest" "$(OutDir)" /y /D</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
