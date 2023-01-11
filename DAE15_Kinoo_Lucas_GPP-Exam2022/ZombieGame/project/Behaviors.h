@@ -14,20 +14,6 @@
 
 namespace BT_Actions
 {
-	Elite::BehaviorState Explore(Elite::Blackboard* blackboard)
-	{
-		Elite::Vector2 destination{};
-
-		if (!blackboard->GetData(DESTINATION, destination))
-		{
-			return Elite::BehaviorState::Failure;
-		}
-
-		blackboard->ChangeData(TARGET_INFO, destination);
-
-		return Elite::BehaviorState::Success;
-	}
-
 	Elite::BehaviorState Seek(Elite::Blackboard* blackboard)
 	{
 		Elite::Vector2 destination{};

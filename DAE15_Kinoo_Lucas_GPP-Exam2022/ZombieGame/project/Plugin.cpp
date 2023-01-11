@@ -11,6 +11,8 @@ using namespace std;
 //Called only once, during initialization
 void Plugin::Initialize(IBaseInterface* pInterface, PluginInfo& info)
 {
+	//srand(static_cast<unsigned int>(time(nullptr)));
+
 	//Retrieving the interface
 	//This interface gives you access to certain actions the AI_Framework can perform for you
 	m_pInterface = static_cast<IExamInterface*>(pInterface);
@@ -33,7 +35,6 @@ void Plugin::Initialize(IBaseInterface* pInterface, PluginInfo& info)
 		new Elite::BehaviorSequence
 		{
 			{
-				new Elite::BehaviorAction(BT_Actions::Explore),
 				new Elite::BehaviorAction(BT_Actions::Seek),
 			}
 		}
@@ -160,6 +161,9 @@ void Plugin::Render(float dt) const
 {
 	//This Render function should only contain calls to Interface->Draw_... functions
 	m_pInterface->Draw_SolidCircle(m_Target, .7f, { 0,0 }, { 1, 0, 0 });
+
+	// Draw a circle around the world map
+	m_pInterface->Draw_Circle(m_pInterface->World_GetInfo().Center, m_pInterface->World_GetInfo().Dimensions.x / 2, { 0,0,0 });
 }
 
 vector<HouseInfo> Plugin::GetHousesInFOV() const
@@ -212,7 +216,10 @@ void Plugin::InitBlackboardData() const
 void Plugin::SetRandomDestination() const
 {
 	// Set the destination in the blackboard
-	if (!(Elite::DistanceSquared(m_pInterface->Agent_GetInfo().Position, m_Target) < 2.5f))
+	auto currentDestination = Elite::Vector2{};
+	m_pBlackboard->GetData(DESTINATION, currentDestination);
+
+	if (!(Elite::DistanceSquared(m_pInterface->Agent_GetInfo().Position, currentDestination) < 5.f))
 	{
 		return;
 	}
@@ -222,10 +229,23 @@ void Plugin::SetRandomDestination() const
 	{
 		Elite::Vector2
 		{
-			Elite::randomFloat(.0f, m_WorldDimensions.y),
-			Elite::randomFloat(.0f, m_WorldDimensions.y)
+			Elite::randomFloat(.0f, m_WorldDimensions.x * .5f),
+			Elite::randomFloat(.0f, m_WorldDimensions.y * .5f)
 		}
 	};
 
-	m_pBlackboard->ChangeData(DESTINATION, randomDestination);
+	if (m_pBlackboard->ChangeData(DESTINATION, randomDestination))
+	{
+		// Change console text color to green
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN);
+		std::cout << "\nDestination Reached!\n";
+
+		// Set console text color orange
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_GREEN);
+		std::cout << "New Destination: ";
+
+		// Set color back to default
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+		std::cout << "x: " << randomDestination.x << " y: " << randomDestination.y << '\n';
+	}
 }
