@@ -188,10 +188,16 @@ xcopy "$(SolutionDir)..\lib\VLD\Win32\Microsoft.DTfW.DHL.manifest" "$(OutDir)" /
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Behaviors.h" />
+    <ClInclude Include="BlackboardData.h" />
+    <ClInclude Include="EBehaviorTree.h" />
+    <ClInclude Include="EBlackboard.h" />
+    <ClInclude Include="EDecisionMaking.h" />
     <ClInclude Include="Plugin.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="EBehaviorTree.cpp" />
     <ClCompile Include="Plugin.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

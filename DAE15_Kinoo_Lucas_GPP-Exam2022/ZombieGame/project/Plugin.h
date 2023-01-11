@@ -2,6 +2,12 @@
 #include "IExamPlugin.h"
 #include "Exam_HelperStructs.h"
 
+namespace Elite
+{
+	class BehaviorTree;
+	class Blackboard;
+}
+
 class IBaseInterface;
 class IExamInterface;
 
@@ -23,18 +29,26 @@ public:
 
 private:
 	//Interface, used to request data from/perform actions with the AI Framework
-	IExamInterface* m_pInterface = nullptr;
+	IExamInterface* m_pInterface{ nullptr };
 	std::vector<HouseInfo> GetHousesInFOV() const;
 	std::vector<EntityInfo> GetEntitiesInFOV() const;
 
-	Elite::Vector2 m_Target = {};
-	bool m_CanRun = false; //Demo purpose
-	bool m_GrabItem = false; //Demo purpose
-	bool m_UseItem = false; //Demo purpose
-	bool m_RemoveItem = false; //Demo purpose
-	float m_AngSpeed = 0.f; //Demo purpose
+	Elite::Vector2 m_Target{};
+	bool m_CanRun{ false }; //Demo purpose
+	bool m_GrabItem{ false }; //Demo purpose
+	bool m_UseItem{ false }; //Demo purpose
+	bool m_RemoveItem{ false }; //Demo purpose
+	float m_AngSpeed{ .0f }; //Demo purpose
 
-	UINT m_InventorySlot = 0;
+	UINT m_InventorySlot{ 0 };
+
+	Elite::Vector2 m_WorldDimensions{};
+
+	Elite::BehaviorTree* m_pBehaviorTree;
+	Elite::Blackboard* m_pBlackboard;
+
+	void InitBlackboardData() const;
+	void SetRandomDestination() const;
 };
 
 //ENTRY
