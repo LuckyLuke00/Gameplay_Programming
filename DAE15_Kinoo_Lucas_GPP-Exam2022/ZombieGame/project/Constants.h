@@ -9,6 +9,6 @@ constexpr UINT MEDKIT_SLOT{ 2 };
 constexpr UINT FOOD_SLOT{ 3 };
 constexpr UINT GARBAGE_SLOT{ 4 };
 
-constexpr float HOUSE_VISIT_COOLDOWN{ 60.f };
+constexpr float HOUSE_VISIT_COOLDOWN{ 120.f };
 
 #endif

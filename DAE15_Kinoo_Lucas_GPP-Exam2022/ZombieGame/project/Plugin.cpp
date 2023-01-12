@@ -58,6 +58,23 @@ void Plugin::Initialize(IBaseInterface* pInterface, PluginInfo& info)
 					}},
 					new Elite::BehaviorSequence
 					{{
+							// ---------- Manage Vitals ----------
+							new Elite::BehaviorSelector
+							{{
+									new Elite::BehaviorSequence
+									{{
+										new Elite::BehaviorConditional{ BT_Conditions::CanHeal },
+										new Elite::BehaviorAction{ BT_Actions::Heal },
+									}},
+									new Elite::BehaviorSequence
+									{{
+										new Elite::BehaviorConditional{ BT_Conditions::CanEat },
+										new Elite::BehaviorAction{ BT_Actions::Eat },
+									}},
+							}},
+					}},
+					new Elite::BehaviorSequence
+					{{
 							// ------ Find and Pickup Items ------
 							new Elite::BehaviorSequence
 							{{

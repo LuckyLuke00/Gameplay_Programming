@@ -336,6 +336,34 @@ namespace BT_Actions
 			pExamInterface->Inventory_RemoveItem(GARBAGE_SLOT);
 			return Elite::BehaviorState::Success;
 		}
+
+		return Elite::BehaviorState::Failure;
+	}
+
+	Elite::BehaviorState Eat(Elite::Blackboard* pBlackboard)
+	{
+		IExamInterface* pExamInterface{};
+
+		if (!pBlackboard->GetData(EXAM_ITERFACE, pExamInterface))
+		{
+			return Elite::BehaviorState::Failure;
+		}
+
+		pExamInterface->Inventory_UseItem(FOOD_SLOT);
+		return Elite::BehaviorState::Success;
+	}
+
+	Elite::BehaviorState Heal(Elite::Blackboard* pBlackboard)
+	{
+		IExamInterface* pExamInterface{};
+
+		if (!pBlackboard->GetData(EXAM_ITERFACE, pExamInterface))
+		{
+			return Elite::BehaviorState::Failure;
+		}
+
+		pExamInterface->Inventory_UseItem(MEDKIT_SLOT);
+		return Elite::BehaviorState::Success;
 	}
 }
 
@@ -440,7 +468,7 @@ namespace BT_Conditions
 		if (itemInfo.Type != eItemType::PISTOL) return false;
 
 		// Check if the pistol is loaded
-		if (pExamInterface->Weapon_GetAmmo(itemInfo) > 1) return true;
+		if (pExamInterface->Weapon_GetAmmo(itemInfo) > 0) return true;
 
 		return false;
 	}
@@ -457,7 +485,7 @@ namespace BT_Conditions
 		if (itemInfo.Type != eItemType::SHOTGUN) return false;
 
 		// Check if the shotgun is loaded
-		if (pExamInterface->Weapon_GetAmmo(itemInfo) > 1) return true;
+		if (pExamInterface->Weapon_GetAmmo(itemInfo) > 0) return true;
 
 		return false;
 	}
@@ -517,7 +545,7 @@ namespace BT_Conditions
 				return true;
 			}
 			// If the pistol in the inventory is better than the pistol in the fov destroy it and return false
-			pExamInterface->Item_Destroy(item);
+			//pExamInterface->Item_Destroy(item);
 			return false;
 		}
 		// If no pistol is in the fov, return false
@@ -555,7 +583,7 @@ namespace BT_Conditions
 			}
 
 			// If the shotgun in the inventory is better than the shotgun in the fov destroy it and return false
-			pExamInterface->Item_Destroy(item);
+			//pExamInterface->Item_Destroy(item);
 			return false;
 		}
 		// If no shotgun is in the fov, return false
@@ -592,7 +620,7 @@ namespace BT_Conditions
 				return true;
 			}
 			// If the medkit in the inventory is better than the medkit in the fov destroy it and return false
-			pExamInterface->Item_Destroy(item);
+			//pExamInterface->Item_Destroy(item);
 			return false;
 		}
 		// If no medkit is in the fov, return false
@@ -629,11 +657,41 @@ namespace BT_Conditions
 				return true;
 			}
 			// If the food in the inventory is better than the food in the fov destroy it and return false
-			pExamInterface->Item_Destroy(item);
+			//pExamInterface->Item_Destroy(item);
 			return false;
 		}
 		// If no food is in the fov, return false
 		return false;
+	}
+
+	bool CanEat(Elite::Blackboard* pBlackboard)
+	{
+		IExamInterface* pExamInterface{};
+		if (!pBlackboard->GetData(EXAM_ITERFACE, pExamInterface)) return false;
+
+		// If the agent has max energy, return false
+		if (pExamInterface->Agent_GetInfo().Energy >= 1.f) return false;
+
+		ItemInfo itemInfo{};
+		if (!pExamInterface->Inventory_GetItem(FOOD_SLOT, itemInfo)) return false;
+
+		return true;
+	}
+
+	bool CanHeal(Elite::Blackboard* pBlackboard)
+	{
+		IExamInterface* pExamInterface{};
+		if (!pBlackboard->GetData(EXAM_ITERFACE, pExamInterface)) return false;
+
+		// If player is not hurt, return false
+		if (pExamInterface->Agent_GetInfo().Health >= 1.f) return false;
+
+		ItemInfo itemInfo{};
+		if (!pExamInterface->Inventory_GetItem(MEDKIT_SLOT, itemInfo)) return false;
+
+		if (!(pExamInterface->Medkit_GetHealth(itemInfo) > 0)) return false;
+
+		return true;
 	}
 }
 #endif

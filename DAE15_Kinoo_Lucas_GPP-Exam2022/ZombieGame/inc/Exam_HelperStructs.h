@@ -16,7 +16,7 @@ struct PluginInfo
 	std::string Student_FirstName = "Not Set";
 	std::string Student_LastName = "Not Set";
 	std::string Student_Class = "Not Set";
-};	
+};
 
 struct GameDebugParams //Debuggin Purposes only (Ignored during release build)
 {
@@ -89,7 +89,6 @@ enum class eEnemyType
 	_LAST = ZOMBIE_HEAVY
 };
 
-
 //Structures
 //**********
 struct StatisticsInfo
@@ -104,7 +103,6 @@ struct StatisticsInfo
 	int NumItemsPickUp; //Amount of items picked up
 	int NumMissedShots; //Shots missed after firing
 	int NumChkpntsReached; //Amount of checkpoints reached
-
 };
 
 struct HouseInfo
