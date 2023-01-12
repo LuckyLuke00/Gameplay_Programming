@@ -190,6 +190,7 @@ xcopy "$(SolutionDir)..\lib\VLD\Win32\Microsoft.DTfW.DHL.manifest" "$(OutDir)" /
   <ItemGroup>
     <ClInclude Include="Behaviors.h" />
     <ClInclude Include="BlackboardData.h" />
+    <ClInclude Include="Constants.h" />
     <ClInclude Include="EBehaviorTree.h" />
     <ClInclude Include="EBlackboard.h" />
     <ClInclude Include="EDecisionMaking.h" />

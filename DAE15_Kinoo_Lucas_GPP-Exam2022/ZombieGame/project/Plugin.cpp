@@ -11,11 +11,10 @@ using namespace std;
 //Called only once, during initialization
 void Plugin::Initialize(IBaseInterface* pInterface, PluginInfo& info)
 {
-	//srand(static_cast<unsigned int>(time(nullptr)));
-
 	//Retrieving the interface
 	//This interface gives you access to certain actions the AI_Framework can perform for you
 	m_pInterface = static_cast<IExamInterface*>(pInterface);
+	UpdateFOVItems();
 
 	//Bit information about the plugin
 	//Please fill this in!!
@@ -32,12 +31,40 @@ void Plugin::Initialize(IBaseInterface* pInterface, PluginInfo& info)
 	m_pBehaviorTree = new Elite::BehaviorTree
 	{
 		m_pBlackboard,
+		// --------------- Root ---------------
+		new Elite::BehaviorSelector
+		{{
+				new Elite::BehaviorSequence
+				{{
+					new Elite::BehaviorConditional{ BT_Conditions::IsItemInGrabRange },
+					new Elite::BehaviorSelector
+					{{
+							// -------------- Pistol --------------
+							new Elite::BehaviorSequence
+							{{
+								new Elite::BehaviorConditional{ BT_Conditions::ShouldPickupPistol },
+								new Elite::BehaviorAction{ BT_Actions::PickUpPistol },
+							}},
+							// -------------- Shotgun --------------
+							new Elite::BehaviorSequence
+							{{
+								new Elite::BehaviorConditional{ BT_Conditions::ShouldPickupShotgun },
+								new Elite::BehaviorAction{ BT_Actions::PickUpShotgun },
+							}},
+						}}
+					}},
+		// ------ Find and Pickup Items ------
 		new Elite::BehaviorSequence
-		{
-			{
-				new Elite::BehaviorAction(BT_Actions::Seek),
-			}
-		}
+		{{
+			new Elite::BehaviorConditional{ BT_Conditions::IsItemInFOV },
+			new Elite::BehaviorAction{ BT_Actions::SetItemAsTarget },
+			new Elite::BehaviorAction{ BT_Actions::Seek },
+		}},
+		new Elite::BehaviorSequence
+		{{
+			new Elite::BehaviorAction{ BT_Actions::Seek },
+		}}
+}}
 	};
 }
 
@@ -140,14 +167,22 @@ void Plugin::Update(float dt)
 //This function calculates the new SteeringOutput, called once per frame
 SteeringPlugin_Output Plugin::UpdateSteering(float dt)
 {
+	// Clear the vectors
+	m_EnemiesInFOV.clear();
+	m_ItemsInFOV.clear();
+	m_HousesInFOV.clear();
+
 	SteeringPlugin_Output steering{};
+
+	if (!UpdateFOVItems())
+	{
+		SetRandomDestination();
+	}
 
 	m_pBehaviorTree->Update(dt);
 
 	m_pBlackboard->GetData(STEERING_OUTPUT, steering);
 	m_pBlackboard->ChangeData(AGENT_INFO, m_pInterface->Agent_GetInfo());
-
-	SetRandomDestination();
 
 	m_GrabItem = false;
 	m_UseItem = false;
@@ -160,10 +195,13 @@ SteeringPlugin_Output Plugin::UpdateSteering(float dt)
 void Plugin::Render(float dt) const
 {
 	//This Render function should only contain calls to Interface->Draw_... functions
-	m_pInterface->Draw_SolidCircle(m_Target, .7f, { 0,0 }, { 1, 0, 0 });
+	m_pInterface->Draw_SolidCircle(m_Target, .7f, { 0, 0 }, { 1, 0, 0 });
 
-	// Draw a circle around the world map
-	m_pInterface->Draw_Circle(m_pInterface->World_GetInfo().Center, m_pInterface->World_GetInfo().Dimensions.x / 2, { 0,0,0 });
+	// Draw the map's boundaries
+	m_pInterface->Draw_Segment({ m_WorldDimensions.x * -.5f, m_WorldDimensions.y * -.5f }, { m_WorldDimensions.x * .5f, m_WorldDimensions.y * -.5f }, { 1, 0, 0 });
+	m_pInterface->Draw_Segment({ m_WorldDimensions.x * .5f, m_WorldDimensions.y * -.5f }, { m_WorldDimensions.x * .5f, m_WorldDimensions.y * .5f }, { 1, 0, 0 });
+	m_pInterface->Draw_Segment({ m_WorldDimensions.x * .5f, m_WorldDimensions.y * .5f }, { m_WorldDimensions.x * -.5f, m_WorldDimensions.y * .5f }, { 1, 0, 0 });
+	m_pInterface->Draw_Segment({ m_WorldDimensions.x * -.5f, m_WorldDimensions.y * .5f }, { m_WorldDimensions.x * -.5f, m_WorldDimensions.y * -.5f }, { 1, 0, 0 });
 }
 
 vector<HouseInfo> Plugin::GetHousesInFOV() const
@@ -204,19 +242,23 @@ vector<EntityInfo> Plugin::GetEntitiesInFOV() const
 	return vEntitiesInFOV;
 }
 
-void Plugin::InitBlackboardData() const
+void Plugin::InitBlackboardData()
 {
 	m_pBlackboard->AddData(AGENT_INFO, AgentInfo{});
 	m_pBlackboard->AddData(DESTINATION, Elite::Vector2{});
 	m_pBlackboard->AddData(EXAM_ITERFACE, m_pInterface);
 	m_pBlackboard->AddData(STEERING_OUTPUT, SteeringPlugin_Output{});
 	m_pBlackboard->AddData(TARGET_INFO, Elite::Vector2{});
+	m_pBlackboard->AddData(ENEMIES_IN_FOV, &m_EnemiesInFOV);
+	m_pBlackboard->AddData(HOUSES_IN_FOV, &m_HousesInFOV);
+	m_pBlackboard->AddData(ITEMS_IN_FOV, &m_ItemsInFOV);
+	m_pBlackboard->AddData(SPIN_ROUND, true);
 }
 
 void Plugin::SetRandomDestination() const
 {
 	// Set the destination in the blackboard
-	auto currentDestination = Elite::Vector2{};
+	auto currentDestination{ Elite::Vector2{} };
 	m_pBlackboard->GetData(DESTINATION, currentDestination);
 
 	if (!(Elite::DistanceSquared(m_pInterface->Agent_GetInfo().Position, currentDestination) < 5.f))
@@ -248,4 +290,42 @@ void Plugin::SetRandomDestination() const
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
 		std::cout << "x: " << randomDestination.x << " y: " << randomDestination.y << '\n';
 	}
+
+	m_pBlackboard->ChangeData(SPIN_ROUND, true);
+}
+
+bool Plugin::UpdateFOVItems()
+{
+	bool entityInFov{ false };
+	const auto vEntitiesInFOV{ GetEntitiesInFOV() };
+	const auto vHousesInFOV{ GetHousesInFOV() };
+
+	// Update the items in the FOV
+	for (const auto& entity : vEntitiesInFOV)
+	{
+		if (entity.Type == eEntityType::ITEM)
+		{
+			m_ItemsInFOV.emplace_back(entity);
+			entityInFov = true;
+			continue;
+		}
+
+		if (entity.Type == eEntityType::ENEMY)
+		{
+			EnemyInfo enemyInfo{};
+			m_pInterface->Enemy_GetInfo(entity, enemyInfo);
+			m_EnemiesInFOV.emplace_back(enemyInfo);
+			entityInFov = true;
+			continue;
+		}
+	}
+
+	// Update the houses in the FOV
+	for (const auto& house : vHousesInFOV)
+	{
+		m_HousesInFOV.emplace_back(house);
+		entityInFov = true;
+	}
+
+	return entityInFov;
 }

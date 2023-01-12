@@ -47,8 +47,16 @@ private:
 	Elite::BehaviorTree* m_pBehaviorTree;
 	Elite::Blackboard* m_pBlackboard;
 
-	void InitBlackboardData() const;
+	std::vector<EnemyInfo> m_EnemiesInFOV{};
+	std::vector<EntityInfo> m_ItemsInFOV{};
+	std::vector<HouseInfo> m_HousesInFOV{};
+
+	void InitBlackboardData();
 	void SetRandomDestination() const;
+
+	// Function that updates the vectors of enemies, entities and houses in the field of view
+	// Returns true if any entity or house was found
+	bool UpdateFOVItems();
 };
 
 //ENTRY

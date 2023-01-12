@@ -25,6 +25,7 @@
     <ClInclude Include="BlackboardData.h">
       <Filter>BehaviorTree</Filter>
     </ClInclude>
+    <ClInclude Include="Constants.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="BehaviorTree">
