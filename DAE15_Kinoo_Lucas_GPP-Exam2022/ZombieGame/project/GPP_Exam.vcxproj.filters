@@ -28,6 +28,9 @@
     <ClInclude Include="Constants.h">
       <Filter>Globals</Filter>
     </ClInclude>
+    <ClInclude Include="Structs.h">
+      <Filter>Globals</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="BehaviorTree">

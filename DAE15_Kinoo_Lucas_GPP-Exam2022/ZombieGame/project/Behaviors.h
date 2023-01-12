@@ -9,6 +9,7 @@
 #include "EliteMath/EMath.h"
 #include "Exam_HelperStructs.h"
 #include "IExamInterface.h"
+#include "Structs.h"
 //-----------------------------------------------------------------
 // Behaviors
 //-----------------------------------------------------------------
@@ -258,6 +259,58 @@ namespace BT_Actions
 
 		return Elite::BehaviorState::Success;
 	}
+
+	Elite::BehaviorState VisitHouses(Elite::Blackboard* pBlackboard)
+	{
+		AgentInfo agentInfo{};
+		Elite::Vector2 destination{};
+		IExamInterface* pExamInterface{};
+		std::vector<DiscoveredHouse>* pDiscoveredHouses{};
+
+		if (!pBlackboard->GetData(DESTINATION, destination) ||
+			!pBlackboard->GetData(DISCOVERED_HOUSES, pDiscoveredHouses) ||
+			!pBlackboard->GetData(AGENT_INFO, agentInfo) ||
+			!pBlackboard->GetData(EXAM_ITERFACE, pExamInterface))
+		{
+			return Elite::BehaviorState::Failure;
+		}
+
+		// If no houses have been discovered yet, return failure
+		if (pDiscoveredHouses->empty()) return Elite::BehaviorState::Failure;
+
+		// Find the closest house that has not been visited yet
+		float closestDistance{ FLT_MAX };
+		DiscoveredHouse closestHouse{};
+		int closestHouseIndex{};
+
+		for (size_t i{}; i < pDiscoveredHouses->size(); ++i)
+		{
+			const float distance{ Elite::DistanceSquared(pDiscoveredHouses->at(i).m_HouseInfo.Center, agentInfo.Position) };
+			if (distance < closestDistance && !pDiscoveredHouses->at(i).m_IsVisited)
+			{
+				closestDistance = distance;
+				closestHouse = pDiscoveredHouses->at(i);
+				closestHouseIndex = i;
+			}
+		}
+
+		// If no house has been found, return failure
+		if (closestDistance == FLT_MAX) return Elite::BehaviorState::Failure;
+
+		pBlackboard->ChangeData(SPIN_ROUND, true);
+
+		// If the player is in the center of the house, set the house to visited
+		if (Elite::DistanceSquared(closestHouse.m_HouseInfo.Center, agentInfo.Position) < 1.f)
+		{
+			closestHouse.m_IsVisited = true;
+			closestHouse.m_TimeSinceVisit = .0f;
+			pDiscoveredHouses->at(closestHouseIndex) = closestHouse;
+		}
+
+		// Set the destination to the house
+		pBlackboard->ChangeData(DESTINATION, closestHouse.m_HouseInfo.Center);
+		return Elite::BehaviorState::Failure;
+	}
 }
 
 namespace BT_Conditions
@@ -302,6 +355,22 @@ namespace BT_Conditions
 		}
 
 		if (pEnemiesInFov->empty()) return false;
+
+		return true;
+	}
+
+	bool IsHouseInFOV(Elite::Blackboard* pBlackboard)
+	{
+		IExamInterface* pExamInterface{};
+		std::vector<HouseInfo>* pHousesInFov{};
+
+		if (!pBlackboard->GetData(EXAM_ITERFACE, pExamInterface) ||
+			!pBlackboard->GetData(HOUSES_IN_FOV, pHousesInFov))
+		{
+			return false;
+		}
+
+		if (pHousesInFov->empty()) return false;
 
 		return true;
 	}

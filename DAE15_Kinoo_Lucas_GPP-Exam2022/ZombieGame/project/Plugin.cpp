@@ -5,6 +5,7 @@
 #include "IExamInterface.h"
 #include "BlackboardData.h"
 #include "Behaviors.h"
+#include "Structs.h"
 
 using namespace std;
 
@@ -94,13 +95,17 @@ void Plugin::Initialize(IBaseInterface* pInterface, PluginInfo& info)
 								}}
 							}},
 		// -------------- Explore --------------
-		new Elite::BehaviorSequence
+		new Elite::BehaviorSelector
 		{{
-			new Elite::BehaviorAction{ BT_Actions::Seek },
-			new Elite::BehaviorConditional{ BT_Conditions::ReachedDestination },
-			new Elite::BehaviorAction{ BT_Actions::Explore },
-		}},
-	}}
+				new Elite::BehaviorAction{ BT_Actions::VisitHouses },
+				new Elite::BehaviorSequence
+				{{
+					new Elite::BehaviorAction{ BT_Actions::Seek },
+					new Elite::BehaviorConditional{ BT_Conditions::ReachedDestination },
+					new Elite::BehaviorAction{ BT_Actions::Explore },
+				}},
+			}}
+		}}
 	};
 }
 
@@ -210,12 +215,8 @@ SteeringPlugin_Output Plugin::UpdateSteering(float dt)
 
 	SteeringPlugin_Output steering{};
 
-	//if (!UpdateFOVItems())
-	//{
-	//	SetRandomDestination();
-	//}
-
 	UpdateFOVItems();
+	UpdateDiscoveredHouses(dt);
 
 	m_pBehaviorTree->Update(dt);
 
@@ -284,13 +285,14 @@ void Plugin::InitBlackboardData()
 {
 	m_pBlackboard->AddData(AGENT_INFO, AgentInfo{});
 	m_pBlackboard->AddData(DESTINATION, Elite::Vector2{});
-	m_pBlackboard->AddData(EXAM_ITERFACE, m_pInterface);
-	m_pBlackboard->AddData(STEERING_OUTPUT, SteeringPlugin_Output{});
-	m_pBlackboard->AddData(TARGET_INFO, Elite::Vector2{});
+	m_pBlackboard->AddData(DISCOVERED_HOUSES, &m_DiscoveredHouses);
 	m_pBlackboard->AddData(ENEMIES_IN_FOV, &m_EnemiesInFOV);
+	m_pBlackboard->AddData(EXAM_ITERFACE, m_pInterface);
 	m_pBlackboard->AddData(HOUSES_IN_FOV, &m_HousesInFOV);
 	m_pBlackboard->AddData(ITEMS_IN_FOV, &m_ItemsInFOV);
 	m_pBlackboard->AddData(SPIN_ROUND, true);
+	m_pBlackboard->AddData(STEERING_OUTPUT, SteeringPlugin_Output{});
+	m_pBlackboard->AddData(TARGET_INFO, Elite::Vector2{});
 }
 
 void Plugin::UpdateFOVItems()
@@ -320,5 +322,47 @@ void Plugin::UpdateFOVItems()
 	for (const auto& house : vHousesInFOV)
 	{
 		m_HousesInFOV.emplace_back(house);
+	}
+
+	AddDiscoveredHouses();
+}
+
+void Plugin::AddDiscoveredHouses()
+{
+	// Loop through all the houses in the FOV, and add them to the discovered houses if they are not already in there
+	// Check if they are equal by comparing the center of the house
+	for (const auto& house : m_HousesInFOV)
+	{
+		bool bFound{ false };
+		for (const auto& discoveredHouse : m_DiscoveredHouses)
+		{
+			if (house.Center == discoveredHouse.m_HouseInfo.Center)
+			{
+				bFound = true;
+				break;
+			}
+		}
+
+		if (!bFound)
+		{
+			m_DiscoveredHouses.emplace_back(DiscoveredHouse{ house, false });
+		}
+	}
+}
+
+void Plugin::UpdateDiscoveredHouses(float dt)
+{
+	// Loop through all the discovered houses, and update the time since last seen
+	for (auto& discoveredHouse : m_DiscoveredHouses)
+	{
+		if (!discoveredHouse.m_IsVisited) continue;
+
+		discoveredHouse.m_TimeSinceVisit += dt;
+
+		if (discoveredHouse.m_TimeSinceVisit >= HOUSE_VISIT_COOLDOWN)
+		{
+			discoveredHouse.m_IsVisited = false;
+			discoveredHouse.m_TimeSinceVisit = 0.f;
+		}
 	}
 }

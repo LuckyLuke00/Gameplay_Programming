@@ -10,6 +10,7 @@ namespace Elite
 
 class IBaseInterface;
 class IExamInterface;
+struct DiscoveredHouse;
 
 class Plugin :public IExamPlugin
 {
@@ -50,11 +51,14 @@ private:
 	std::vector<EnemyInfo> m_EnemiesInFOV{};
 	std::vector<EntityInfo> m_ItemsInFOV{};
 	std::vector<HouseInfo> m_HousesInFOV{};
+	std::vector<DiscoveredHouse> m_DiscoveredHouses{};
 
 	void InitBlackboardData();
 
 	// Function that updates the vectors of enemies, entities and houses in the field of view
 	void UpdateFOVItems();
+	void AddDiscoveredHouses();
+	void UpdateDiscoveredHouses(float dt);
 };
 
 //ENTRY
