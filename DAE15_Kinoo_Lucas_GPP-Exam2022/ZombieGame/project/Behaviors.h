@@ -45,7 +45,10 @@ namespace BT_Actions
 			steering.AutoOrient = false;
 			steering.AngularVelocity = agentInfo.MaxAngularSpeed;
 		}
-
+		else
+		{
+			steering.AutoOrient = true;
+		}
 		// Seek the destination
 		steering.LinearVelocity = (destination - agentInfo.Position).GetNormalized() * agentInfo.MaxLinearSpeed;
 
@@ -251,52 +254,7 @@ namespace BT_Actions
 
 		// Set the destination to the item
 		pBlackboard->ChangeData(DESTINATION, targetItem.Location);
-
-		return Elite::BehaviorState::Success;
-	}
-
-	Elite::BehaviorState FaceEnemy(Elite::Blackboard* pBlackboard)
-	{
-		AgentInfo agentInfo{};
-		IExamInterface* pExamInterface{};
-		std::vector<EnemyInfo>* pEnemiesInFov{};
-		SteeringPlugin_Output steering{};
-
-		if (!pBlackboard->GetData(ENEMIES_IN_FOV, pEnemiesInFov) ||
-			!pBlackboard->GetData(AGENT_INFO, agentInfo) ||
-			!pBlackboard->GetData(EXAM_ITERFACE, pExamInterface) ||
-			!pBlackboard->GetData(STEERING_OUTPUT, steering))
-		{
-			return Elite::BehaviorState::Failure;
-		}
-
-		if (!pBlackboard->ChangeData(SPIN_ROUND, false)) return Elite::BehaviorState::Failure;
-
-		const EnemyInfo& enemy{ pEnemiesInFov->front() };
-
-		pBlackboard->ChangeData(DESTINATION, enemy.Location);
-
-		steering.AutoOrient = false;
-
-		const Elite::Vector2 direction{ enemy.Location - agentInfo.Position };
-		const float angle{ atan2f(direction.y, direction.x) };
-
-		float dir{};
-
-		if (angle > .0f)
-		{
-			dir = 1.f;
-		}
-		else
-		{
-			dir = -1.f;
-		}
-
-		// Zero vector
-		steering.LinearVelocity = { .0f, .0f };
-		steering.AngularVelocity = dir * agentInfo.MaxLinearSpeed;
-
-		pBlackboard->ChangeData(STEERING_OUTPUT, steering);
+		pBlackboard->ChangeData(SPIN_ROUND, false);
 
 		return Elite::BehaviorState::Success;
 	}
@@ -320,20 +278,14 @@ namespace BT_Conditions
 	{
 		IExamInterface* pExamInterface{};
 		std::vector<EntityInfo>* pItemsInFov{};
-		bool spinRound{ false };
 
 		if (!pBlackboard->GetData(EXAM_ITERFACE, pExamInterface) ||
-			!pBlackboard->GetData(ITEMS_IN_FOV, pItemsInFov) ||
-			!pBlackboard->GetData(SPIN_ROUND, spinRound))
+			!pBlackboard->GetData(ITEMS_IN_FOV, pItemsInFov))
 		{
 			return false;
 		}
 
 		if (pItemsInFov->empty()) return false;
-
-		pBlackboard->ChangeData(SPIN_ROUND, false);
-
-		//std::cout << "Item is in fov\n";
 
 		return true;
 	}
@@ -463,9 +415,14 @@ namespace BT_Conditions
 			if (!pExamInterface->Inventory_GetItem(PISTOL_SLOT, currentItemInfo)) return true;
 
 			// Return true if the pistol in the inventory is worse than the pistol in the fov
-			if (pExamInterface->Weapon_GetAmmo(itemInfo) > pExamInterface->Weapon_GetAmmo(currentItemInfo)) return true;
-
-			// If the pistol in the inventory is better than the pistol in the fov, return false
+			if (pExamInterface->Weapon_GetAmmo(itemInfo) > pExamInterface->Weapon_GetAmmo(currentItemInfo))
+			{
+				// Remove the pistol in the inventory
+				pExamInterface->Inventory_RemoveItem(PISTOL_SLOT);
+				return true;
+			}
+			// If the pistol in the inventory is better than the pistol in the fov destroy it and return false
+			pExamInterface->Item_Destroy(item);
 			return false;
 		}
 		// If no pistol is in the fov, return false
@@ -495,9 +452,15 @@ namespace BT_Conditions
 			if (!pExamInterface->Inventory_GetItem(SHOTGUN_SLOT, currentItemInfo)) return true;
 
 			// Return true if the shotgun in the inventory is worse than the shotgun in the fov
-			if (pExamInterface->Weapon_GetAmmo(itemInfo) > pExamInterface->Weapon_GetAmmo(currentItemInfo)) return true;
+			if (pExamInterface->Weapon_GetAmmo(itemInfo) > pExamInterface->Weapon_GetAmmo(currentItemInfo))
+			{
+				// Remove the shotgun in the inventory
+				pExamInterface->Inventory_RemoveItem(SHOTGUN_SLOT);
+				return true;
+			}
 
-			// If the shotgun in the inventory is better than the shotgun in the fov, return false
+			// If the shotgun in the inventory is better than the shotgun in the fov destroy it and return false
+			pExamInterface->Item_Destroy(item);
 			return false;
 		}
 		// If no shotgun is in the fov, return false
@@ -527,9 +490,14 @@ namespace BT_Conditions
 			if (!pExamInterface->Inventory_GetItem(MEDKIT_SLOT, currentItemInfo)) return true;
 
 			// Return true if the medkit in the inventory is worse than the medkit in the fov
-			if (pExamInterface->Medkit_GetHealth(itemInfo) > pExamInterface->Medkit_GetHealth(currentItemInfo)) return true;
-
-			// If the medkit in the inventory is better than the medkit in the fov, return false
+			if (pExamInterface->Medkit_GetHealth(itemInfo) > pExamInterface->Medkit_GetHealth(currentItemInfo))
+			{
+				// Remove the medkit in the inventory
+				pExamInterface->Inventory_RemoveItem(MEDKIT_SLOT);
+				return true;
+			}
+			// If the medkit in the inventory is better than the medkit in the fov destroy it and return false
+			pExamInterface->Item_Destroy(item);
 			return false;
 		}
 		// If no medkit is in the fov, return false
@@ -559,9 +527,14 @@ namespace BT_Conditions
 			if (!pExamInterface->Inventory_GetItem(FOOD_SLOT, currentItemInfo)) return true;
 
 			// Return true if the food in the inventory is worse than the food in the fov
-			if (pExamInterface->Food_GetEnergy(itemInfo) > pExamInterface->Food_GetEnergy(currentItemInfo)) return true;
-
-			// If the food in the inventory is better than the food in the fov, return false
+			if (pExamInterface->Food_GetEnergy(itemInfo) > pExamInterface->Food_GetEnergy(currentItemInfo))
+			{
+				// Remove the food in the inventory
+				pExamInterface->Inventory_RemoveItem(FOOD_SLOT);
+				return true;
+			}
+			// If the food in the inventory is better than the food in the fov destroy it and return false
+			pExamInterface->Item_Destroy(item);
 			return false;
 		}
 		// If no food is in the fov, return false

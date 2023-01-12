@@ -37,88 +37,68 @@ void Plugin::Initialize(IBaseInterface* pInterface, PluginInfo& info)
 				// ---------- Enemy Handling ----------
 				new Elite::BehaviorSequence
 				{{
-						new Elite::BehaviorConditional{ BT_Conditions::IsEnemyInFOV },
-						new Elite::BehaviorSelector
-						{{
-								// ----------- Shoot Pistol -----------
-								new Elite::BehaviorSequence
-								{{
-										new Elite::BehaviorConditional{ BT_Conditions::IsPistolFireReady },
-										new Elite::BehaviorSelector
-										{{
-												new Elite::BehaviorSequence
-												{{
-														new Elite::BehaviorConditional{ BT_Conditions::IsFacingEnemy },
-														new Elite::BehaviorAction{ BT_Actions::ShootPistol },
-												}},
-												new Elite::BehaviorAction{ BT_Actions::FaceEnemy },
-										}},
-								}},
-								// ---------- Shoot Shotgun ----------
-								new Elite::BehaviorSequence
-								{{
-										new Elite::BehaviorConditional{ BT_Conditions::IsShotgunFireReady },
-										new Elite::BehaviorSelector
-										{{
-												new Elite::BehaviorSequence
-												{{
-														new Elite::BehaviorConditional{ BT_Conditions::IsFacingEnemy },
-														new Elite::BehaviorAction{ BT_Actions::ShootShotgun },
-												}},
-												new Elite::BehaviorAction{ BT_Actions::FaceEnemy },
-										}},
-								}},
+					new Elite::BehaviorConditional{ BT_Conditions::IsEnemyInFOV },
+					new Elite::BehaviorConditional{ BT_Conditions::IsFacingEnemy },
+					new Elite::BehaviorSelector
+					{{
+							// ----------- Shoot Pistol -----------
+							new Elite::BehaviorSequence
+							{{
+								new Elite::BehaviorConditional{ BT_Conditions::IsPistolFireReady },
+								new Elite::BehaviorAction{ BT_Actions::ShootPistol },
+							}},
+							// ---------- Shoot Shotgun ----------
+							new Elite::BehaviorSequence
+							{{
+								new Elite::BehaviorConditional{ BT_Conditions::IsShotgunFireReady },
+								new Elite::BehaviorAction{ BT_Actions::ShootShotgun },
+							}},
 						}},
-				}},
-				new Elite::BehaviorSequence
-				{{
-						// ------ Find and Pickup Items ------
-						new Elite::BehaviorSequence
-						{{
-							new Elite::BehaviorConditional{ BT_Conditions::IsItemInFOV },
-							new Elite::BehaviorAction{ BT_Actions::SetItemAsTarget },
-							new Elite::BehaviorAction{ BT_Actions::Seek },
-						}},
-						new Elite::BehaviorConditional{ BT_Conditions::IsItemInGrabRange },
-						new Elite::BehaviorSelector
-						{{
-								// -------------- Pistol --------------
-								new Elite::BehaviorSequence
-								{{
-									new Elite::BehaviorConditional{ BT_Conditions::ShouldPickupPistol },
-									new Elite::BehaviorAction{ BT_Actions::PickUpPistol },
-								}},
-								// -------------- Shotgun --------------
-								new Elite::BehaviorSequence
-								{{
-									new Elite::BehaviorConditional{ BT_Conditions::ShouldPickupShotgun },
-									new Elite::BehaviorAction{ BT_Actions::PickUpShotgun },
-								}},
-								// -------------- Medkit --------------
-								new Elite::BehaviorSequence
-								{{
-									new Elite::BehaviorConditional{ BT_Conditions::ShouldPickupMedkit },
-									new Elite::BehaviorAction{ BT_Actions::PickUpMedkit },
-								}},
-								// --------------- Food ---------------
-								new Elite::BehaviorSequence
-								{{
-									new Elite::BehaviorConditional{ BT_Conditions::ShouldPickupFood },
-									new Elite::BehaviorAction{ BT_Actions::PickUpFood },
-								}},
-							}}
-						}},
+					}},
+					new Elite::BehaviorSequence
+					{{
+							// ------ Find and Pickup Items ------
+							new Elite::BehaviorSequence
+							{{
+								new Elite::BehaviorConditional{ BT_Conditions::IsItemInFOV },
+								new Elite::BehaviorAction{ BT_Actions::SetItemAsTarget },
+								new Elite::BehaviorAction{ BT_Actions::Seek },
+							}},
+							new Elite::BehaviorConditional{ BT_Conditions::IsItemInGrabRange },
+							new Elite::BehaviorSelector
+							{{
+									// -------------- Pistol --------------
+									new Elite::BehaviorSequence
+									{{
+										new Elite::BehaviorConditional{ BT_Conditions::ShouldPickupPistol },
+										new Elite::BehaviorAction{ BT_Actions::PickUpPistol },
+									}},
+									// -------------- Shotgun --------------
+									new Elite::BehaviorSequence
+									{{
+										new Elite::BehaviorConditional{ BT_Conditions::ShouldPickupShotgun },
+										new Elite::BehaviorAction{ BT_Actions::PickUpShotgun },
+									}},
+									// -------------- Medkit --------------
+									new Elite::BehaviorSequence
+									{{
+										new Elite::BehaviorConditional{ BT_Conditions::ShouldPickupMedkit },
+										new Elite::BehaviorAction{ BT_Actions::PickUpMedkit },
+									}},
+									// --------------- Food ---------------
+									new Elite::BehaviorSequence
+									{{
+										new Elite::BehaviorConditional{ BT_Conditions::ShouldPickupFood },
+										new Elite::BehaviorAction{ BT_Actions::PickUpFood },
+									}},
+								}}
+							}},
 		// -------------- Explore --------------
 		new Elite::BehaviorSequence
 		{{
+			new Elite::BehaviorAction{ BT_Actions::Seek },
 			new Elite::BehaviorConditional{ BT_Conditions::ReachedDestination },
 			new Elite::BehaviorAction{ BT_Actions::Explore },
-			new Elite::BehaviorAction{ BT_Actions::Seek },
-		}},
-		// ---------- Seek (Default) ----------
-		new Elite::BehaviorSequence
-		{{
-			new Elite::BehaviorAction{ BT_Actions::Seek },
 		}},
 	}}
 	};
