@@ -311,6 +311,32 @@ namespace BT_Actions
 		pBlackboard->ChangeData(DESTINATION, closestHouse.m_HouseInfo.Center);
 		return Elite::BehaviorState::Failure;
 	}
+
+	Elite::BehaviorState RemoveGarbage(Elite::Blackboard* pBlackboard)
+	{
+		// Check if the item in the fov is garbage
+		IExamInterface* pExamInterface{};
+		std::vector<EntityInfo>* pItemsInFov{};
+		if (!pBlackboard->GetData(ITEMS_IN_FOV, pItemsInFov) ||
+			!pBlackboard->GetData(EXAM_ITERFACE, pExamInterface))
+		{
+			return Elite::BehaviorState::Failure;
+		}
+
+		for (const auto& item : *pItemsInFov)
+		{
+			ItemInfo itemInfo;
+			pExamInterface->Item_GetInfo(item, itemInfo);
+
+			if (itemInfo.Type != eItemType::GARBAGE) continue;
+
+			// If the item is garbage, remove it
+			pExamInterface->Item_Grab(item, itemInfo);
+			pExamInterface->Inventory_AddItem(GARBAGE_SLOT, itemInfo);
+			pExamInterface->Inventory_RemoveItem(GARBAGE_SLOT);
+			return Elite::BehaviorState::Success;
+		}
+	}
 }
 
 namespace BT_Conditions

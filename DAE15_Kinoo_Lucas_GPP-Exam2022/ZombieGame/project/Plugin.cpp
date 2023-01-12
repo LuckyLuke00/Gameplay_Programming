@@ -68,6 +68,8 @@ void Plugin::Initialize(IBaseInterface* pInterface, PluginInfo& info)
 							new Elite::BehaviorConditional{ BT_Conditions::IsItemInGrabRange },
 							new Elite::BehaviorSelector
 							{{
+									// -------------- Garbage --------------
+									new Elite::BehaviorAction{ BT_Actions::RemoveGarbage },
 									// -------------- Pistol --------------
 									new Elite::BehaviorSequence
 									{{
@@ -100,10 +102,10 @@ void Plugin::Initialize(IBaseInterface* pInterface, PluginInfo& info)
 				new Elite::BehaviorAction{ BT_Actions::VisitHouses },
 				new Elite::BehaviorSequence
 				{{
-					new Elite::BehaviorAction{ BT_Actions::Seek },
 					new Elite::BehaviorConditional{ BT_Conditions::ReachedDestination },
 					new Elite::BehaviorAction{ BT_Actions::Explore },
 				}},
+				new Elite::BehaviorAction{ BT_Actions::Seek },
 			}}
 		}}
 	};
