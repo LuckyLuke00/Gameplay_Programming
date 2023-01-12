@@ -51,6 +51,18 @@ void Plugin::Initialize(IBaseInterface* pInterface, PluginInfo& info)
 								new Elite::BehaviorConditional{ BT_Conditions::ShouldPickupShotgun },
 								new Elite::BehaviorAction{ BT_Actions::PickUpShotgun },
 							}},
+							// -------------- Medkit --------------
+							new Elite::BehaviorSequence
+							{{
+								new Elite::BehaviorConditional{ BT_Conditions::ShouldPickupMedkit },
+								new Elite::BehaviorAction{ BT_Actions::PickUpMedkit },
+							}},
+							// --------------- Food ---------------
+							new Elite::BehaviorSequence
+							{{
+								new Elite::BehaviorConditional{ BT_Conditions::ShouldPickupFood },
+								new Elite::BehaviorAction{ BT_Actions::PickUpFood },
+							}},
 						}}
 					}},
 		// ------ Find and Pickup Items ------
@@ -60,10 +72,18 @@ void Plugin::Initialize(IBaseInterface* pInterface, PluginInfo& info)
 			new Elite::BehaviorAction{ BT_Actions::SetItemAsTarget },
 			new Elite::BehaviorAction{ BT_Actions::Seek },
 		}},
+		// -------------- Explore --------------
+		new Elite::BehaviorSequence
+		{{
+			new Elite::BehaviorConditional{ BT_Conditions::ReachedDestination },
+			new Elite::BehaviorAction{ BT_Actions::Explore },
+			new Elite::BehaviorAction{ BT_Actions::Seek },
+		}},
+		// ---------- Seek (Default) ----------
 		new Elite::BehaviorSequence
 		{{
 			new Elite::BehaviorAction{ BT_Actions::Seek },
-		}}
+		}},
 }}
 	};
 }
@@ -174,10 +194,12 @@ SteeringPlugin_Output Plugin::UpdateSteering(float dt)
 
 	SteeringPlugin_Output steering{};
 
-	if (!UpdateFOVItems())
-	{
-		SetRandomDestination();
-	}
+	//if (!UpdateFOVItems())
+	//{
+	//	SetRandomDestination();
+	//}
+
+	UpdateFOVItems();
 
 	m_pBehaviorTree->Update(dt);
 

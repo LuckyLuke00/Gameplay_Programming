@@ -9,7 +9,6 @@
 #include "EliteMath/EMath.h"
 #include "Exam_HelperStructs.h"
 #include "IExamInterface.h"
-#include "InventoryManager.h"
 //-----------------------------------------------------------------
 // Behaviors
 //-----------------------------------------------------------------
@@ -54,6 +53,41 @@ namespace BT_Actions
 		return Elite::BehaviorState::Success;
 	}
 
+	Elite::BehaviorState Explore(Elite::Blackboard* pBlackboard)
+	{
+		// Set a random destination on the navmesh
+		AgentInfo agentInfo{};
+		IExamInterface* pExamInterface{};
+		SteeringPlugin_Output steering{};
+		bool spinRound{ false };
+
+		if (!pBlackboard->GetData(AGENT_INFO, agentInfo) ||
+			!pBlackboard->GetData(EXAM_ITERFACE, pExamInterface) ||
+			!pBlackboard->GetData(SPIN_ROUND, spinRound))
+		{
+			return Elite::BehaviorState::Failure;
+		}
+
+		// Prevent the agent from running, as to not deplete the stamina
+		steering.RunMode = false;
+
+		// Set the spinround bool to true
+		pBlackboard->ChangeData(SPIN_ROUND, true);
+
+		// Set a random destination on the navmesh
+		const Elite::Vector2 randomDestination
+		{
+			Elite::Vector2
+			{
+				Elite::randomFloat(.0f, pExamInterface->World_GetInfo().Dimensions.x * .5f),
+				Elite::randomFloat(.0f, pExamInterface->World_GetInfo().Dimensions.y * .5f)
+			}
+		};
+
+		pBlackboard->ChangeData(DESTINATION, randomDestination);
+		return Elite::BehaviorState::Success;
+	}
+
 	Elite::BehaviorState PickUpPistol(Elite::Blackboard* pBlackboard)
 	{
 		IExamInterface* pExamInterface{};
@@ -76,7 +110,7 @@ namespace BT_Actions
 			return Elite::BehaviorState::Success;
 		}
 
-		return Elite::BehaviorState::Failure; //no pistol was found and thus none was grabbed
+		return Elite::BehaviorState::Failure;
 	}
 
 	Elite::BehaviorState PickUpShotgun(Elite::Blackboard* pBlackboard)
@@ -101,7 +135,57 @@ namespace BT_Actions
 			return Elite::BehaviorState::Success;
 		}
 
-		return Elite::BehaviorState::Failure; //no pistol was found and thus none was grabbed
+		return Elite::BehaviorState::Failure;
+	}
+
+	Elite::BehaviorState PickUpMedkit(Elite::Blackboard* pBlackboard)
+	{
+		IExamInterface* pExamInterface{};
+		std::vector<EntityInfo>* pItemsInFov{};
+		if (!pBlackboard->GetData(ITEMS_IN_FOV, pItemsInFov) ||
+			!pBlackboard->GetData(EXAM_ITERFACE, pExamInterface))
+		{
+			return Elite::BehaviorState::Failure;
+		}
+
+		for (const auto& item : *pItemsInFov)
+		{
+			ItemInfo itemInfo;
+			pExamInterface->Item_GetInfo(item, itemInfo);
+
+			if (itemInfo.Type != eItemType::MEDKIT) continue;
+
+			pExamInterface->Item_Grab(item, itemInfo);
+			pExamInterface->Inventory_AddItem(MEDKIT_SLOT, itemInfo);
+			return Elite::BehaviorState::Success;
+		}
+
+		return Elite::BehaviorState::Failure;
+	}
+
+	Elite::BehaviorState PickUpFood(Elite::Blackboard* pBlackboard)
+	{
+		IExamInterface* pExamInterface{};
+		std::vector<EntityInfo>* pItemsInFov{};
+		if (!pBlackboard->GetData(ITEMS_IN_FOV, pItemsInFov) ||
+			!pBlackboard->GetData(EXAM_ITERFACE, pExamInterface))
+		{
+			return Elite::BehaviorState::Failure;
+		}
+
+		for (const auto& item : *pItemsInFov)
+		{
+			ItemInfo itemInfo;
+			pExamInterface->Item_GetInfo(item, itemInfo);
+
+			if (itemInfo.Type != eItemType::FOOD) continue;
+
+			pExamInterface->Item_Grab(item, itemInfo);
+			pExamInterface->Inventory_AddItem(FOOD_SLOT, itemInfo);
+			return Elite::BehaviorState::Success;
+		}
+
+		return Elite::BehaviorState::Failure;
 	}
 
 	Elite::BehaviorState SetItemAsTarget(Elite::Blackboard* pBlackboard)
@@ -125,7 +209,7 @@ namespace BT_Actions
 		float closestDistance{ FLT_MAX };
 		for (const EntityInfo& item : *pItemsInFov)
 		{
-			const float distance{ (item.Location - agentInfo.Position).Magnitude() };
+			const float distance{ Elite::DistanceSquared(item.Location, agentInfo.Position) };
 			if (distance < closestDistance)
 			{
 				closestDistance = distance;
@@ -142,6 +226,18 @@ namespace BT_Actions
 
 namespace BT_Conditions
 {
+	bool ReachedDestination(Elite::Blackboard* pBlackboard)
+	{
+		AgentInfo agentInfo{};
+		Elite::Vector2 destination{};
+		if (!pBlackboard->GetData(DESTINATION, destination) ||
+			!pBlackboard->GetData(AGENT_INFO, agentInfo))
+		{
+			return false;
+		}
+		return Elite::DistanceSquared(agentInfo.Position, destination) < 1.f;
+	}
+
 	bool IsItemInFOV(Elite::Blackboard* pBlackboard)
 	{
 		IExamInterface* pExamInterface{};
@@ -180,9 +276,9 @@ namespace BT_Conditions
 		{
 			if (!pExamInterface->Item_GetInfo(item, itemInfo)) continue;
 
-			if (Elite::DistanceSquared(itemInfo.Location, pExamInterface->Agent_GetInfo().Position) < pExamInterface->Agent_GetInfo().GrabRange * pExamInterface->Agent_GetInfo().GrabRange)
+			if (Elite::DistanceSquared(itemInfo.Location, pExamInterface->Agent_GetInfo().Position) <
+				pExamInterface->Agent_GetInfo().GrabRange * pExamInterface->Agent_GetInfo().GrabRange)
 			{
-				std::cout << "Item in grab-range\n";
 				return true;
 			}
 		}
@@ -191,114 +287,130 @@ namespace BT_Conditions
 
 	bool ShouldPickupPistol(Elite::Blackboard* pBlackboard)
 	{
-		// Check if the agent has a pistol
 		IExamInterface* pExamInterface{};
+		std::vector<EntityInfo>* pItemsInFov{};
 
-		if (!pBlackboard->GetData(EXAM_ITERFACE, pExamInterface))
+		if (!pBlackboard->GetData(ITEMS_IN_FOV, pItemsInFov) ||
+			!pBlackboard->GetData(EXAM_ITERFACE, pExamInterface))
 		{
 			return false;
 		}
 
-		bool hasPistol{ false };
-
-		ItemInfo itemInfo;
-		// Check if the	pistol slot is empty
-		if (!pExamInterface->Inventory_GetItem(PISTOL_SLOT, itemInfo))
+		ItemInfo itemInfo{};
+		for (const auto& item : *pItemsInFov)
 		{
-			if (itemInfo.Type == eItemType::PISTOL)
-			{
-				hasPistol = true;
-			}
-		}
+			if (!pExamInterface->Item_GetInfo(item, itemInfo)) continue;
 
-		// If he has a pistol, check if the pistol in the inventory is better than the one in the FOV
-		if (hasPistol)
-		{
-			std::vector<EntityInfo>* pItemsInFov{};
-			if (!pBlackboard->GetData(ITEMS_IN_FOV, pItemsInFov))
-			{
-				return false;
-			}
+			// Continue to the next item if the current item is not a pistol
+			if (itemInfo.Type != eItemType::PISTOL) continue;
 
-			// Loop through all the items in the FOV
-			for (const auto& item : *pItemsInFov)
-			{
-				pExamInterface->Item_GetInfo(item, itemInfo);
+			ItemInfo currentItemInfo{};
+			if (!pExamInterface->Inventory_GetItem(PISTOL_SLOT, currentItemInfo)) return true;
 
-				// If the item is a pistol, check if it's better than the one in the inventory
-				if (itemInfo.Type == eItemType::PISTOL)
-				{
-					ItemInfo pistolInInventory{};
-					pExamInterface->Inventory_GetItem(PISTOL_SLOT, pistolInInventory);
+			// Return true if the pistol in the inventory is worse than the pistol in the fov
+			if (pExamInterface->Weapon_GetAmmo(itemInfo) > pExamInterface->Weapon_GetAmmo(currentItemInfo)) return true;
 
-					// If the pistol in the FOV is better, return true
-					if (pExamInterface->Weapon_GetAmmo(pistolInInventory) < pExamInterface->Weapon_GetAmmo(itemInfo))
-					{
-						std::cout << "Pistol in FOV is better\n";
-						return true;
-					}
-				}
-			}
-			// If the pistol in the inventory is better, return false
+			// If the pistol in the inventory is better than the pistol in the fov, return false
 			return false;
 		}
-		return true;
+		// If no pistol is in the fov, return false
+		return false;
 	}
 
 	bool ShouldPickupShotgun(Elite::Blackboard* pBlackboard)
 	{
-		// Check if the agent has a shotgun
 		IExamInterface* pExamInterface{};
+		std::vector<EntityInfo>* pItemsInFov{};
 
-		if (!pBlackboard->GetData(EXAM_ITERFACE, pExamInterface))
+		if (!pBlackboard->GetData(ITEMS_IN_FOV, pItemsInFov) ||
+			!pBlackboard->GetData(EXAM_ITERFACE, pExamInterface))
 		{
 			return false;
 		}
 
-		bool hasShotgun{ false };
-
-		ItemInfo itemInfo;
-		// Check if the	shotgun slot is empty
-		if (!pExamInterface->Inventory_GetItem(SHOTGUN_SLOT, itemInfo))
+		ItemInfo itemInfo{};
+		for (const auto& item : *pItemsInFov)
 		{
-			if (itemInfo.Type == eItemType::SHOTGUN)
-			{
-				hasShotgun = true;
-			}
-		}
+			if (!pExamInterface->Item_GetInfo(item, itemInfo)) continue;
 
-		// If he has a shotgun, check if the shotgun in the inventory is better than the one in the FOV
-		if (hasShotgun)
-		{
-			std::vector<EntityInfo>* pItemsInFov{};
-			if (!pBlackboard->GetData(ITEMS_IN_FOV, pItemsInFov))
-			{
-				return false;
-			}
+			// Continue to the next item if the current item is not a shotgun
+			if (itemInfo.Type != eItemType::SHOTGUN) continue;
 
-			// Loop through all the items in the FOV
-			for (const auto& item : *pItemsInFov)
-			{
-				pExamInterface->Item_GetInfo(item, itemInfo);
+			ItemInfo currentItemInfo{};
+			if (!pExamInterface->Inventory_GetItem(SHOTGUN_SLOT, currentItemInfo)) return true;
 
-				// If the item is a shotgun, check if it's better than the one in the inventory
-				if (itemInfo.Type == eItemType::SHOTGUN)
-				{
-					ItemInfo shotgunInInventory{};
-					pExamInterface->Inventory_GetItem(SHOTGUN_SLOT, shotgunInInventory);
+			// Return true if the shotgun in the inventory is worse than the shotgun in the fov
+			if (pExamInterface->Weapon_GetAmmo(itemInfo) > pExamInterface->Weapon_GetAmmo(currentItemInfo)) return true;
 
-					// If the shotgun in the FOV is better, return true
-					if (pExamInterface->Weapon_GetAmmo(shotgunInInventory) < pExamInterface->Weapon_GetAmmo(itemInfo))
-					{
-						std::cout << "Shotgun in FOV is better\n";
-						return true;
-					}
-				}
-			}
-			// If the shotgun in the inventory is better, return false
+			// If the shotgun in the inventory is better than the shotgun in the fov, return false
 			return false;
 		}
-		return true;
+		// If no shotgun is in the fov, return false
+		return false;
+	}
+
+	bool ShouldPickupMedkit(Elite::Blackboard* pBlackboard)
+	{
+		IExamInterface* pExamInterface{};
+		std::vector<EntityInfo>* pItemsInFov{};
+
+		if (!pBlackboard->GetData(ITEMS_IN_FOV, pItemsInFov) ||
+			!pBlackboard->GetData(EXAM_ITERFACE, pExamInterface))
+		{
+			return false;
+		}
+
+		ItemInfo itemInfo{};
+		for (const auto& item : *pItemsInFov)
+		{
+			if (!pExamInterface->Item_GetInfo(item, itemInfo)) continue;
+
+			// Continue to the next item if the current item is not a medkit
+			if (itemInfo.Type != eItemType::MEDKIT) continue;
+
+			ItemInfo currentItemInfo{};
+			if (!pExamInterface->Inventory_GetItem(MEDKIT_SLOT, currentItemInfo)) return true;
+
+			// Return true if the medkit in the inventory is worse than the medkit in the fov
+			if (pExamInterface->Medkit_GetHealth(itemInfo) > pExamInterface->Medkit_GetHealth(currentItemInfo)) return true;
+
+			// If the medkit in the inventory is better than the medkit in the fov, return false
+			return false;
+		}
+		// If no medkit is in the fov, return false
+		return false;
+	}
+
+	bool ShouldPickupFood(Elite::Blackboard* pBlackboard)
+	{
+		IExamInterface* pExamInterface{};
+		std::vector<EntityInfo>* pItemsInFov{};
+
+		if (!pBlackboard->GetData(ITEMS_IN_FOV, pItemsInFov) ||
+			!pBlackboard->GetData(EXAM_ITERFACE, pExamInterface))
+		{
+			return false;
+		}
+
+		ItemInfo itemInfo{};
+		for (const auto& item : *pItemsInFov)
+		{
+			if (!pExamInterface->Item_GetInfo(item, itemInfo)) continue;
+
+			// Continue to the next item if the current item is not a food
+			if (itemInfo.Type != eItemType::FOOD) continue;
+
+			ItemInfo currentItemInfo{};
+			if (!pExamInterface->Inventory_GetItem(FOOD_SLOT, currentItemInfo)) return true;
+
+			// Return true if the food in the inventory is worse than the food in the fov
+			if (pExamInterface->Food_GetEnergy(itemInfo) > pExamInterface->Food_GetEnergy(currentItemInfo)) return true;
+
+			// If the food in the inventory is better than the food in the fov, return false
+			return false;
+		}
+		// If no food is in the fov, return false
+		return false;
 	}
 }
 #endif
