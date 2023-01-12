@@ -113,6 +113,38 @@ namespace BT_Actions
 		return Elite::BehaviorState::Failure;
 	}
 
+	Elite::BehaviorState ShootPistol(Elite::Blackboard* pBlackboard)
+	{
+		IExamInterface* pExamInterface{};
+		if (!pBlackboard->GetData(EXAM_ITERFACE, pExamInterface))
+		{
+			return Elite::BehaviorState::Failure;
+		}
+
+		ItemInfo itemInfo;
+		if (!pExamInterface->Inventory_GetItem(PISTOL_SLOT, itemInfo)) return Elite::BehaviorState::Failure;
+
+		if (pExamInterface->Inventory_UseItem(PISTOL_SLOT)) return Elite::BehaviorState::Success;
+
+		return Elite::BehaviorState::Failure;
+	}
+
+	Elite::BehaviorState ShootShotgun(Elite::Blackboard* pBlackboard)
+	{
+		IExamInterface* pExamInterface{};
+		if (!pBlackboard->GetData(EXAM_ITERFACE, pExamInterface))
+		{
+			return Elite::BehaviorState::Failure;
+		}
+
+		ItemInfo itemInfo;
+		if (!pExamInterface->Inventory_GetItem(SHOTGUN_SLOT, itemInfo)) return Elite::BehaviorState::Failure;
+
+		if (pExamInterface->Inventory_UseItem(SHOTGUN_SLOT)) return Elite::BehaviorState::Success;
+
+		return Elite::BehaviorState::Failure;
+	}
+
 	Elite::BehaviorState PickUpShotgun(Elite::Blackboard* pBlackboard)
 	{
 		IExamInterface* pExamInterface{};
@@ -222,6 +254,52 @@ namespace BT_Actions
 
 		return Elite::BehaviorState::Success;
 	}
+
+	Elite::BehaviorState FaceEnemy(Elite::Blackboard* pBlackboard)
+	{
+		AgentInfo agentInfo{};
+		IExamInterface* pExamInterface{};
+		std::vector<EnemyInfo>* pEnemiesInFov{};
+		SteeringPlugin_Output steering{};
+
+		if (!pBlackboard->GetData(ENEMIES_IN_FOV, pEnemiesInFov) ||
+			!pBlackboard->GetData(AGENT_INFO, agentInfo) ||
+			!pBlackboard->GetData(EXAM_ITERFACE, pExamInterface) ||
+			!pBlackboard->GetData(STEERING_OUTPUT, steering))
+		{
+			return Elite::BehaviorState::Failure;
+		}
+
+		if (!pBlackboard->ChangeData(SPIN_ROUND, false)) return Elite::BehaviorState::Failure;
+
+		const EnemyInfo& enemy{ pEnemiesInFov->front() };
+
+		pBlackboard->ChangeData(DESTINATION, enemy.Location);
+
+		steering.AutoOrient = false;
+
+		const Elite::Vector2 direction{ enemy.Location - agentInfo.Position };
+		const float angle{ atan2f(direction.y, direction.x) };
+
+		float dir{};
+
+		if (angle > .0f)
+		{
+			dir = 1.f;
+		}
+		else
+		{
+			dir = -1.f;
+		}
+
+		// Zero vector
+		steering.LinearVelocity = { .0f, .0f };
+		steering.AngularVelocity = dir * agentInfo.MaxLinearSpeed;
+
+		pBlackboard->ChangeData(STEERING_OUTPUT, steering);
+
+		return Elite::BehaviorState::Success;
+	}
 }
 
 namespace BT_Conditions
@@ -258,6 +336,83 @@ namespace BT_Conditions
 		//std::cout << "Item is in fov\n";
 
 		return true;
+	}
+
+	bool IsEnemyInFOV(Elite::Blackboard* pBlackboard)
+	{
+		IExamInterface* pExamInterface{};
+		std::vector<EnemyInfo>* pEnemiesInFov{};
+
+		if (!pBlackboard->GetData(EXAM_ITERFACE, pExamInterface) ||
+			!pBlackboard->GetData(ENEMIES_IN_FOV, pEnemiesInFov))
+		{
+			return false;
+		}
+
+		if (pEnemiesInFov->empty()) return false;
+
+		return true;
+	}
+
+	bool IsFacingEnemy(Elite::Blackboard* pBlackboard)
+	{
+		AgentInfo agentInfo{};
+		IExamInterface* pExamInterface{};
+		std::vector<EnemyInfo>* pEnemiesInFov{};
+
+		if (!pBlackboard->GetData(ENEMIES_IN_FOV, pEnemiesInFov) ||
+			!pBlackboard->GetData(AGENT_INFO, agentInfo) ||
+			!pBlackboard->GetData(EXAM_ITERFACE, pExamInterface))
+		{
+			return false;
+		}
+
+		const EnemyInfo& enemy{ pEnemiesInFov->front() };
+
+		const Elite::Vector2 direction{ enemy.Location - agentInfo.Position };
+		const float angle{ atan2f(direction.y, direction.x) };
+
+		constexpr float angleThreshold{ 0.1f };
+
+		if (angle - angleThreshold < agentInfo.Orientation && agentInfo.Orientation < angle + angleThreshold)
+		{
+			return true;
+		}
+		return false;
+	}
+
+	bool IsPistolFireReady(Elite::Blackboard* pBlackboard)
+	{
+		IExamInterface* pExamInterface{};
+		if (!pBlackboard->GetData(EXAM_ITERFACE, pExamInterface)) return false;
+
+		ItemInfo itemInfo;
+		if (!pExamInterface->Inventory_GetItem(PISTOL_SLOT, itemInfo)) return false;
+
+		// Safety check
+		if (itemInfo.Type != eItemType::PISTOL) return false;
+
+		// Check if the pistol is loaded
+		if (pExamInterface->Weapon_GetAmmo(itemInfo) > 1) return true;
+
+		return false;
+	}
+
+	bool IsShotgunFireReady(Elite::Blackboard* pBlackboard)
+	{
+		IExamInterface* pExamInterface{};
+		if (!pBlackboard->GetData(EXAM_ITERFACE, pExamInterface)) return false;
+
+		ItemInfo itemInfo;
+		if (!pExamInterface->Inventory_GetItem(SHOTGUN_SLOT, itemInfo)) return false;
+
+		// Safety check
+		if (itemInfo.Type != eItemType::SHOTGUN) return false;
+
+		// Check if the shotgun is loaded
+		if (pExamInterface->Weapon_GetAmmo(itemInfo) > 1) return true;
+
+		return false;
 	}
 
 	bool IsItemInGrabRange(Elite::Blackboard* pBlackboard)

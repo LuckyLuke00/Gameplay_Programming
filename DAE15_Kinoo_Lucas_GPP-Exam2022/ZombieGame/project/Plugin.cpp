@@ -34,44 +34,80 @@ void Plugin::Initialize(IBaseInterface* pInterface, PluginInfo& info)
 		// --------------- Root ---------------
 		new Elite::BehaviorSelector
 		{{
+				// ---------- Enemy Handling ----------
 				new Elite::BehaviorSequence
 				{{
-					new Elite::BehaviorConditional{ BT_Conditions::IsItemInGrabRange },
-					new Elite::BehaviorSelector
-					{{
-							// -------------- Pistol --------------
-							new Elite::BehaviorSequence
-							{{
-								new Elite::BehaviorConditional{ BT_Conditions::ShouldPickupPistol },
-								new Elite::BehaviorAction{ BT_Actions::PickUpPistol },
-							}},
-							// -------------- Shotgun --------------
-							new Elite::BehaviorSequence
-							{{
-								new Elite::BehaviorConditional{ BT_Conditions::ShouldPickupShotgun },
-								new Elite::BehaviorAction{ BT_Actions::PickUpShotgun },
-							}},
-							// -------------- Medkit --------------
-							new Elite::BehaviorSequence
-							{{
-								new Elite::BehaviorConditional{ BT_Conditions::ShouldPickupMedkit },
-								new Elite::BehaviorAction{ BT_Actions::PickUpMedkit },
-							}},
-							// --------------- Food ---------------
-							new Elite::BehaviorSequence
-							{{
-								new Elite::BehaviorConditional{ BT_Conditions::ShouldPickupFood },
-								new Elite::BehaviorAction{ BT_Actions::PickUpFood },
-							}},
-						}}
-					}},
-		// ------ Find and Pickup Items ------
-		new Elite::BehaviorSequence
-		{{
-			new Elite::BehaviorConditional{ BT_Conditions::IsItemInFOV },
-			new Elite::BehaviorAction{ BT_Actions::SetItemAsTarget },
-			new Elite::BehaviorAction{ BT_Actions::Seek },
-		}},
+						new Elite::BehaviorConditional{ BT_Conditions::IsEnemyInFOV },
+						new Elite::BehaviorSelector
+						{{
+								// ----------- Shoot Pistol -----------
+								new Elite::BehaviorSequence
+								{{
+										new Elite::BehaviorConditional{ BT_Conditions::IsPistolFireReady },
+										new Elite::BehaviorSelector
+										{{
+												new Elite::BehaviorSequence
+												{{
+														new Elite::BehaviorConditional{ BT_Conditions::IsFacingEnemy },
+														new Elite::BehaviorAction{ BT_Actions::ShootPistol },
+												}},
+												new Elite::BehaviorAction{ BT_Actions::FaceEnemy },
+										}},
+								}},
+								// ---------- Shoot Shotgun ----------
+								new Elite::BehaviorSequence
+								{{
+										new Elite::BehaviorConditional{ BT_Conditions::IsShotgunFireReady },
+										new Elite::BehaviorSelector
+										{{
+												new Elite::BehaviorSequence
+												{{
+														new Elite::BehaviorConditional{ BT_Conditions::IsFacingEnemy },
+														new Elite::BehaviorAction{ BT_Actions::ShootShotgun },
+												}},
+												new Elite::BehaviorAction{ BT_Actions::FaceEnemy },
+										}},
+								}},
+						}},
+				}},
+				new Elite::BehaviorSequence
+				{{
+						// ------ Find and Pickup Items ------
+						new Elite::BehaviorSequence
+						{{
+							new Elite::BehaviorConditional{ BT_Conditions::IsItemInFOV },
+							new Elite::BehaviorAction{ BT_Actions::SetItemAsTarget },
+							new Elite::BehaviorAction{ BT_Actions::Seek },
+						}},
+						new Elite::BehaviorConditional{ BT_Conditions::IsItemInGrabRange },
+						new Elite::BehaviorSelector
+						{{
+								// -------------- Pistol --------------
+								new Elite::BehaviorSequence
+								{{
+									new Elite::BehaviorConditional{ BT_Conditions::ShouldPickupPistol },
+									new Elite::BehaviorAction{ BT_Actions::PickUpPistol },
+								}},
+								// -------------- Shotgun --------------
+								new Elite::BehaviorSequence
+								{{
+									new Elite::BehaviorConditional{ BT_Conditions::ShouldPickupShotgun },
+									new Elite::BehaviorAction{ BT_Actions::PickUpShotgun },
+								}},
+								// -------------- Medkit --------------
+								new Elite::BehaviorSequence
+								{{
+									new Elite::BehaviorConditional{ BT_Conditions::ShouldPickupMedkit },
+									new Elite::BehaviorAction{ BT_Actions::PickUpMedkit },
+								}},
+								// --------------- Food ---------------
+								new Elite::BehaviorSequence
+								{{
+									new Elite::BehaviorConditional{ BT_Conditions::ShouldPickupFood },
+									new Elite::BehaviorAction{ BT_Actions::PickUpFood },
+								}},
+							}}
+						}},
 		// -------------- Explore --------------
 		new Elite::BehaviorSequence
 		{{
@@ -84,7 +120,7 @@ void Plugin::Initialize(IBaseInterface* pInterface, PluginInfo& info)
 		{{
 			new Elite::BehaviorAction{ BT_Actions::Seek },
 		}},
-}}
+	}}
 	};
 }
 
@@ -277,48 +313,8 @@ void Plugin::InitBlackboardData()
 	m_pBlackboard->AddData(SPIN_ROUND, true);
 }
 
-void Plugin::SetRandomDestination() const
+void Plugin::UpdateFOVItems()
 {
-	// Set the destination in the blackboard
-	auto currentDestination{ Elite::Vector2{} };
-	m_pBlackboard->GetData(DESTINATION, currentDestination);
-
-	if (!(Elite::DistanceSquared(m_pInterface->Agent_GetInfo().Position, currentDestination) < 5.f))
-	{
-		return;
-	}
-
-	// Generate a random destination within the map boundaries
-	const Elite::Vector2 randomDestination
-	{
-		Elite::Vector2
-		{
-			Elite::randomFloat(.0f, m_WorldDimensions.x * .5f),
-			Elite::randomFloat(.0f, m_WorldDimensions.y * .5f)
-		}
-	};
-
-	if (m_pBlackboard->ChangeData(DESTINATION, randomDestination))
-	{
-		// Change console text color to green
-		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN);
-		std::cout << "\nDestination Reached!\n";
-
-		// Set console text color orange
-		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_GREEN);
-		std::cout << "New Destination: ";
-
-		// Set color back to default
-		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
-		std::cout << "x: " << randomDestination.x << " y: " << randomDestination.y << '\n';
-	}
-
-	m_pBlackboard->ChangeData(SPIN_ROUND, true);
-}
-
-bool Plugin::UpdateFOVItems()
-{
-	bool entityInFov{ false };
 	const auto vEntitiesInFOV{ GetEntitiesInFOV() };
 	const auto vHousesInFOV{ GetHousesInFOV() };
 
@@ -328,7 +324,6 @@ bool Plugin::UpdateFOVItems()
 		if (entity.Type == eEntityType::ITEM)
 		{
 			m_ItemsInFOV.emplace_back(entity);
-			entityInFov = true;
 			continue;
 		}
 
@@ -337,7 +332,6 @@ bool Plugin::UpdateFOVItems()
 			EnemyInfo enemyInfo{};
 			m_pInterface->Enemy_GetInfo(entity, enemyInfo);
 			m_EnemiesInFOV.emplace_back(enemyInfo);
-			entityInFov = true;
 			continue;
 		}
 	}
@@ -346,8 +340,5 @@ bool Plugin::UpdateFOVItems()
 	for (const auto& house : vHousesInFOV)
 	{
 		m_HousesInFOV.emplace_back(house);
-		entityInFov = true;
 	}
-
-	return entityInFov;
 }

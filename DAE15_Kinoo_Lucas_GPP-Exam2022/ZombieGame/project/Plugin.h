@@ -52,11 +52,9 @@ private:
 	std::vector<HouseInfo> m_HousesInFOV{};
 
 	void InitBlackboardData();
-	void SetRandomDestination() const;
 
 	// Function that updates the vectors of enemies, entities and houses in the field of view
-	// Returns true if any entity or house was found
-	bool UpdateFOVItems();
+	void UpdateFOVItems();
 };
 
 //ENTRY

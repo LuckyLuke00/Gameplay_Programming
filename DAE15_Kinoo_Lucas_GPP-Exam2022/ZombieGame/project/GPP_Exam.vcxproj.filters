@@ -23,13 +23,18 @@
       <Filter>BehaviorTree</Filter>
     </ClInclude>
     <ClInclude Include="BlackboardData.h">
-      <Filter>BehaviorTree</Filter>
+      <Filter>Globals</Filter>
     </ClInclude>
-    <ClInclude Include="Constants.h" />
+    <ClInclude Include="Constants.h">
+      <Filter>Globals</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="BehaviorTree">
       <UniqueIdentifier>{44066baa-c459-4806-bfd4-eed5af63c687}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Globals">
+      <UniqueIdentifier>{2852c720-d06f-4279-bf9e-8221a2c9cd1f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
